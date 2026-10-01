@@ -54,6 +54,8 @@ public struct SaintsLibrary: Hashable, Sendable {
         try self.init(file: JSONDecoder().decode(File.self, from: data))
     }
 
+    public static let empty = SaintsLibrary(file: File(schemaVersion: 1, contentPolicy: "", mysteries: []))
+
     public static func bundled() throws -> SaintsLibrary {
         guard let url = Bundle.module.url(forResource: "saints_meditations", withExtension: "json") else {
             throw CocoaError(.fileNoSuchFile)

@@ -17,6 +17,8 @@ public final class SessionEngine {
     public private(set) var nextLeaderBanner: String?
     public private(set) var startedAt: TimeInterval?
     public private(set) var finishedAt: TimeInterval?
+    /// True when the session reached its last prayer, false when it was ended early.
+    public private(set) var completedAll = false
 
     private var timing: EngineTiming { configuration.timing }
     private let detector = AnchorDetector()
@@ -268,6 +270,7 @@ public final class SessionEngine {
         if phase == .speaking { effects.append(.stopSpeaking) }
         phase = .finished
         finishedAt = now
+        completedAll = completed
         acceptingEpoch = nil
         awaitingNarration = nil
         narrationQueue = []

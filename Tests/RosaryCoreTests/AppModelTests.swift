@@ -137,6 +137,12 @@ struct AppModelTests {
         #expect(model.nextStarter?.name == "Dad")
     }
 
+    @Test func meditationPauseSetsAnnouncementHold() {
+        let model = makeModel()
+        model.update { $0.meditationPause = 15 }
+        #expect(model.prepare(model.defaultSetup()).configuration.timing.announcementHold == 15)
+    }
+
     @Test func soloSessionHasNoLeaders() {
         let model = makeModel()
         let prepared = model.prepare(model.defaultSetup())

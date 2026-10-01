@@ -157,6 +157,8 @@ public final class AppModel {
             }
         }
 
+        var timing = EngineTiming()
+        timing.announcementHold = max(1, settings.meditationPause)
         let configuration = SessionConfiguration(
             scope: setup.scope,
             mysterySet: setup.mysterySet,
@@ -165,7 +167,8 @@ public final class AppModel {
             prayerBook: PrayerBook(usesHolyGhost: settings.usesHolyGhost),
             decadeLeaders: lineup.mapValues(\.name),
             nextSessionLeader: nextLeader?.name,
-            announceNextLeader: settings.family.announceNextLeader
+            announceNextLeader: settings.family.announceNextLeader,
+            timing: timing
         )
         return PreparedSession(
             id: UUID(), setup: setup, configuration: configuration,

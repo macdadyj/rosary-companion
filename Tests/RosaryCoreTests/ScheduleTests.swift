@@ -133,4 +133,24 @@ struct PlanTests {
             #expect(!AnchorLibrary.fragments(for: id).isEmpty, "\(id) needs anchor phrases")
         }
     }
+
+    @Test("Bead counter fills through a decade and the opening three")
+    func beadProgress() {
+        let plan = RosaryPlan(scope: .fullRosary, mysterySet: .joyful)
+        let progress = plan.steps.map(BeadProgress.progress(for:))
+        #expect(progress[0] == nil)
+        #expect(progress[3] == BeadProgress(count: 3, completed: 0, current: 1))
+        #expect(progress[5] == BeadProgress(count: 3, completed: 2, current: 3))
+        #expect(progress[6] == nil)
+
+        let decade = Array(progress[7..<21])
+        #expect(decade[0] == BeadProgress(count: 10, completed: 0, current: nil))
+        #expect(decade[1] == BeadProgress(count: 10, completed: 0, current: nil))
+        #expect(decade[2] == BeadProgress(count: 10, completed: 0, current: 1))
+        #expect(decade[11] == BeadProgress(count: 10, completed: 9, current: 10))
+        #expect(decade[12] == BeadProgress(count: 10, completed: 10, current: nil))
+        #expect(decade[13] == BeadProgress(count: 10, completed: 10, current: nil))
+        #expect(decade[11]?.accessibilityLabel == "Hail Mary 10 of 10")
+        #expect(progress.last! == nil)
+    }
 }
