@@ -22,13 +22,16 @@ final class ActiveSession: Identifiable {
 
     @ObservationIgnored private let model: AppModel
     @ObservationIgnored private let speech: SpeechRecognitionService?
-    @ObservationIgnored private let narrator: NarratorService
+    @ObservationIgnored private let narrator: NarrationSequencer
     @ObservationIgnored private let audio = AudioSessionCoordinator()
 
     init(prepared: PreparedSession, model: AppModel) {
         let settings = model.settings
         let speech = settings.voiceTracking ? SpeechRecognitionService() : nil
-        let narrator = NarratorService(voiceID: settings.narratorVoiceID, rate: settings.narrationRate)
+        let narrator = NarrationSequencer(
+            output: SpeechOutput(voice: InstalledVoices.voice(selectedID: settings.narratorVoiceID)),
+            planner: NarrationPlanner(recordings: ActiveSession.recordings, pacing: settings.pacing)
+        )
         let controller = SessionController(
             configuration: prepared.configuration,
             listener: speech,
@@ -126,6 +129,12 @@ final class ActiveSession: Identifiable {
         }
         if prepared.starter != nil { nextStarterName = model.nextStarter?.name }
         audio.keepScreenAwake(false)
+    }
+
+    /// Recorded prayers shipped in the app replace the synthesized voice part by part.
+    private static var recordings: any NarrationRecordings {
+        if let bundled = RecordingFolder.bundled { return bundled }
+        return NoRecordings()
     }
 }
 #endif

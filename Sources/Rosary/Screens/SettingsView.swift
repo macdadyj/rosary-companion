@@ -1,22 +1,23 @@
 #if os(iOS)
-import AVFoundation
 import RosaryCore
 import SwiftUI
 
 struct SettingsView: View {
     let model: AppModel
 
-    @State private var narrationRate = 0.42
-    @State private var voices: [AVSpeechSynthesisVoice] = []
-    @State private var previewNarrator: NarratorService?
-    @State private var previewAudio: AudioSessionCoordinator?
+    @State private var narrationRate = SpeechPacing.defaultRate
+    @State private var narrationPitch = SpeechPacing.defaultPitch
+    @State private var catalog = VoiceCatalog(installed: [])
+    @State private var preview = VoicePreview()
 
     private var settings: AppSettings { model.settings }
+    private var pacing: SpeechPacing { SpeechPacing(rate: narrationRate, pitch: narrationPitch) }
 
     var body: some View {
         Form {
             prayerSection
-            voiceSection
+            narratorSection
+            listeningSection
             displaySection
             familySection
             privacySection
@@ -26,9 +27,10 @@ struct SettingsView: View {
         .navigationTitle("Settings")
         .onAppear {
             narrationRate = settings.narrationRate
-            voices = NarratorService.availableVoices()
+            narrationPitch = settings.narrationPitch
+            catalog = InstalledVoices.catalog()
         }
-        .onDisappear { previewNarrator?.stop() }
+        .onDisappear { preview.stop() }
     }
 
     // MARK: - Sections
@@ -56,19 +58,27 @@ struct SettingsView: View {
         }
     }
 
-    private var voiceSection: some View {
+    private var listeningSection: some View {
         Section {
             Toggle("Voice tracking", isOn: binding(\.voiceTracking))
             Toggle("Haptics", isOn: binding(\.haptics))
-            Picker("Narrator", selection: binding(\.narratorVoiceID)) {
-                Text("Automatic").tag(String?.none)
-                ForEach(voices, id: \.identifier) { voice in
-                    Text(voiceName(voice)).tag(Optional(voice.identifier))
-                }
+        } header: {
+            Text("Listening")
+        } footer: {
+            Text("Voice tracking listens for key phrases, such as the Glory Be and the Fatima Prayer, using speech recognition on this iPhone only. Nothing is recorded or sent anywhere. With it off, tap anywhere to move to the next prayer.")
+        }
+    }
+
+    private var narratorSection: some View {
+        Section {
+            NavigationLink {
+                VoicePickerView(model: model, preview: preview, pacing: pacing)
+            } label: {
+                LabeledContent("Narrator voice", value: narratorName)
             }
             VStack(alignment: .leading, spacing: 6) {
                 Text("Speaking pace")
-                Slider(value: $narrationRate, in: 0.30...0.55) {
+                Slider(value: $narrationRate, in: SpeechPacing.rateRange) {
                     Text("Speaking pace")
                 } minimumValueLabel: {
                     Image(systemName: "tortoise").accessibilityLabel("Slower")
@@ -79,11 +89,44 @@ struct SettingsView: View {
                 }
                 .tint(Theme.gold)
             }
-            Button("Hear a sample", systemImage: "speaker.wave.2", action: previewVoice)
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Voice pitch")
+                Slider(value: $narrationPitch, in: SpeechPacing.pitchRange) {
+                    Text("Voice pitch")
+                } minimumValueLabel: {
+                    Image(systemName: "arrow.down").accessibilityLabel("Lower")
+                } maximumValueLabel: {
+                    Image(systemName: "arrow.up").accessibilityLabel("Higher")
+                } onEditingChanged: { editing in
+                    if !editing { model.update { $0.narrationPitch = narrationPitch } }
+                }
+                .tint(Theme.gold)
+            }
+            Button {
+                preview.toggle(sampleTarget, pacing: pacing)
+            } label: {
+                Label(
+                    preview.playing == sampleTarget ? "Stop sample" : "Hear a sample",
+                    systemImage: preview.playing == sampleTarget ? "stop.fill" : "speaker.wave.2"
+                )
+            }
+            if !isCalmDefault {
+                Button("Restore the calm default pace", systemImage: "arrow.counterclockwise") {
+                    narrationRate = SpeechPacing.defaultRate
+                    narrationPitch = SpeechPacing.defaultPitch
+                    model.update {
+                        $0.narrationRate = SpeechPacing.defaultRate
+                        $0.narrationPitch = SpeechPacing.defaultPitch
+                    }
+                }
+            }
+            if !catalog.hasNaturalVoice {
+                DownloadVoicesHint(prominent: true)
+            }
         } header: {
-            Text("Voice")
+            Text("Narrator")
         } footer: {
-            Text("Voice tracking listens for key phrases, such as the Glory Be and the Fatima Prayer, using speech recognition on this iPhone only. Nothing is recorded or sent anywhere. With it off, tap anywhere to move to the next prayer. For better narrators, download Enhanced or Premium voices in iPhone Settings › Accessibility › Spoken Content › Voices.")
+            Text("Prayers are read on this iPhone, with short pauses between phrases. For the most natural sound, download a Premium or Enhanced voice in the Settings app › Accessibility › Spoken Content › Voices › English.")
         }
     }
 
@@ -151,26 +194,20 @@ struct SettingsView: View {
         )
     }
 
-    private func voiceName(_ voice: AVSpeechSynthesisVoice) -> String {
-        let quality: String
-        switch voice.quality {
-        case .premium: quality = " (Premium)"
-        case .enhanced: quality = " (Enhanced)"
-        default: quality = ""
+    /// The voice that will actually read, which is the automatic choice if a chosen voice was deleted.
+    private var narratorName: String {
+        if let id = settings.narratorVoiceID, let chosen = catalog.voices.first(where: { $0.id == id }) {
+            return chosen.name
         }
-        let region = Locale.current.localizedString(forIdentifier: voice.language) ?? voice.language
-        return "\(voice.name)\(quality) · \(region)"
+        return catalog.best.map { "Automatic (\($0.name))" } ?? "Automatic"
     }
 
-    private func previewVoice() {
-        let audio = previewAudio ?? AudioSessionCoordinator()
-        audio.activate(listening: false)
-        previewAudio = audio
-        let narrator = previewNarrator ?? NarratorService(voiceID: settings.narratorVoiceID, rate: narrationRate)
-        narrator.configure(voiceID: settings.narratorVoiceID, rate: narrationRate)
-        previewNarrator = narrator
-        narrator.stop()
-        narrator.speak("Hail Mary, full of grace, the Lord is with thee.", preDelay: 0) {}
+    private var sampleTarget: VoicePreview.Target {
+        settings.narratorVoiceID.map(VoicePreview.Target.voice) ?? .automatic
+    }
+
+    private var isCalmDefault: Bool {
+        abs(narrationRate - SpeechPacing.defaultRate) < 0.005 && abs(narrationPitch - SpeechPacing.defaultPitch) < 0.005
     }
 
     private static var version: String {
