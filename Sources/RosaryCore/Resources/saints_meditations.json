@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "contentPolicy": "Quotes are shown only when verified is true and text and source are present. Every quote was checked word for word against the cited edition. Reflection prompts are original app text and are never presented as quotations. Unverified slots have text null and are listed in docs/CONTENT_TODO.md.",
+  "mysteries": [
+    { "mystery": "annunciation", "reflectionPrompt": "Reflection prompt (not a quotation): Mary said yes before she understood all that it would cost. Where is God asking for my yes today?", "meditations": [] },
+    { "mystery": "visitation", "reflectionPrompt": "Reflection prompt (not a quotation): Mary carried Christ in a hurry to someone who needed help. Who is waiting for me to come to them?", "meditations": [] },
+    { "mystery": "nativity", "reflectionPrompt": "Reflection prompt (not a quotation): God chose to arrive small, poor, and dependent. Can I welcome Him in the plain and humble parts of my life?", "meditations": [] },
+    { "mystery": "presentation", "reflectionPrompt": "Reflection prompt (not a quotation): Mary and Joseph gave back to God the Child He had given them. What gift of mine can I offer back to Him?", "meditations": [] },
+    { "mystery": "findingInTemple", "reflectionPrompt": "Reflection prompt (not a quotation): For three days Mary and Joseph searched with sorrow. When Jesus feels far away, do I keep looking for Him?", "meditations": [] },
+    { "mystery": "baptism", "reflectionPrompt": "Reflection prompt (not a quotation): The Father called Jesus His beloved Son. Do I remember that by my baptism I am a beloved child of God?", "meditations": [] },
+    { "mystery": "weddingAtCana", "reflectionPrompt": "Reflection prompt (not a quotation): Mary told the servants to do whatever Jesus told them (John 2:5). What is He telling me to do, and what keeps me from doing it?", "meditations": [] },
+    { "mystery": "proclamation", "reflectionPrompt": "Reflection prompt (not a quotation): Jesus calls everyone to repent and believe. What do I need to turn away from so I can turn toward Him?", "meditations": [] },
+    { "mystery": "transfiguration", "reflectionPrompt": "Reflection prompt (not a quotation): The disciples saw His glory before they saw His cross. Can I trust His light when the road ahead is dark?", "meditations": [] },
+    { "mystery": "eucharist", "reflectionPrompt": "Reflection prompt (not a quotation): Jesus gives Himself entirely, under the appearance of bread. How can I receive Him, and give myself, more fully?", "meditations": [] },
+    { "mystery": "agonyInGarden", "reflectionPrompt": "Reflection prompt (not a quotation): In the garden Jesus gave His will over to the Father's (Luke 22:42). What fear or burden can I hand over to the Father in this decade?", "meditations": [] },
+    { "mystery": "scourging", "reflectionPrompt": "Reflection prompt (not a quotation): Jesus bore pain He did not deserve, for my sake. Whose suffering can I unite to His today?", "meditations": [] },
+    { "mystery": "crowningWithThorns", "reflectionPrompt": "Reflection prompt (not a quotation): The King of Kings was mocked and was silent. Can I bear an insult or a humiliation patiently today?", "meditations": [] },
+    { "mystery": "carryingCross", "reflectionPrompt": "Reflection prompt (not a quotation): Simon helped Jesus carry the cross. Whose cross can I help carry this week?", "meditations": [] },
+    { "mystery": "crucifixion", "reflectionPrompt": "Reflection prompt (not a quotation): From the cross Jesus forgave those who were killing Him. Whom do I need to forgive?", "meditations": [] },
+    { "mystery": "resurrection", "reflectionPrompt": "Reflection prompt (not a quotation): The tomb is empty: death does not have the last word. Where do I need Easter hope right now?", "meditations": [] },
+    { "mystery": "ascension", "reflectionPrompt": "Reflection prompt (not a quotation): Jesus returned to the Father and sent His disciples out. Am I living as someone who is sent?", "meditations": [] },
+    { "mystery": "descentOfHolySpirit", "reflectionPrompt": "Reflection prompt (not a quotation): The Spirit turned frightened disciples into bold witnesses. Which gift of the Holy Spirit do I most need?", "meditations": [] },
+    { "mystery": "assumption", "reflectionPrompt": "Reflection prompt (not a quotation): Mary, body and soul, is with her Son. Do I live with heaven in view, as my true home?", "meditations": [] },
+    { "mystery": "coronation", "reflectionPrompt": "Reflection prompt (not a quotation): Mary is crowned Queen, and she remains our Mother. What do I want to entrust to her today?", "meditations": [] }
+  ]
+}
