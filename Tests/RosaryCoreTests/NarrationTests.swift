@@ -68,6 +68,34 @@ struct NarrationTests {
         #expect(names.contains("intention.faith"))
         #expect(names.contains("mystery.scourging"))
     }
+
+    @Test func aSlotsScriptIsExactlyWhatTheNarratorSays() {
+        for usesHolyGhost in [false, true] {
+            let book = PrayerBook(usesHolyGhost: usesHolyGhost)
+            for id in PrayerID.allCases {
+                guard let part = book.leaderPart(for: id) else { continue }
+                #expect(part.clip?.script == part.text, "\(id), Holy Ghost \(usesHolyGhost)")
+            }
+        }
+        for intention in OpeningIntention.allCases {
+            #expect(intention.spokenPart.clip?.script == intention.spokenPart.text)
+        }
+        for mystery in Mystery.all {
+            #expect(mystery.announcementPart.clip?.script == mystery.announcementPart.text)
+        }
+    }
+
+    @Test func everyRecordingSlotIsDocumentedWithItsExactWords() throws {
+        let guide = try String(
+            contentsOf: SaintsLibraryTests.repositoryRoot.appendingPathComponent("docs/RECORDINGS.md"), encoding: .utf8
+        )
+        for clip in NarrationClip.all {
+            #expect(
+                guide.contains("- `\(clip.fileName)`: \(clip.script)\n"),
+                "\(clip.fileName) is missing or out of date in docs/RECORDINGS.md"
+            )
+        }
+    }
 }
 
 @Suite("Speech pacing")
@@ -197,7 +225,9 @@ struct NarrationPlannerTests {
         #expect(items.allSatisfy { if case .synthesized = $0 { true } else { false } })
     }
 
-    @Test func bundledRecordingsFolderExists() {
-        #expect(RecordingFolder.bundled != nil)
+    @Test func filesInTheRecordingsFolderLandWhereTheAppLooks() throws {
+        let folder = try #require(RecordingFolder.bundled)
+        let note = folder.directory.appendingPathComponent("ABOUT_RECORDINGS.md")
+        #expect(FileManager.default.fileExists(atPath: note.path))
     }
 }

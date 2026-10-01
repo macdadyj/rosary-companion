@@ -21,6 +21,18 @@ public enum NarrationClip: Hashable, Sendable {
         }
     }
 
+    /// The exact words a recording for this slot replaces.
+    public var script: String {
+        switch self {
+        case let .leaderPart(prayer, holyGhost):
+            PrayerBook(usesHolyGhost: holyGhost).text(for: prayer).leader
+        case .intention(let intention):
+            intention.spoken
+        case .mysteryAnnouncement(let mystery):
+            Mystery.with(id: mystery).announcement
+        }
+    }
+
     /// Every slot a full set of recordings would fill, in both wordings.
     public static var all: [NarrationClip] {
         let plain = PrayerBook(usesHolyGhost: false)
