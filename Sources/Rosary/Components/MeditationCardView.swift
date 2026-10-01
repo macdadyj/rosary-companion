@@ -4,8 +4,19 @@ import SwiftUI
 
 struct MeditationCardView: View {
     let card: MeditationCard
+    var textStyle: Font.TextStyle = .title3
+    /// False when the card sits inside something that already has a card background.
+    var framed = true
 
     var body: some View {
+        if framed {
+            content.card()
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         VStack(alignment: .leading, spacing: 12) {
             switch card {
             case .quote(let meditation):
@@ -13,9 +24,10 @@ struct MeditationCardView: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.gold)
                 Text(meditation.text ?? "")
-                    .font(.prayer(.title3))
+                    .font(.prayer(textStyle))
                     .italic()
                     .foregroundStyle(Theme.ink)
+                    .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("— \(meditation.saint)")
@@ -28,15 +40,16 @@ struct MeditationCardView: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.gold)
                 Text(Self.promptBody(prompt))
-                    .font(.prayer(.title3))
+                    .font(.prayer(textStyle))
                     .foregroundStyle(Theme.ink)
+                    .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
                 Text("Written for this app. Not a quotation.")
                     .font(.footnote)
                     .foregroundStyle(Theme.secondaryInk)
             }
         }
-        .card()
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
     }
 

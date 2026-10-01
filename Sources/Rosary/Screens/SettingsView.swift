@@ -143,10 +143,11 @@ struct SettingsView: View {
                 .foregroundStyle(Theme.ink)
                 .padding(.vertical, 4)
                 .accessibilityLabel("Sample prayer text")
+            Toggle("Meditation while tracking", isOn: binding(\.showsMeditationWhileTracking))
         } header: {
             Text("Display")
         } footer: {
-            Text("Prayer text also grows with the iPhone’s Text Size setting.")
+            Text("Prayer text also grows with the iPhone’s Text Size setting. In tracking mode, the mystery’s meditation stays above the prayer for the whole decade; you can also hide or show it there.")
         }
     }
 

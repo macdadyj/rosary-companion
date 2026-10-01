@@ -40,6 +40,15 @@ extension PrayerTextSize {
         }
     }
 
+    /// Meditation text: a step below the prayer so the prayer stays the thing being said.
+    var meditationStyle: Font.TextStyle {
+        switch self {
+        case .large: .title3
+        case .larger: .title2
+        case .largest: .title
+        }
+    }
+
     var headingStyle: Font.TextStyle {
         switch self {
         case .large: .title

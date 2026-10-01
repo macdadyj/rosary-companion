@@ -19,6 +19,8 @@ final class ActiveSession: Identifiable {
     /// Who begins next time, after the rotation has been saved.
     private(set) var nextStarterName: String?
     private(set) var isPreparing = true
+    /// Tracking mode: whether the meditation panel is open. Remembered for next time.
+    private(set) var showsMeditation: Bool
 
     @ObservationIgnored private let model: AppModel
     @ObservationIgnored private let speech: SpeechRecognitionService?
@@ -47,6 +49,7 @@ final class ActiveSession: Identifiable {
         self.model = model
         self.speech = speech
         self.narrator = narrator
+        self.showsMeditation = settings.showsMeditationWhileTracking
 
         controller.onFinished = { [weak self] in self?.sessionFinished() }
         audio.onInterruptionBegan = { [weak self] in self?.controller.pause(.interruption) }
@@ -92,6 +95,11 @@ final class ActiveSession: Identifiable {
     func back() { controller.back() }
 
     func switchMode(_ mode: PrayerMode) { controller.switchMode(mode) }
+
+    func setShowsMeditation(_ shows: Bool) {
+        showsMeditation = shows
+        model.update { $0.showsMeditationWhileTracking = shows }
+    }
 
     func endEarly() {
         if isPreparing {

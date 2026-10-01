@@ -7,6 +7,8 @@ struct PrayerTextView: View {
     let snapshot: SessionSnapshot
     let textSize: PrayerTextSize
     let card: MeditationCard?
+    /// Scripture and fruit under a mystery's title; off when the meditation panel already shows them.
+    var showsMysteryDetails = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -39,14 +41,12 @@ struct PrayerTextView: View {
             Text(mystery.title)
                 .font(.prayer(textSize.prayerStyle, weight: .medium))
                 .foregroundStyle(Theme.ink)
-            VStack(alignment: .leading, spacing: 6) {
-                Label(mystery.scripture, systemImage: "book")
-                Label("Fruit of the mystery: \(mystery.fruit)", systemImage: "leaf")
+            if showsMysteryDetails {
+                MysteryDetailsView(mystery: mystery)
+                    .font(.callout)
             }
-            .font(.callout)
-            .foregroundStyle(Theme.secondaryInk)
             if let card {
-                MeditationCardView(card: card)
+                MeditationCardView(card: card, textStyle: textSize.meditationStyle)
                     .padding(.top, 4)
             }
         }
@@ -104,6 +104,18 @@ struct PrayerTextView: View {
 
     private var responseEmphasized: Bool {
         snapshot.mode == .tracking || snapshot.phase != .speaking || snapshot.leaderText.isEmpty
+    }
+}
+
+struct MysteryDetailsView: View {
+    let mystery: Mystery
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label(mystery.scripture, systemImage: "book")
+            Label("Fruit of the mystery: \(mystery.fruit)", systemImage: "leaf")
+        }
+        .foregroundStyle(Theme.secondaryInk)
     }
 }
 #endif

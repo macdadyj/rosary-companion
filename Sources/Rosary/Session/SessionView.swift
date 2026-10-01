@@ -51,15 +51,43 @@ struct SessionView: View {
         VStack(spacing: 0) {
             topBar
             progressHeader
-            ScrollView {
-                PrayerTextView(snapshot: snapshot, textSize: settings.textSize, card: meditationCard)
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 20)
-                    .id(snapshot.stepIndex)
-                    .transition(.opacity)
+            GeometryReader { proxy in
+                VStack(spacing: 0) {
+                    if let mystery = trackingMystery {
+                        TrackingMeditationPanel(
+                            mystery: mystery,
+                            cards: library.cards(for: mystery.id, on: session.meditationDay),
+                            textSize: settings.textSize,
+                            isExpanded: session.showsMeditation,
+                            maxHeight: proxy.size.height * 0.5,
+                            onToggle: {
+                                withAnimation(.easeInOut(duration: 0.25)) {
+                                    session.setShowsMeditation(!session.showsMeditation)
+                                }
+                            }
+                        )
+                        .id(mystery.id)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                        .transition(.opacity)
+                    }
+                    ScrollView {
+                        PrayerTextView(
+                            snapshot: snapshot,
+                            textSize: settings.textSize,
+                            card: panelShowsMeditation ? nil : meditationCard,
+                            showsMysteryDetails: !panelShowsMeditation
+                        )
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 20)
+                        .id(snapshot.stepIndex)
+                        .transition(.opacity)
+                    }
+                    .scrollIndicators(.hidden)
+                    .animation(.easeInOut(duration: 0.25), value: snapshot.stepIndex)
+                }
             }
-            .scrollIndicators(.hidden)
-            .animation(.easeInOut(duration: 0.25), value: snapshot.stepIndex)
+            .animation(.easeInOut(duration: 0.3), value: trackingMystery?.id)
             bottomBar
         }
         .contentShape(Rectangle())
@@ -221,6 +249,16 @@ struct SessionView: View {
         if position <= snapshot.completedDecades.count { return Theme.gold }
         if position == snapshot.decadePosition { return Theme.gold.opacity(0.45) }
         return Theme.beadEmpty
+    }
+
+    /// Tracking mode keeps the meditation on screen for the whole decade; guided mode shows it
+    /// with the announcement, while the narrator pauses.
+    private var trackingMystery: Mystery? {
+        snapshot.mode == .tracking ? snapshot.mystery : nil
+    }
+
+    private var panelShowsMeditation: Bool {
+        trackingMystery != nil && session.showsMeditation
     }
 
     private var meditationCard: MeditationCard? {
