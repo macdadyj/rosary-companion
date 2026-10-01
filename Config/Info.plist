@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>Rosary</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Rosary listens while you pray so it can follow along and count the beads for you. Audio is processed on this iPhone only. It is never recorded, saved, or sent anywhere.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Rosary uses on-device speech recognition to notice key phrases, like the Glory Be and the Fatima Prayer, so it can move to the next prayer for you. Nothing you say leaves your iPhone.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+</dict>
+</plist>

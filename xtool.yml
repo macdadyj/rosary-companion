@@ -1,0 +1,5 @@
+version: 1
+bundleID: com.lojo.Rosary
+product: Rosary
+infoPath: Config/Info.plist
+iconPath: Config/AppIcon.png
