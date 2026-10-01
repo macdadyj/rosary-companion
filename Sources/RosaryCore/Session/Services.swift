@@ -23,11 +23,12 @@ public protocol SpeechListening: AnyObject {
     func stop()
 }
 
-/// Text-to-speech for the leader parts.
+/// Says the leader parts, announcements, and names aloud. `NarrationSequencer` is the app's
+/// implementation: synthesized speech, with recordings standing in where they exist.
 @MainActor
 public protocol SpeechNarrating: AnyObject {
-    /// `completion` runs when the utterance finishes or is stopped.
-    func speak(_ text: String, preDelay: TimeInterval, completion: @escaping @MainActor () -> Void)
+    /// `completion` runs once, when the narration finishes or is stopped.
+    func speak(_ narration: Narration, preDelay: TimeInterval, completion: @escaping @MainActor () -> Void)
     func stop()
 }
 

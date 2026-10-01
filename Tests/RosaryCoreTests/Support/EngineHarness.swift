@@ -6,7 +6,7 @@ final class EngineHarness {
     let engine: SessionEngine
     private(set) var now: Double = 0
     private(set) var effects: [SessionEffect] = []
-    private(set) var spoken: [String] = []
+    private(set) var narrations: [Narration] = []
     private(set) var listenEpoch: Int?
     private var script = TranscriptScript(epoch: 0)
     private var narration: Int?
@@ -30,6 +30,7 @@ final class EngineHarness {
         ))
     }
 
+    var spoken: [String] { narrations.map(\.text) }
     var snapshot: SessionSnapshot { engine.snapshot }
     var step: RosaryStep { engine.currentStep }
     var phase: SessionPhase { engine.phase }
@@ -46,8 +47,8 @@ final class EngineHarness {
         let produced = engine.send(event, at: now)
         for effect in produced {
             switch effect {
-            case .speak(let text, let id, _):
-                spoken.append(text)
+            case .speak(let spokenNarration, let id, _):
+                narrations.append(spokenNarration)
                 narration = id
             case .stopSpeaking:
                 narration = nil

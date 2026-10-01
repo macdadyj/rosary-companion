@@ -82,7 +82,7 @@ public struct AdvanceRecord: Hashable, Sendable {
 }
 
 public enum SessionEffect: Hashable, Sendable {
-    case speak(text: String, id: Int, preDelay: TimeInterval)
+    case speak(Narration, id: Int, preDelay: TimeInterval)
     case stopSpeaking
     /// Start listening (or restart recognition) and tag results with `epoch`.
     case listen(epoch: Int)

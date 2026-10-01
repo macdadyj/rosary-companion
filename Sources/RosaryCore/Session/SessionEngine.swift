@@ -28,7 +28,7 @@ public final class SessionEngine {
 
     private var narrationID = 0
     private var awaitingNarration: Int?
-    private var narrationQueue: [String] = []
+    private var narrationQueue: [Narration] = []
     private var afterNarration = AfterNarration.continueStep
 
     private var stepEnteredAt: TimeInterval = 0
@@ -118,7 +118,7 @@ public final class SessionEngine {
 
     // MARK: - Steps
 
-    private func enterStep(_ newIndex: Int, prelude: [String] = []) -> [SessionEffect] {
+    private func enterStep(_ newIndex: Int, prelude: [Narration] = []) -> [SessionEffect] {
         index = newIndex
         stepEnteredAt = now
         lastProgressAt = now
@@ -137,17 +137,16 @@ public final class SessionEngine {
         }
     }
 
-    private func guidedNarration(for step: RosaryStep) -> [String] {
+    private func guidedNarration(for step: RosaryStep) -> [Narration] {
         switch step.content {
         case .mysteryAnnouncement(let mystery):
-            return [mystery.announcement]
+            return [Narration([mystery.announcementPart])]
         case .prayer(let id):
-            let text = configuration.prayerBook.text(for: id)
-            guard !text.leader.isEmpty else { return [] }
+            guard let leader = configuration.prayerBook.leaderPart(for: id) else { return [] }
             if let intention = step.intention {
-                return ["\(intention.spoken) \(text.leader)"]
+                return [Narration([intention.spokenPart, leader])]
             }
-            return [text.leader]
+            return [Narration([leader])]
         }
     }
 
@@ -171,7 +170,7 @@ public final class SessionEngine {
         return [.listen(epoch: epoch)]
     }
 
-    private func speak(_ lines: [String], then next: AfterNarration) -> [SessionEffect] {
+    private func speak(_ lines: [Narration], then next: AfterNarration) -> [SessionEffect] {
         guard let first = lines.first else { return [] }
         narrationQueue = Array(lines.dropFirst())
         afterNarration = next
@@ -179,7 +178,7 @@ public final class SessionEngine {
         acceptingEpoch = nil
         narrationID += 1
         awaitingNarration = narrationID
-        return [.speak(text: first, id: narrationID, preDelay: timing.narrationLeadIn)]
+        return [.speak(first, id: narrationID, preDelay: timing.narrationLeadIn)]
     }
 
     private func narrationFinished(_ id: Int) -> [SessionEffect] {
@@ -219,7 +218,7 @@ public final class SessionEngine {
         }
 
         var effects: [SessionEffect] = []
-        var prelude: [String] = []
+        var prelude: [Narration] = []
         var completedDecade = false
         for stepIndex in from..<min(target, plan.steps.count) where plan.isLastStepOfDecade(stepIndex) {
             guard let decade = plan.steps[stepIndex].section.decadeNumber,
@@ -231,7 +230,7 @@ public final class SessionEngine {
                 nextLeaderBanner = next
                 bannerUntil = now + timing.bannerDuration
                 if configuration.announceNextLeader && !heardLaterPrayer {
-                    prelude.append("\(next) leads the next decade.")
+                    prelude.append(Narration("\(next) leads the next decade."))
                 }
             }
         }
@@ -277,7 +276,7 @@ public final class SessionEngine {
         effects.append(.stopListening)
         if completed, configuration.announceNextLeader, let next = configuration.nextSessionLeader {
             narrationID += 1
-            effects.append(.speak(text: "Next time, \(next) begins.", id: narrationID, preDelay: timing.narrationLeadIn))
+            effects.append(.speak(Narration("Next time, \(next) begins."), id: narrationID, preDelay: timing.narrationLeadIn))
         }
         effects.append(.finished)
         return effects

@@ -107,9 +107,9 @@ public final class SessionController {
     private func perform(_ effects: [SessionEffect]) {
         for effect in effects {
             switch effect {
-            case .speak(let text, let id, let preDelay):
+            case .speak(let narration, let id, let preDelay):
                 activeNarration = id
-                narrator.speak(text, preDelay: preDelay) { [weak self] in
+                narrator.speak(narration, preDelay: preDelay) { [weak self] in
                     guard let self, self.activeNarration == id else { return }
                     self.activeNarration = nil
                     self.send(.narrationFinished(id: id))

@@ -24,12 +24,14 @@ final class FakeListener: SpeechListening {
 
 @MainActor
 final class FakeNarrator: SpeechNarrating {
-    private(set) var spoken: [String] = []
+    private(set) var narrations: [Narration] = []
     private(set) var stops = 0
     private var completion: (@MainActor () -> Void)?
 
-    func speak(_ text: String, preDelay: Double, completion: @escaping @MainActor () -> Void) {
-        spoken.append(text)
+    var spoken: [String] { narrations.map(\.text) }
+
+    func speak(_ narration: Narration, preDelay: Double, completion: @escaping @MainActor () -> Void) {
+        narrations.append(narration)
         self.completion = completion
     }
 
