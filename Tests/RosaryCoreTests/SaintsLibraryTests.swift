@@ -114,6 +114,58 @@ struct SaintsLibraryTests {
         #expect(seen.count == 3)
     }
 
+    @Test func trackingShowsEveryVerifiedQuoteThenThePrompt() {
+        let day = CivilDate(year: 2026, month: 10, day: 1)
+        for id in MysteryID.allCases {
+            let cards = library.cards(for: id, on: day)
+            let quotes = library.verifiedQuotes(for: id)
+            #expect(cards.first == library.card(for: id, on: day), "\(id) starts somewhere else")
+            #expect(cards.count == quotes.count + 1)
+            #expect(cards.last == .reflection(library.entry(for: id)!.reflectionPrompt))
+            let shown = cards.compactMap { card -> String? in
+                if case .quote(let quote) = card { quote.id } else { nil }
+            }
+            #expect(Set(shown) == Set(quotes.map(\.id)))
+            #expect(shown.count == quotes.count)
+        }
+    }
+
+    @Test func trackingCardsRotateWithTheDayAndSkipPlaceholders() {
+        let quotes = (1...3).map { n in
+            SaintMeditation(
+                id: "q\(n)", saint: "St. \(n)", text: "Text \(n).", source: "Work \(n)",
+                license: "public domain", verified: true
+            )
+        }
+        let placeholder = SaintMeditation(
+            id: "todo", saint: "St. Example", text: nil, source: nil, license: "unknown", verified: false
+        )
+        let library = SaintsLibrary(file: SaintsLibrary.File(
+            schemaVersion: 1, contentPolicy: "",
+            mysteries: [
+                MysteryMeditations(mystery: .ascension, reflectionPrompt: "p", meditations: [placeholder] + quotes),
+                MysteryMeditations(mystery: .descentOfHolySpirit, reflectionPrompt: "only a prompt", meditations: [placeholder]),
+            ]
+        ))
+        let day = CivilDate(year: 2026, month: 5, day: 14)
+        let ids = { (cards: [MeditationCard]) in
+            cards.map { card -> String in
+                switch card {
+                case .quote(let quote): quote.id
+                case .reflection(let prompt): prompt
+                }
+            }
+        }
+        let today = ids(library.cards(for: .ascension, on: day))
+        let tomorrow = ids(library.cards(for: .ascension, on: day.adding(days: 1)))
+        #expect(today.count == 4)
+        #expect(today.last == "p")
+        #expect(Array(tomorrow.prefix(3)) == Array(today.prefix(3)[1...] + today.prefix(1)))
+        #expect(!today.contains("todo"))
+        #expect(library.cards(for: .descentOfHolySpirit, on: day) == [.reflection("only a prompt")])
+        #expect(library.cards(for: .annunciation, on: day).isEmpty)
+    }
+
     static var repositoryRoot: URL {
         URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()

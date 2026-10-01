@@ -59,11 +59,15 @@ public struct AppSettings: Codable, Hashable, Sendable {
     public var voiceTracking = true
     public var haptics = true
     /// AVSpeechUtterance rate (0...1, 0.5 is the system default).
-    public var narrationRate = 0.42
+    public var narrationRate = SpeechPacing.defaultRate
+    /// AVSpeechUtterance pitch multiplier (1 is the voice's natural pitch).
+    public var narrationPitch = SpeechPacing.defaultPitch
     /// AVSpeechSynthesisVoice identifier; nil picks the best installed English voice.
     public var narratorVoiceID: String?
     /// Guided mode: seconds of quiet after a mystery is announced, to read the meditation.
     public var meditationPause: Double = 8
+    /// Tracking mode: show the current mystery's meditation above the prayer while praying.
+    public var showsMeditationWhileTracking = true
     public var appearance: AppearancePreference = .dark
     public var textSize: PrayerTextSize = .large
     public var family = FamilySettings()
@@ -74,9 +78,18 @@ public struct AppSettings: Codable, Hashable, Sendable {
         (3, "Short"), (8, "Medium"), (15, "Long"),
     ]
 
+    public var pacing: SpeechPacing {
+        SpeechPacing(rate: narrationRate, pitch: narrationPitch)
+    }
+
+    /// The narration rate before pauses between phrases were added. Settings saved with it
+    /// (and no pitch yet) never had the pace changed, so they move to the new default.
+    static let untunedNarrationRate = 0.42
+
     enum CodingKeys: String, CodingKey {
         case defaultMode, defaultLength, openingIntentions, seasonalSundays, usesHolyGhost, voiceTracking
-        case haptics, narrationRate, narratorVoiceID, meditationPause, appearance, textSize, family
+        case haptics, narrationRate, narrationPitch, narratorVoiceID, meditationPause
+        case showsMeditationWhileTracking, appearance, textSize, family
     }
 
     /// Missing keys fall back to defaults so older saved settings keep loading.
@@ -90,9 +103,14 @@ public struct AppSettings: Codable, Hashable, Sendable {
         usesHolyGhost = try c.decodeIfPresent(Bool.self, forKey: .usesHolyGhost) ?? d.usesHolyGhost
         voiceTracking = try c.decodeIfPresent(Bool.self, forKey: .voiceTracking) ?? d.voiceTracking
         haptics = try c.decodeIfPresent(Bool.self, forKey: .haptics) ?? d.haptics
-        narrationRate = try c.decodeIfPresent(Double.self, forKey: .narrationRate) ?? d.narrationRate
+        let savedPitch = try c.decodeIfPresent(Double.self, forKey: .narrationPitch)
+        let savedRate = try c.decodeIfPresent(Double.self, forKey: .narrationRate)
+        narrationPitch = savedPitch ?? d.narrationPitch
+        narrationRate = savedPitch == nil && savedRate == Self.untunedNarrationRate ? d.narrationRate : savedRate ?? d.narrationRate
         narratorVoiceID = try c.decodeIfPresent(String.self, forKey: .narratorVoiceID)
         meditationPause = try c.decodeIfPresent(Double.self, forKey: .meditationPause) ?? d.meditationPause
+        showsMeditationWhileTracking = try c.decodeIfPresent(Bool.self, forKey: .showsMeditationWhileTracking)
+            ?? d.showsMeditationWhileTracking
         appearance = (try? c.decodeIfPresent(AppearancePreference.self, forKey: .appearance)) ?? d.appearance
         textSize = (try? c.decodeIfPresent(PrayerTextSize.self, forKey: .textSize)) ?? d.textSize
         family = try c.decodeIfPresent(FamilySettings.self, forKey: .family) ?? d.family

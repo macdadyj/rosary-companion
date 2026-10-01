@@ -73,6 +73,41 @@ struct AppModelTests {
         #expect(model.settings.narrationRate == AppSettings().narrationRate)
     }
 
+    private func loadSettings(_ json: String) throws -> AppSettings {
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try Data(json.utf8).write(to: directory.appendingPathComponent(AppModel.settingsFile))
+        return makeModel().settings
+    }
+
+    @Test func untouchedOldPaceMovesToTheCalmerDefault() throws {
+        let settings = try loadSettings(#"{"narrationRate":0.42,"narratorVoiceID":"com.apple.voice.compact.en-US.Samantha"}"#)
+        #expect(settings.narrationRate == SpeechPacing.defaultRate)
+        #expect(settings.narrationPitch == SpeechPacing.defaultPitch)
+        #expect(settings.narratorVoiceID == "com.apple.voice.compact.en-US.Samantha")
+    }
+
+    @Test func aPaceSomeoneChoseIsKept() throws {
+        #expect(try loadSettings(#"{"narrationRate":0.5}"#).narrationRate == 0.5)
+        let tuned = try loadSettings(#"{"narrationRate":0.42,"narrationPitch":1.05}"#)
+        #expect(tuned.narrationRate == 0.42)
+        #expect(tuned.narrationPitch == 1.05)
+    }
+
+    @Test func voiceAndMeditationSettingsPersist() {
+        let model = makeModel()
+        #expect(model.settings.showsMeditationWhileTracking)
+        #expect(model.settings.narratorVoiceID == nil)
+        model.update {
+            $0.showsMeditationWhileTracking = false
+            $0.narratorVoiceID = "com.apple.voice.premium.en-US.Zoe"
+            $0.narrationPitch = 1.0
+        }
+        let relaunched = makeModel()
+        #expect(!relaunched.settings.showsMeditationWhileTracking)
+        #expect(relaunched.settings.narratorVoiceID == "com.apple.voice.premium.en-US.Zoe")
+        #expect(relaunched.settings.pacing == SpeechPacing(rate: SpeechPacing.defaultRate, pitch: 1.0))
+    }
+
     @Test func corruptFileFallsBackToDefaults() throws {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         try Data("not json".utf8).write(to: directory.appendingPathComponent(AppModel.sessionsFile))

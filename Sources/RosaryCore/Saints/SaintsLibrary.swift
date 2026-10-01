@@ -115,6 +115,17 @@ public struct SaintsLibrary: Hashable, Sendable {
         return entry(for: mystery).map { .reflection($0.reflectionPrompt) }
     }
 
+    /// Everything there is to meditate on for a mystery, starting with `card(for:on:)`: each
+    /// verified quote once, in turn, then the reflection prompt. Placeholders never appear.
+    /// Empty when the library has no entry for the mystery.
+    public func cards(for mystery: MysteryID, on day: CivilDate) -> [MeditationCard] {
+        guard let entry = entry(for: mystery) else { return [] }
+        let quotes = verifiedQuotes(for: mystery)
+        let start = quotes.isEmpty ? 0 : ((day.dayNumber % quotes.count) + quotes.count) % quotes.count
+        let rotated = quotes[start...] + quotes[..<start]
+        return rotated.map(MeditationCard.quote) + [.reflection(entry.reflectionPrompt)]
+    }
+
     public var allUnverified: [(MysteryID, SaintMeditation)] {
         MysteryID.allCases.flatMap { id in placeholders(for: id).map { (id, $0) } }
     }
