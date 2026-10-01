@@ -65,10 +65,10 @@ struct MysteryMeditationsView: View {
                 ForEach(library.verifiedQuotes(for: mystery.id)) { meditation in
                     VStack(alignment: .leading, spacing: 8) {
                         MeditationCardView(card: .quote(meditation))
-                        Text(meditation.license.capitalized)
+                        Text(licenseLine(meditation))
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(Theme.secondaryInk)
-                        if let note = meditation.copyrightNote {
+                        if let note = meditation.excerptNote {
                             Text(note)
                                 .font(.caption)
                                 .foregroundStyle(Theme.secondaryInk)
@@ -87,16 +87,9 @@ struct MysteryMeditationsView: View {
                             .font(.headline)
                             .foregroundStyle(Theme.secondaryInk)
                         ForEach(placeholders) { placeholder in
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(placeholder.saint)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(Theme.ink)
-                                if let suggestion = placeholder.suggestedSource {
-                                    Text(suggestion)
-                                        .font(.caption)
-                                        .foregroundStyle(Theme.secondaryInk)
-                                }
-                            }
+                            Text(placeholder.saint)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Theme.ink)
                         }
                         Text("Nothing is shown for these until someone checks the exact words and source.")
                             .font(.caption)
@@ -109,6 +102,14 @@ struct MysteryMeditationsView: View {
         }
         .background(Theme.background.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func licenseLine(_ meditation: SaintMeditation) -> String {
+        switch meditation.license {
+        case "public domain": "Public domain text"
+        case "short attributed excerpt": "Short excerpt from a copyrighted work, quoted with attribution"
+        default: meditation.license.capitalized
+        }
     }
 }
 #endif

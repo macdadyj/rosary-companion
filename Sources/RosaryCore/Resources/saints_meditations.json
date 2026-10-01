@@ -2,25 +2,841 @@
   "schemaVersion": 1,
   "contentPolicy": "Quotes are shown only when verified is true and text and source are present. Every quote was checked word for word against the cited edition. Reflection prompts are original app text and are never presented as quotations. Unverified slots have text null and are listed in docs/CONTENT_TODO.md.",
   "mysteries": [
-    { "mystery": "annunciation", "reflectionPrompt": "Reflection prompt (not a quotation): Mary said yes before she understood all that it would cost. Where is God asking for my yes today?", "meditations": [] },
-    { "mystery": "visitation", "reflectionPrompt": "Reflection prompt (not a quotation): Mary carried Christ in a hurry to someone who needed help. Who is waiting for me to come to them?", "meditations": [] },
-    { "mystery": "nativity", "reflectionPrompt": "Reflection prompt (not a quotation): God chose to arrive small, poor, and dependent. Can I welcome Him in the plain and humble parts of my life?", "meditations": [] },
-    { "mystery": "presentation", "reflectionPrompt": "Reflection prompt (not a quotation): Mary and Joseph gave back to God the Child He had given them. What gift of mine can I offer back to Him?", "meditations": [] },
-    { "mystery": "findingInTemple", "reflectionPrompt": "Reflection prompt (not a quotation): For three days Mary and Joseph searched with sorrow. When Jesus feels far away, do I keep looking for Him?", "meditations": [] },
-    { "mystery": "baptism", "reflectionPrompt": "Reflection prompt (not a quotation): The Father called Jesus His beloved Son. Do I remember that by my baptism I am a beloved child of God?", "meditations": [] },
-    { "mystery": "weddingAtCana", "reflectionPrompt": "Reflection prompt (not a quotation): Mary told the servants to do whatever Jesus told them (John 2:5). What is He telling me to do, and what keeps me from doing it?", "meditations": [] },
-    { "mystery": "proclamation", "reflectionPrompt": "Reflection prompt (not a quotation): Jesus calls everyone to repent and believe. What do I need to turn away from so I can turn toward Him?", "meditations": [] },
-    { "mystery": "transfiguration", "reflectionPrompt": "Reflection prompt (not a quotation): The disciples saw His glory before they saw His cross. Can I trust His light when the road ahead is dark?", "meditations": [] },
-    { "mystery": "eucharist", "reflectionPrompt": "Reflection prompt (not a quotation): Jesus gives Himself entirely, under the appearance of bread. How can I receive Him, and give myself, more fully?", "meditations": [] },
-    { "mystery": "agonyInGarden", "reflectionPrompt": "Reflection prompt (not a quotation): In the garden Jesus gave His will over to the Father's (Luke 22:42). What fear or burden can I hand over to the Father in this decade?", "meditations": [] },
-    { "mystery": "scourging", "reflectionPrompt": "Reflection prompt (not a quotation): Jesus bore pain He did not deserve, for my sake. Whose suffering can I unite to His today?", "meditations": [] },
-    { "mystery": "crowningWithThorns", "reflectionPrompt": "Reflection prompt (not a quotation): The King of Kings was mocked and was silent. Can I bear an insult or a humiliation patiently today?", "meditations": [] },
-    { "mystery": "carryingCross", "reflectionPrompt": "Reflection prompt (not a quotation): Simon helped Jesus carry the cross. Whose cross can I help carry this week?", "meditations": [] },
-    { "mystery": "crucifixion", "reflectionPrompt": "Reflection prompt (not a quotation): From the cross Jesus forgave those who were killing Him. Whom do I need to forgive?", "meditations": [] },
-    { "mystery": "resurrection", "reflectionPrompt": "Reflection prompt (not a quotation): The tomb is empty: death does not have the last word. Where do I need Easter hope right now?", "meditations": [] },
-    { "mystery": "ascension", "reflectionPrompt": "Reflection prompt (not a quotation): Jesus returned to the Father and sent His disciples out. Am I living as someone who is sent?", "meditations": [] },
-    { "mystery": "descentOfHolySpirit", "reflectionPrompt": "Reflection prompt (not a quotation): The Spirit turned frightened disciples into bold witnesses. Which gift of the Holy Spirit do I most need?", "meditations": [] },
-    { "mystery": "assumption", "reflectionPrompt": "Reflection prompt (not a quotation): Mary, body and soul, is with her Son. Do I live with heaven in view, as my true home?", "meditations": [] },
-    { "mystery": "coronation", "reflectionPrompt": "Reflection prompt (not a quotation): Mary is crowned Queen, and she remains our Mother. What do I want to entrust to her today?", "meditations": [] }
+    {
+      "mystery": "annunciation",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Mary said yes before she understood all that it would cost. Where is God asking for my yes today?",
+      "meditations": [
+        {
+          "id": "annunciation.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "Thirdly, that she might offer to God the free gift of her obedience: which she proved herself right ready to do, saying: \"Behold the handmaid of the Lord.\" Fourthly, in order to show that there is a certain spiritual wedlock between the Son of God and human nature. Wherefore in the Annunciation the Virgin's consent was besought in lieu of that of the entire human nature.",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 30, a. 1 ('Whether it was necessary to announce to the Blessed Virgin that which was to be done in her?'), corpus ('I answer that'); trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4030.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale.",
+          "excerptNote": "Begins at the third of Aquinas's numbered reasons ('Thirdly ... Fourthly ...'); the first two reasons precede it in the same paragraph."
+        },
+        {
+          "id": "annunciation.newman",
+          "saint": "St. John Henry Newman",
+          "text": "And so, as regards the Blessed Virgin, it was God's will that she should undertake willingly and with full understanding to be the Mother of our Lord, and not to be a mere passive instrument whose maternity would have no merit and no reward. The higher our gifts, the heavier our duties.",
+          "source": "John Henry Newman, Meditations and Devotions, ed. W. P. Neville (London: Longmans, Green, 1893; Newman Reader text, printed page 37), Part I 'Meditations on the Litany of Loreto, for the Month of May', II 'On the Annunciation', (4) May 13, 'Mary is the \"Janua Coeli,\" the Gate of Heaven'",
+          "sourceURL": "https://www.newmanreader.org/works/meditations/meditations2.html",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Newman died 1890; text first published 1893, public domain. The Newman Reader web page carries 'Copyright (c) 2007 by The National Institute for Newman Studies' for its digital edition; the quoted words are Newman's 1893 text."
+        },
+        {
+          "id": "annunciation.montfort",
+          "saint": "St. Louis-Marie Grignion de Montfort",
+          "text": "The Son of God has made Himself Man; but it was in Mary and by Mary. God the Holy Ghost has formed Jesus Christ in Mary; but it was only after having asked her consent by one of the first ministers of His court.",
+          "source": "St. Louis-Marie Grignion de Montfort, A Treatise on the True Devotion to the Blessed Virgin, trans. Frederick William Faber, Twelfth Edition, with a preface by Cardinal Vaughan (London: Burns & Oates; New York, Cincinnati, Chicago: Benziger Brothers; imprimatur 1904), Part I 'On Devotion to our Blessed Lady in General', chapter I 'Excellence and Necessity of Devotion to our Blessed Lady', p. 8",
+          "sourceURL": "https://archive.org/details/treatiseontruede00grig",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the scanned page image of printed p. 8 in the archive.org copy at sourceURL, not only its OCR text.",
+          "copyrightNote": "Faber's translation first published 1863 (Faber d. 1863); this Twelfth Edition printed 1904: public domain.",
+          "excerptNote": "Source prints 'Mary ; but' (old typesetting space before semicolon); the space is dropped. Corresponds to modern paragraph numbering around section 16 (not printed in this edition; verify against a numbered edition if you want to cite a section number)."
+        },
+        {
+          "id": "annunciation.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "If it is the Father's plan to unite all things in Christ (cf. Eph 1:10), then the whole of the universe is in some way touched by the divine favour with which the Father looks upon Mary and makes her the Mother of his Son. The whole of humanity, in turn, is embraced by the fiat with which she readily agrees to the will of God.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 20; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "visitation",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Mary carried Christ in a hurry to someone who needed help. Who is waiting for me to come to them?",
+      "meditations": [
+        {
+          "id": "visitation.liguori",
+          "saint": "St. Alphonsus Liguori",
+          "text": "But the visit of the blessed Virgin was not like the visits of the worldly, which, for the most part, consist in ceremonies and false display; the visit of Mary brought into that house an abundance of graces.",
+          "source": "St. Alphonsus Liguori, The Glories of Mary, anonymous translation, Second American Edition (New York: Edward Dunigan and Brother, 1852), Project Gutenberg eBook #72411, Part II, Discourse V 'On the Visitation of Mary', Point First",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "1852 translation, public domain. Strip Project Gutenberg branding if redistributing."
+        },
+        {
+          "id": "visitation.montfort",
+          "saint": "St. Louis-Marie Grignion de Montfort",
+          "text": "He sanctified St. John in the womb of St. Elizabeth His mother; but it was by Mary’s word. No sooner had she spoken than John was sanctified; and this was His first and greatest miracle of grace.",
+          "source": "St. Louis-Marie Grignion de Montfort, A Treatise on the True Devotion to the Blessed Virgin, trans. Frederick William Faber, Twelfth Edition, with a preface by Cardinal Vaughan (London: Burns & Oates; New York, Cincinnati, Chicago: Benziger Brothers; imprimatur 1904), Part I 'On Devotion to our Blessed Lady in General', chapter I 'Excellence and Necessity of Devotion to our Blessed Lady', p. 10",
+          "sourceURL": "https://archive.org/details/treatiseontruede00grig",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the scanned page image of printed p. 10 in the archive.org copy at sourceURL, not only its OCR text. The printed line break in 'Eliz-abeth' is the only difference from the OCR text.",
+          "copyrightNote": "Faber's translation first published 1863 (Faber d. 1863); this Twelfth Edition printed 1904: public domain.",
+          "excerptNote": "OCR line-break hyphen 'Eliz-/abeth' joined to 'Elizabeth'; spaces before ';' dropped. 'He' is Christ (preceding sentence: 'it was His Will to begin His miracles by Mary'). The 1863 first printing has 'his mother' (lower-case). Modern paragraph numbering around section 19 (not printed in this edition; verify)."
+        },
+        {
+          "id": "visitation.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "Exultation is the keynote of the encounter with Elizabeth, where the sound of Mary's voice and the presence of Christ in her womb cause John to “leap for joy” (cf. Lk 1:44).",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 20; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "nativity",
+      "reflectionPrompt": "Reflection prompt (not a quotation): God chose to arrive small, poor, and dependent. Can I welcome Him in the plain and humble parts of my life?",
+      "meditations": [
+        {
+          "id": "nativity.leo",
+          "saint": "St. Leo the Great",
+          "text": "Our Saviour, dearly-beloved, was born today: let us be glad. For there is no proper place for sadness, when we keep the birthday of the Life, which destroys the fear of mortality and brings to us the joy of promised eternity.",
+          "source": "St. Leo the Great, Sermons, trans. Charles Lett Feltoe, in Nicene and Post-Nicene Fathers, Second Series, vol. 12 (1895), CCEL plain-text edition (NPNF2-12), Sermon XXI 'On the Feast of the Nativity, I', chapter I",
+          "sourceURL": "https://www.ccel.org/ccel/s/schaff/npnf212/cache/npnf212.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Feltoe translation 1895, public domain (CCEL lists 'Rights: Public Domain'). CCEL's original NPNF wording is used, not New Advent's revised/modernized text."
+        },
+        {
+          "id": "nativity.therese",
+          "saint": "St. Thérèse of Lisieux",
+          "text": "On that blessed night the sweet Infant Jesus, scarce an hour old, filled the darkness of my soul with floods of light.",
+          "source": "St. Therese of Lisieux, The Story of a Soul (L'Histoire d'une Ame), trans. Rev. T. N. Taylor, from Soeur Therese of Lisieux (London: Burns, Oates & Washbourne, 1912; 8th ed. 1922), Project Gutenberg eBook #16772, Chapter V 'Vocation of Therese'",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/16772/pg16772.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Taylor translation published 1912/1922: public domain in the US. In life+70 countries status depends on the translator's death date (verify T. N. Taylor's dates before relying on it outside the US). Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "Christmas night 1886 ('her conversion'). The following sentence ('By becoming weak and little ...') ends with a footnote marker in this edition and was left out rather than altered."
+        },
+        {
+          "id": "nativity.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "At the same time, too, He put to silence the vain boasting of men who take pride in being born in great cities, where also they desire especially to receive honor. Christ, on the contrary, willed to be born in a mean city, and to suffer reproach in a great city.",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 35, a. 7 ('Whether Christ should have been born in Bethlehem?'), reply to objection 1; trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4035.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale.",
+          "excerptNote": "Second half of the reply to objection 1 (the first half explains the fittingness of Bethlehem as David's city)."
+        },
+        {
+          "id": "nativity.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "Gladness also fills the scene in Bethlehem, when the birth of the divine Child, the Saviour of the world, is announced by the song of the angels and proclaimed to the shepherds as “news of great joy” (Lk 2:10).",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 20; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "presentation",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Mary and Joseph gave back to God the Child He had given them. What gift of mine can I offer back to Him?",
+      "meditations": [
+        {
+          "id": "presentation.liguori",
+          "saint": "St. Alphonsus Liguori",
+          "text": "Now behold Mary actually on her way to Jerusalem to offer her Son; she hastens her steps towards the place of sacrifice, and she herself carries her beloved victim in her arms. She enters the temple, approaches the altar, and there, filled with modesty, humility, and devotion, she presents her Son to the Most High.",
+          "source": "St. Alphonsus Liguori, The Glories of Mary, anonymous translation, Second American Edition (New York: Edward Dunigan and Brother, 1852), Project Gutenberg eBook #72411, Part II, Discourse VI 'On the Purification of Mary'",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "1852 translation, public domain. Strip Project Gutenberg branding if redistributing."
+        },
+        {
+          "id": "presentation.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "As the fulness of grace flowed from Christ on to His Mother, so it was becoming that the mother should be like her Son in humility: for \"God giveth grace to the humble,\" as is written James 4:6.",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 37, a. 4 ('Whether it was fitting that the Mother of God should go to the temple to be purified?'), corpus ('I answer that'); trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4037.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale.",
+          "excerptNote": "Mary's purification, which the Church celebrates together with the Presentation (Lk 2:22)."
+        },
+        {
+          "id": "presentation.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "The Presentation in the Temple not only expresses the joy of the Child's consecration and the ecstasy of the aged Simeon; it also records the prophecy that Christ will be a “sign of contradiction” for Israel and that a sword will pierce his mother's heart (cf Lk 2:34-35).",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 20; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission.",
+          "excerptNote": "'cf' without a full stop is as printed."
+        }
+      ]
+    },
+    {
+      "mystery": "findingInTemple",
+      "reflectionPrompt": "Reflection prompt (not a quotation): For three days Mary and Joseph searched with sorrow. When Jesus feels far away, do I keep looking for Him?",
+      "meditations": [
+        {
+          "id": "findingInTemple.liguori",
+          "saint": "St. Alphonsus Liguori",
+          "text": "This sorrow of Mary ought, in the first place, to serve as a comfort to those souls who are desolate and do not enjoy the sweet presence they once enjoyed of their Lord. They may weep, but let them weep in peace, as Mary wept the absence of her Son.",
+          "source": "St. Alphonsus Liguori, The Glories of Mary, anonymous translation, Second American Edition (New York: Edward Dunigan and Brother, 1852), Project Gutenberg eBook #72411, Part II, Reflections on each of the Seven Dolors of Mary in particular, 'On the Third Dolor: Of the Loss of Jesus in the Temple'",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "1852 translation, public domain. Strip Project Gutenberg branding if redistributing."
+        },
+        {
+          "id": "findingInTemple.therese",
+          "saint": "St. Thérèse of Lisieux",
+          "text": "Before allowing a ray of hope to shine on my soul, Our Lord deigned to send me another most painful trial which lasted for three days. Never had I understood so well the bitter grief of Our Lady and St. Joseph when they were searching the streets of Jerusalem for the Divine Child.",
+          "source": "St. Therese of Lisieux, The Story of a Soul (L'Histoire d'une Ame), trans. Rev. T. N. Taylor, from Soeur Therese of Lisieux (London: Burns, Oates & Washbourne, 1912; 8th ed. 1922), Project Gutenberg eBook #16772, Chapter V 'Vocation of Therese'",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/16772/pg16772.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Taylor translation published 1912/1922: public domain in the US. In life+70 countries status depends on the translator's death date (verify T. N. Taylor's dates before relying on it outside the US). Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "Thérèse compares a three-day trial of her own (over her vocation) to the loss of the Child Jesus."
+        },
+        {
+          "id": "findingInTemple.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "Joy mixed with drama marks the fifth mystery, the finding of the twelve-year-old Jesus in the Temple. Here he appears in his divine wisdom as he listens and raises questions, already in effect one who “teaches”.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 20; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "baptism",
+      "reflectionPrompt": "Reflection prompt (not a quotation): The Father called Jesus His beloved Son. Do I remember that by my baptism I am a beloved child of God?",
+      "meditations": [
+        {
+          "id": "baptism.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "It was through the river Jordan that the children of Israel entered into the land of promise. Now, this is the prerogative of Christ's baptism over all other baptisms: that it is the entrance to the kingdom of God, which is signified by the land of promise; wherefore it is said (John 3:5): \"Unless a man be born again of water and the Holy Ghost, he cannot enter into the kingdom of God.\"",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 39, a. 4 ('Whether Christ should have been baptized in the Jordan?'), corpus ('I answer that'); trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4039.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale.",
+          "excerptNote": "About 73 words, slightly over the 70-word target; kept as two whole sentences."
+        },
+        {
+          "id": "baptism.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "The Baptism in the Jordan is first of all a mystery of light. Here, as Christ descends into the waters, the innocent one who became “sin” for our sake (cf. 2Cor 5:21), the heavens open wide and the voice of the Father declares him the beloved Son (cf. Mt 3:17 and parallels), while the Spirit descends on him to invest him with the mission which he is to carry out.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 21; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "weddingAtCana",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Mary told the servants to do whatever Jesus told them (John 2:5). What is He telling me to do, and what keeps me from doing it?",
+      "meditations": [
+        {
+          "id": "weddingAtCana.therese",
+          "saint": "St. Thérèse of Lisieux",
+          "text": "And at the marriage feast of Cana, when Our Lady asked her Divine Son to aid the master of the house, did He not answer that His hour had not yet come? But after the trial what a reward! Water is changed into wine, and Lazarus rises from the dead.",
+          "source": "St. Therese of Lisieux, The Story of a Soul (L'Histoire d'une Ame), trans. Rev. T. N. Taylor, from Soeur Therese of Lisieux (London: Burns, Oates & Washbourne, 1912; 8th ed. 1922), Project Gutenberg eBook #16772, Chapter VI 'A Pilgrimage to Rome'",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/16772/pg16772.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Taylor translation published 1912/1922: public domain in the US. In life+70 countries status depends on the translator's death date (verify T. N. Taylor's dates before relying on it outside the US). Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "The final clause about Lazarus refers back to the preceding sentence in the source (Our Lord delaying when told of Lazarus's illness)."
+        },
+        {
+          "id": "weddingAtCana.montfort",
+          "saint": "St. Louis-Marie Grignion de Montfort",
+          "text": "At the marriage at Cana He changed the water into wine; but it was at Mary’s humble prayer; and this was His first miracle of nature. He has begun and continued His miracles by Mary, and He will continue them to the end of ages by Mary also.",
+          "source": "St. Louis-Marie Grignion de Montfort, A Treatise on the True Devotion to the Blessed Virgin, trans. Frederick William Faber, Twelfth Edition, with a preface by Cardinal Vaughan (London: Burns & Oates; New York, Cincinnati, Chicago: Benziger Brothers; imprimatur 1904), Part I 'On Devotion to our Blessed Lady in General', chapter I 'Excellence and Necessity of Devotion to our Blessed Lady', p. 10",
+          "sourceURL": "https://archive.org/details/treatiseontruede00grig",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the scanned page image of printed p. 10 in the archive.org copy at sourceURL, not only its OCR text.",
+          "copyrightNote": "Faber's translation first published 1863 (Faber d. 1863); this Twelfth Edition printed 1904: public domain.",
+          "excerptNote": "Modern paragraph numbering around section 19 (not printed in this edition; verify)."
+        },
+        {
+          "id": "weddingAtCana.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "The revelation made directly by the Father at the Baptism in the Jordan and echoed by John the Baptist is placed upon Mary's lips at Cana, and it becomes the great maternal counsel which Mary addresses to the Church of every age: “Do whatever he tells you” (Jn 2:5).",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 21; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "proclamation",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Jesus calls everyone to repent and believe. What do I need to turn away from so I can turn toward Him?",
+      "meditations": [
+        {
+          "id": "proclamation.leo",
+          "saint": "St. Leo the Great",
+          "text": "The nature then of Christ's teaching is attested by His own holy statements: that they who wish to arrive at eternal blessedness may understand the steps of ascent to that high happiness.",
+          "source": "St. Leo the Great, Sermons, trans. Charles Lett Feltoe, in Nicene and Post-Nicene Fathers, Second Series, vol. 12 (1895), CCEL plain-text edition (NPNF2-12), Sermon XCV 'A Homily on the Beatitudes, St. Matt. v. 1-9', chapter II",
+          "sourceURL": "https://www.ccel.org/ccel/s/schaff/npnf212/cache/npnf212.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Feltoe translation 1895, public domain (CCEL lists 'Rights: Public Domain'). CCEL's original NPNF wording is used, not New Advent's revised/modernized text.",
+          "excerptNote": "Introduces the Beatitudes of the Sermon on the Mount as Christ's own teaching."
+        }
+      ]
+    },
+    {
+      "mystery": "transfiguration",
+      "reflectionPrompt": "Reflection prompt (not a quotation): The disciples saw His glory before they saw His cross. Can I trust His light when the road ahead is dark?",
+      "meditations": [
+        {
+          "id": "transfiguration.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "Now in order that anyone go straight along a road, he must have some knowledge of the end: thus an archer will not shoot the arrow straight unless he first see the target. Hence Thomas said (John 14:5): \"Lord, we know not whither Thou goest; and how can we know the way?\" Above all is this necessary when hard and rough is the road, heavy the going, but delightful the end.",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 45, a. 1 ('Whether it was fitting that Christ should be transfigured?'), corpus ('I answer that'); trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4045.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale."
+        },
+        {
+          "id": "transfiguration.leo",
+          "saint": "St. Leo the Great",
+          "text": "And in this Transfiguration the foremost object was to remove the offence of the cross from the disciple's heart, and to prevent their faith being disturbed by the humiliation of His voluntary Passion by revealing to them the excellence of His hidden dignity.",
+          "source": "St. Leo the Great, Sermons, trans. Charles Lett Feltoe, in Nicene and Post-Nicene Fathers, Second Series, vol. 12 (1895), CCEL plain-text edition (NPNF2-12), Sermon LI 'A Homily delivered on the Saturday before the Second Sunday in Lent -- on the Transfiguration, S. Matt. xvii. 1-13', chapter III",
+          "sourceURL": "https://www.ccel.org/ccel/s/schaff/npnf212/cache/npnf212.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Feltoe translation 1895, public domain (CCEL lists 'Rights: Public Domain'). CCEL's original NPNF wording is used, not New Advent's revised/modernized text.",
+          "excerptNote": "'disciple's heart' is as printed (sic; plural sense)."
+        },
+        {
+          "id": "transfiguration.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "The glory of the Godhead shines forth from the face of Christ as the Father commands the astonished Apostles to “listen to him” (cf. Lk 9:35 and parallels) and to prepare to experience with him the agony of the Passion, so as to come with him to the joy of the Resurrection and a life transfigured by the Holy Spirit.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 21; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "eucharist",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Jesus gives Himself entirely, under the appearance of bread. How can I receive Him, and give myself, more fully?",
+      "meditations": [
+        {
+          "id": "eucharist.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "Yet meanwhile in our pilgrimage He does not deprive us of His bodily presence; but unites us with Himself in this sacrament through the truth of His body and blood. Hence (John 6:57) he says: \"He that eateth My flesh, and drinketh My blood, abideth in Me, and I in him.\" Hence this sacrament is the sign of supreme charity, and the uplifter of our hope, from such familiar union of Christ with us.",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 75, a. 1 ('Whether the body of Christ be in this sacrament in very truth, or merely as in a figure or sign?'), corpus ('I answer that'); trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4075.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale.",
+          "excerptNote": "About 74 words, slightly over the 70-word target; the three sentences are kept whole rather than cut."
+        },
+        {
+          "id": "eucharist.therese",
+          "saint": "St. Thérèse of Lisieux",
+          "text": "How sweet was the first embrace of Jesus! It was indeed an embrace of love. I felt that I was loved, and I said: \"I love Thee, and I give myself to Thee for ever.\"",
+          "source": "St. Therese of Lisieux, The Story of a Soul (L'Histoire d'une Ame), trans. Rev. T. N. Taylor, from Soeur Therese of Lisieux (London: Burns, Oates & Washbourne, 1912; 8th ed. 1922), Project Gutenberg eBook #16772, Chapter IV 'First Communion and Confirmation'",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/16772/pg16772.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Taylor translation published 1912/1922: public domain in the US. In life+70 countries status depends on the translator's death date (verify T. N. Taylor's dates before relying on it outside the US). Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "Her First Communion (8 May 1884)."
+        },
+        {
+          "id": "eucharist.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "A final mystery of light is the institution of the Eucharist, in which Christ offers his body and blood as food under the signs of bread and wine, and testifies “to the end” his love for humanity (Jn 13:1), for whose salvation he will offer himself in sacrifice.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 21; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        },
+        {
+          "id": "eucharist.padre-pio",
+          "saint": "St. Pio of Pietrelcina (Padre Pio)",
+          "text": null,
+          "license": "copyrighted",
+          "verified": false,
+          "verificationNote": "Placeholder: no authoritative edition with an exact letter recipient and date was checked, so no text is given.",
+          "copyrightNote": "Letters translation is copyrighted (Edizioni Padre Pio).",
+          "suggestedSource": "Padre Pio da Pietrelcina, Letters (Epistolario), English edition published by Edizioni 'Padre Pio da Pietrelcina', San Giovanni Rotondo (Our Lady of Grace Capuchin Friary). Choose a letter on the Passion/Mass, and record recipient, exact date, and volume/page from the printed edition; copyrighted, requires permission. Do not use quote-site 'Padre Pio quotes'. No letter date is suggested here because none has been verified yet."
+        }
+      ]
+    },
+    {
+      "mystery": "agonyInGarden",
+      "reflectionPrompt": "Reflection prompt (not a quotation): In the garden Jesus gave His will over to the Father's (Luke 22:42). What fear or burden can I hand over to the Father in this decade?",
+      "meditations": [
+        {
+          "id": "agonyInGarden.newman",
+          "saint": "St. John Henry Newman",
+          "text": "See how He trembles! He falls on his knees as under a tremendous load! His flesh quivers, and at length out of its pores comes a dew. It is red, and it trickles down Him, and falls heavily on the ground. It is His precious blood, and this is His agony.",
+          "source": "John Henry Newman, Meditations and Devotions, ed. W. P. Neville (London: Longmans, Green, 1893; Newman Reader text, printed page 218), Part II 'Meditations for Eight Days', Friday ('Jesus'; on St. Luke xxii. 40-46), 4 (1)",
+          "sourceURL": "https://www.newmanreader.org/works/meditations/meditations7.html",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Newman died 1890; text first published 1893, public domain. The Newman Reader web page carries 'Copyright (c) 2007 by The National Institute for Newman Studies' for its digital edition; the quoted words are Newman's 1893 text.",
+          "excerptNote": "'on his knees' (lower-case 'his') is as printed."
+        },
+        {
+          "id": "agonyInGarden.leo",
+          "saint": "St. Leo the Great",
+          "text": "These words of the Head are the salvation of the whole Body: these words have instructed all the faithful, kindled the zeal of all the confessors, crowned all the martyrs. For who could overcome the world's hatred, the blasts of temptations, the terrors of persecutors, had not Christ, in the name of all and for all, said, to the Father, \"Thy will be done?\"",
+          "source": "St. Leo the Great, Sermons, trans. Charles Lett Feltoe, in Nicene and Post-Nicene Fathers, Second Series, vol. 12 (1895), CCEL plain-text edition (NPNF2-12), Sermon LVIII 'On the Passion, VII', chapter V",
+          "sourceURL": "https://www.ccel.org/ccel/s/schaff/npnf212/cache/npnf212.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Feltoe translation 1895, public domain (CCEL lists 'Rights: Public Domain'). CCEL's original NPNF wording is used, not New Advent's revised/modernized text.",
+          "excerptNote": "'These words' are Christ's prayer in Gethsemane, 'not as I will, but as Thou wilt' (quoted just before)."
+        },
+        {
+          "id": "agonyInGarden.therese",
+          "saint": "St. Thérèse of Lisieux",
+          "text": "Our Divine Lord asks no sacrifice beyond our strength. At times, it is true, He makes us taste to the full the bitterness of the chalice He puts to our lips. And when He demands the sacrifice of all that is dearest on earth, it is impossible without a very special grace not to cry out as He did during His Agony in the Garden: \"My Father, let this chalice pass from me!\"",
+          "source": "St. Therese of Lisieux, The Story of a Soul (L'Histoire d'une Ame), trans. Rev. T. N. Taylor, from Soeur Therese of Lisieux (London: Burns, Oates & Washbourne, 1912; 8th ed. 1922), Project Gutenberg eBook #16772, Letters to her Brother Missionaries, I (dated '1895.' as printed)",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/16772/pg16772.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Taylor translation published 1912/1922: public domain in the US. In life+70 countries status depends on the translator's death date (verify T. N. Taylor's dates before relying on it outside the US). Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "About 73 words, slightly over the 70-word target. Stops before the next sentence, which carries a footnote marker in this edition."
+        },
+        {
+          "id": "agonyInGarden.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "The sequence of meditations begins with Gethsemane, where Christ experiences a moment of great anguish before the will of the Father, against which the weakness of the flesh would be tempted to rebel. There Jesus encounters all the temptations and confronts all the sins of humanity, in order to say to the Father: “Not my will but yours be done” (Lk 22:42 and parallels).",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 22; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        },
+        {
+          "id": "agonyInGarden.faustina",
+          "saint": "St. Faustina Kowalska",
+          "text": null,
+          "license": "copyrighted",
+          "verified": false,
+          "verificationNote": "Placeholder: no authoritative edition with an exact Diary paragraph number was checked, so no text is given.",
+          "copyrightNote": "Diary translation is copyrighted (Marian Press).",
+          "suggestedSource": "Diary of Saint Maria Faustina Kowalska, 'Divine Mercy in My Soul' (Marian Press, Stockbridge, MA; (c) Congregation of Marians of the Immaculate Conception). Choose a Passion passage from the printed Diary and record the exact paragraph number from that edition; requires permission for app use (copyrighted translation). No paragraph number is suggested here because none has been verified yet."
+        },
+        {
+          "id": "agonyInGarden.padre-pio",
+          "saint": "St. Pio of Pietrelcina (Padre Pio)",
+          "text": null,
+          "license": "copyrighted",
+          "verified": false,
+          "verificationNote": "Placeholder: no authoritative edition with an exact letter recipient and date was checked, so no text is given.",
+          "copyrightNote": "Letters translation is copyrighted (Edizioni Padre Pio).",
+          "suggestedSource": "Padre Pio da Pietrelcina, Letters (Epistolario), English edition published by Edizioni 'Padre Pio da Pietrelcina', San Giovanni Rotondo (Our Lady of Grace Capuchin Friary). Choose a letter on the Passion/Mass, and record recipient, exact date, and volume/page from the printed edition; copyrighted, requires permission. Do not use quote-site 'Padre Pio quotes'. No letter date is suggested here because none has been verified yet."
+        }
+      ]
+    },
+    {
+      "mystery": "scourging",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Jesus bore pain He did not deserve, for my sake. Whose suffering can I unite to His today?",
+      "meditations": [
+        {
+          "id": "scourging.newman",
+          "saint": "St. John Henry Newman",
+          "text": "Thou wast exposed in Thy innocent body to ignominious torments, to mingled pain and shame. Thou wast stripped and fiercely scourged, Thy sacred body vibrating under the heavy flail as trees under the blast.",
+          "source": "John Henry Newman, Meditations and Devotions, ed. W. P. Neville (London: Longmans, Green, 1893; Newman Reader text, printed page 405), Part III 'Meditations on Christian Doctrine', XV 'The Holy Sacrifice', (1) 'The Mass', 1",
+          "sourceURL": "https://www.newmanreader.org/works/meditations/meditations11.html",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Newman died 1890; text first published 1893, public domain. The Newman Reader web page carries 'Copyright (c) 2007 by The National Institute for Newman Studies' for its digital edition; the quoted words are Newman's 1893 text."
+        },
+        {
+          "id": "scourging.newman-2",
+          "saint": "St. John Henry Newman",
+          "text": "When, then, He was mocked, bruised, scourged, and nailed to the Cross, she felt as keenly as if every indignity and torture inflicted on Him was struck at herself. She could have cried out in agony at every pang of His.",
+          "source": "John Henry Newman, Meditations and Devotions, ed. W. P. Neville (London: Longmans, Green, 1893; Newman Reader text, printed page 51), Part I 'Meditations on the Litany of Loreto, for the Month of May', III 'Our Lady's Dolours', (2) May 18, 'Mary is the \"Vas Insigne Devotionis,\" The Most Devout Virgin'",
+          "sourceURL": "https://www.newmanreader.org/works/meditations/meditations2.html",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Newman died 1890; text first published 1893, public domain. The Newman Reader web page carries 'Copyright (c) 2007 by The National Institute for Newman Studies' for its digital edition; the quoted words are Newman's 1893 text.",
+          "excerptNote": "Mary's compassion with her Son; covers the scourging among other sufferings."
+        },
+        {
+          "id": "scourging.faustina",
+          "saint": "St. Faustina Kowalska",
+          "text": null,
+          "license": "copyrighted",
+          "verified": false,
+          "verificationNote": "Placeholder: no authoritative edition with an exact Diary paragraph number was checked, so no text is given.",
+          "copyrightNote": "Diary translation is copyrighted (Marian Press).",
+          "suggestedSource": "Diary of Saint Maria Faustina Kowalska, 'Divine Mercy in My Soul' (Marian Press, Stockbridge, MA; (c) Congregation of Marians of the Immaculate Conception). Choose a Passion passage from the printed Diary and record the exact paragraph number from that edition; requires permission for app use (copyrighted translation). No paragraph number is suggested here because none has been verified yet."
+        }
+      ]
+    },
+    {
+      "mystery": "crowningWithThorns",
+      "reflectionPrompt": "Reflection prompt (not a quotation): The King of Kings was mocked and was silent. Can I bear an insult or a humiliation patiently today?",
+      "meditations": [
+        {
+          "id": "crowningWithThorns.augustine",
+          "saint": "St. Augustine of Hippo",
+          "text": "Jesus goes forth to them wearing the crown of thorns and the purple robe, not resplendent in kingly power, but laden with reproach; and the words are addressed to them, Behold the man!",
+          "source": "St. Augustine, Tractates (Homilies) on the Gospel of John, Tractate CXVI (on John xix. 1-16), section 2; trans. in Nicene and Post-Nicene Fathers, First Series, vol. 7 (New York: Christian Literature Publishing Co., 1888; CCEL print basis 1886), CCEL plain-text edition (NPNF1-07); translator of the later tractates in this volume: Rev. James Innes",
+          "sourceURL": "https://www.ccel.org/ccel/s/schaff/npnf107/cache/npnf107.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "NPNF translation (1888), public domain (CCEL lists 'Rights: Public Domain'). CCEL's original wording is used, not New Advent's revised text."
+        },
+        {
+          "id": "crowningWithThorns.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "In His head He suffered from the crown of piercing thorns; in His hands and feet, from the fastening of the nails; on His face from the blows and spittle; and from the lashes over His entire body.",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 46, a. 5 ('Whether Christ endured all suffering?'), corpus ('I answer that'); trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4046.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale.",
+          "excerptNote": "Also fits the Scourging (closing clause)."
+        }
+      ]
+    },
+    {
+      "mystery": "carryingCross",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Simon helped Jesus carry the cross. Whose cross can I help carry this week?",
+      "meditations": [
+        {
+          "id": "carryingCross.therese",
+          "saint": "St. Thérèse of Lisieux",
+          "text": "Jesus offers you the cross, a very heavy cross, and you are afraid of not being able to carry it without giving way. Why? Our Beloved Himself fell three times on the way to Calvary, and why should we not imitate our Spouse?",
+          "source": "St. Therese of Lisieux, The Story of a Soul (L'Histoire d'une Ame), trans. Rev. T. N. Taylor, from Soeur Therese of Lisieux (London: Burns, Oates & Washbourne, 1912; 8th ed. 1922), Project Gutenberg eBook #16772, Letters of Soeur Therese to her Sister Celine, III (dated 'January, 1889.')",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/16772/pg16772.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Taylor translation published 1912/1922: public domain in the US. In life+70 countries status depends on the translator's death date (verify T. N. Taylor's dates before relying on it outside the US). Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "Salutation 'MY DEAR LITTLE CELINE,--' that opens the letter is omitted; the excerpt starts at the first word of the letter's first sentence after it."
+        },
+        {
+          "id": "carryingCross.liguori",
+          "saint": "St. Alphonsus Liguori",
+          "text": "And shall we not feel compassion to see Mary following her immaculate Lamb, as they are leading him to death? Let us then pity her, and endeavor also ourselves to accompany her Son and herself, bearing with patience the cross which the Lord imposes on us.",
+          "source": "St. Alphonsus Liguori, The Glories of Mary, anonymous translation, Second American Edition (New York: Edward Dunigan and Brother, 1852), Project Gutenberg eBook #72411, Part II, Reflections on each of the Seven Dolors of Mary in particular, 'On the Fourth Dolor: Of the Meeting of Mary with Jesus, when he went to Death'",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "1852 translation, public domain. Strip Project Gutenberg branding if redistributing."
+        },
+        {
+          "id": "carryingCross.newman",
+          "saint": "St. John Henry Newman",
+          "text": "A STRONG, and therefore heavy Cross, for it is strong enough to bear Him on it when He arrives at Calvary, is placed upon His torn shoulders. He receives it gently and meekly, nay, with gladness of heart, for it is to be the salvation of mankind.",
+          "source": "John Henry Newman, Meditations and Devotions, ed. W. P. Neville (London: Longmans, Green, 1893; Newman Reader text, printed page 131), Part II, 'Meditations on the Stations of the Cross', The Second Station, 'Jesus receives His Cross'",
+          "sourceURL": "https://www.newmanreader.org/works/meditations/meditations5.html",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Newman died 1890; text first published 1893, public domain. The Newman Reader web page carries 'Copyright (c) 2007 by The National Institute for Newman Studies' for its digital edition; the quoted words are Newman's 1893 text.",
+          "excerptNote": "'A STRONG' is the printed small-capitals opening of the meditation; an app may render it as 'A strong'."
+        },
+        {
+          "id": "carryingCross.padre-pio",
+          "saint": "St. Pio of Pietrelcina (Padre Pio)",
+          "text": null,
+          "license": "copyrighted",
+          "verified": false,
+          "verificationNote": "Placeholder: no authoritative edition with an exact letter recipient and date was checked, so no text is given.",
+          "copyrightNote": "Letters translation is copyrighted (Edizioni Padre Pio).",
+          "suggestedSource": "Padre Pio da Pietrelcina, Letters (Epistolario), English edition published by Edizioni 'Padre Pio da Pietrelcina', San Giovanni Rotondo (Our Lady of Grace Capuchin Friary). Choose a letter on the Passion/Mass, and record recipient, exact date, and volume/page from the printed edition; copyrighted, requires permission. Do not use quote-site 'Padre Pio quotes'. No letter date is suggested here because none has been verified yet."
+        }
+      ]
+    },
+    {
+      "mystery": "crucifixion",
+      "reflectionPrompt": "Reflection prompt (not a quotation): From the cross Jesus forgave those who were killing Him. Whom do I need to forgive?",
+      "meditations": [
+        {
+          "id": "crucifixion.therese",
+          "saint": "St. Thérèse of Lisieux",
+          "text": "My heart was torn with grief to see that Precious Blood falling to the ground, and no one caring to treasure It as It fell, and I resolved to remain continually in spirit at the foot of the Cross, that I might receive the Divine Dew of Salvation and pour it forth upon souls.",
+          "source": "St. Therese of Lisieux, The Story of a Soul (L'Histoire d'une Ame), trans. Rev. T. N. Taylor, from Soeur Therese of Lisieux (London: Burns, Oates & Washbourne, 1912; 8th ed. 1922), Project Gutenberg eBook #16772, Chapter V 'Vocation of Therese'",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/16772/pg16772.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Taylor translation published 1912/1922: public domain in the US. In life+70 countries status depends on the translator's death date (verify T. N. Taylor's dates before relying on it outside the US). Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "Prompted by a picture of Christ crucified slipping from her missal."
+        },
+        {
+          "id": "crucifixion.newman",
+          "saint": "St. John Henry Newman",
+          "text": "The worst is over. The Holiest is dead and departed. The most tender, the most affectionate, the holiest of the sons of men is gone. Jesus is dead, and with His death my sin shall die.",
+          "source": "John Henry Newman, Meditations and Devotions, ed. W. P. Neville (London: Longmans, Green, 1893; Newman Reader text, printed page 148), Part II, 'Meditations on the Stations of the Cross', The Twelfth Station, 'Jesus dies upon the Cross'",
+          "sourceURL": "https://www.newmanreader.org/works/meditations/meditations5.html",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Newman died 1890; text first published 1893, public domain. The Newman Reader web page carries 'Copyright (c) 2007 by The National Institute for Newman Studies' for its digital edition; the quoted words are Newman's 1893 text."
+        },
+        {
+          "id": "crucifixion.newman-2",
+          "saint": "St. John Henry Newman",
+          "text": "True, in His Agony she was agonised; in His Passion she suffered a fellow-passion; she was crucified with Him; the spear that pierced His breast pierced through her spirit.",
+          "source": "John Henry Newman, Meditations and Devotions, ed. W. P. Neville (London: Longmans, Green, 1893; Newman Reader text, printed page 53), Part I 'Meditations on the Litany of Loreto, for the Month of May', III 'Our Lady's Dolours', (3) May 19, 'Mary is the \"Vas Honorabile,\" the Vessel of Honour'",
+          "sourceURL": "https://www.newmanreader.org/works/meditations/meditations2.html",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Newman died 1890; text first published 1893, public domain. The Newman Reader web page carries 'Copyright (c) 2007 by The National Institute for Newman Studies' for its digital edition; the quoted words are Newman's 1893 text.",
+          "excerptNote": "Mary at the Cross; 'True,' opens the sentence in the source."
+        },
+        {
+          "id": "crucifixion.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "The sorrowful mysteries help the believer to relive the death of Jesus, to stand at the foot of the Cross beside Mary, to enter with her into the depths of God's love for man and to experience all its life-giving power.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 22; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        },
+        {
+          "id": "crucifixion.faustina",
+          "saint": "St. Faustina Kowalska",
+          "text": null,
+          "license": "copyrighted",
+          "verified": false,
+          "verificationNote": "Placeholder: no authoritative edition with an exact Diary paragraph number was checked, so no text is given.",
+          "copyrightNote": "Diary translation is copyrighted (Marian Press).",
+          "suggestedSource": "Diary of Saint Maria Faustina Kowalska, 'Divine Mercy in My Soul' (Marian Press, Stockbridge, MA; (c) Congregation of Marians of the Immaculate Conception). Choose a Passion passage from the printed Diary and record the exact paragraph number from that edition; requires permission for app use (copyrighted translation). No paragraph number is suggested here because none has been verified yet."
+        },
+        {
+          "id": "crucifixion.padre-pio",
+          "saint": "St. Pio of Pietrelcina (Padre Pio)",
+          "text": null,
+          "license": "copyrighted",
+          "verified": false,
+          "verificationNote": "Placeholder: no authoritative edition with an exact letter recipient and date was checked, so no text is given.",
+          "copyrightNote": "Letters translation is copyrighted (Edizioni Padre Pio).",
+          "suggestedSource": "Padre Pio da Pietrelcina, Letters (Epistolario), English edition published by Edizioni 'Padre Pio da Pietrelcina', San Giovanni Rotondo (Our Lady of Grace Capuchin Friary). Choose a letter on the Passion/Mass, and record recipient, exact date, and volume/page from the printed edition; copyrighted, requires permission. Do not use quote-site 'Padre Pio quotes'. No letter date is suggested here because none has been verified yet."
+        }
+      ]
+    },
+    {
+      "mystery": "resurrection",
+      "reflectionPrompt": "Reflection prompt (not a quotation): The tomb is empty: death does not have the last word. Where do I need Easter hope right now?",
+      "meditations": [
+        {
+          "id": "resurrection.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "Fifthly, in order to complete the work of our salvation: because, just as for this reason did He endure evil things in dying that He might deliver us from evil, so was He glorified in rising again in order to advance us towards good things; according to Romans 4:25: \"He was delivered up for our sins, and rose again for our justification.\"",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 53, a. 1 ('Whether it was necessary for Christ to rise again?'), corpus ('I answer that'); trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4053.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale.",
+          "excerptNote": "Last of five numbered reasons; begins 'Fifthly'."
+        },
+        {
+          "id": "resurrection.leo",
+          "saint": "St. Leo the Great",
+          "text": "And so, dearly-beloved, if we unhesitatingly believe with the heart what we profess with the mouth, in Christ we are crucified, we are dead, we are buried; on the very third day, too, we are raised.",
+          "source": "St. Leo the Great, Sermons, trans. Charles Lett Feltoe, in Nicene and Post-Nicene Fathers, Second Series, vol. 12 (1895), CCEL plain-text edition (NPNF2-12), Sermon LXXII 'On the Lord's Resurrection, II', chapter III",
+          "sourceURL": "https://www.ccel.org/ccel/s/schaff/npnf212/cache/npnf212.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Feltoe translation 1895, public domain (CCEL lists 'Rights: Public Domain'). CCEL's original NPNF wording is used, not New Advent's revised/modernized text."
+        },
+        {
+          "id": "resurrection.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "Contemplating the Risen One, Christians rediscover the reasons for their own faith (cf. 1Cor 15:14) and relive the joy not only of those to whom Christ appeared – the Apostles, Mary Magdalene and the disciples on the road to Emmaus – but also the joy of Mary, who must have had an equally intense experience of the new life of her glorified Son.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 23; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "ascension",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Jesus returned to the Father and sent His disciples out. Am I living as someone who is sent?",
+      "meditations": [
+        {
+          "id": "ascension.leo",
+          "saint": "St. Leo the Great",
+          "text": "Since then Christ's Ascension is our uplifting, and the hope of the Body is raised, whither the glory of the Head has gone before, let us exult, dearly-beloved, with worthy joy and delight in the loyal paying of thanks.",
+          "source": "St. Leo the Great, Sermons, trans. Charles Lett Feltoe, in Nicene and Post-Nicene Fathers, Second Series, vol. 12 (1895), CCEL plain-text edition (NPNF2-12), Sermon LXXIII 'On the Lord's Ascension, I', chapter IV",
+          "sourceURL": "https://www.ccel.org/ccel/s/schaff/npnf212/cache/npnf212.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Feltoe translation 1895, public domain (CCEL lists 'Rights: Public Domain'). CCEL's original NPNF wording is used, not New Advent's revised/modernized text.",
+          "excerptNote": "Single sentence; the next sentence would push the excerpt past 70 words."
+        },
+        {
+          "id": "ascension.aquinas",
+          "saint": "St. Thomas Aquinas",
+          "text": "First, He prepared the way for our ascent into heaven, according to His own saying (John 14:2): \"I go to prepare a place for you,\" and the words of Micheas (2:13), \"He shall go up that shall open the way before them.\" For since He is our Head the members must follow whither the Head has gone: hence He said (John 14:3): \"That where I am, you also may be.\"",
+          "source": "St. Thomas Aquinas, Summa Theologiae, III, q. 57, a. 6 ('Whether Christ's Ascension is the cause of our salvation?'), corpus ('I answer that'); trans. Fathers of the English Dominican Province, Second and Revised Edition, 1920 (New Advent online edition)",
+          "sourceURL": "https://www.newadvent.org/summa/4057.htm",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Underlying 1920 English Dominican translation is public domain in the US (pre-1930). New Advent states 'Online Edition Copyright (c) 2017 by Kevin Knight' for its web edition; only the 1920 wording is used here, but credit the 1920 translation rather than reproducing New Advent's edition wholesale.",
+          "excerptNote": "First of several numbered reasons; begins 'First'."
+        }
+      ]
+    },
+    {
+      "mystery": "descentOfHolySpirit",
+      "reflectionPrompt": "Reflection prompt (not a quotation): The Spirit turned frightened disciples into bold witnesses. Which gift of the Holy Spirit do I most need?",
+      "meditations": [
+        {
+          "id": "descentOfHolySpirit.leo",
+          "saint": "St. Leo the Great",
+          "text": "Let the minds of the faithful rejoice, that throughout the world One God, Father, Son, and Holy Ghost, is praised by the confession of all tongues, and that that sign of His Presence, which appeared in the likeness of fire, is still perpetuated in His work and gift.",
+          "source": "St. Leo the Great, Sermons, trans. Charles Lett Feltoe, in Nicene and Post-Nicene Fathers, Second Series, vol. 12 (1895), CCEL plain-text edition (NPNF2-12), Sermon LXXV 'On Whitsuntide, I', chapter V",
+          "sourceURL": "https://www.ccel.org/ccel/s/schaff/npnf212/cache/npnf212.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Feltoe translation 1895, public domain (CCEL lists 'Rights: Public Domain'). CCEL's original NPNF wording is used, not New Advent's revised/modernized text."
+        },
+        {
+          "id": "descentOfHolySpirit.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "At the centre of this unfolding sequence of the glory of the Son and the Mother, the Rosary sets before us the third glorious mystery, Pentecost, which reveals the face of the Church as a family gathered together with Mary, enlivened by the powerful outpouring of the Spirit and ready for the mission of evangelization.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 23; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    },
+    {
+      "mystery": "assumption",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Mary, body and soul, is with her Son. Do I live with heaven in view, as my true home?",
+      "meditations": [
+        {
+          "id": "assumption.newman",
+          "saint": "St. John Henry Newman",
+          "text": "Die she must, and die she did, as her Divine Son died, for He was man; but various reasons have approved themselves to holy writers, why, although her body was for a while separated from her soul and consigned to the tomb, yet it did not remain there, but was speedily united to her soul again, and raised by our Lord to a new and eternal life of heavenly glory.",
+          "source": "John Henry Newman, Meditations and Devotions, ed. W. P. Neville (London: Longmans, Green, 1893; Newman Reader text, printed page 62), Part I 'Meditations on the Litany of Loreto, for the Month of May', IV 'On the Assumption', (1) May 24, 'Mary is the \"Sancta Dei Genetrix,\" the Holy Mother of God'",
+          "sourceURL": "https://www.newmanreader.org/works/meditations/meditations3.html",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Newman died 1890; text first published 1893, public domain. The Newman Reader web page carries 'Copyright (c) 2007 by The National Institute for Newman Studies' for its digital edition; the quoted words are Newman's 1893 text."
+        },
+        {
+          "id": "assumption.liguori",
+          "saint": "St. Alphonsus Liguori",
+          "text": "Now, behold, Mary leaves the earth, and calling to mind the many graces she had there received from her Lord, she looks at it at the same time both with affection and compassion, leaving in it so many poor children, in the midst of so many miseries and dangers. And now Jesus offers her his hand, and the blessed mother rises in the air and passes beyond the clouds and spheres.",
+          "source": "St. Alphonsus Liguori, The Glories of Mary, anonymous translation, Second American Edition (New York: Edward Dunigan and Brother, 1852), Project Gutenberg eBook #72411, Part II, Discourse VIII 'Another Discourse on the Assumption of Mary', First Point",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "1852 translation, public domain. Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "Liguori's devotional, imaginative depiction of the Assumption (not a doctrinal statement)."
+        },
+        {
+          "id": "assumption.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "In the Ascension, Christ was raised in glory to the right hand of the Father, while Mary herself would be raised to that same glory in the Assumption, enjoying beforehand, by a unique privilege, the destiny reserved for all the just at the resurrection of the dead.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 23; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission.",
+          "excerptNote": "Also names the Ascension."
+        }
+      ]
+    },
+    {
+      "mystery": "coronation",
+      "reflectionPrompt": "Reflection prompt (not a quotation): Mary is crowned Queen, and she remains our Mother. What do I want to entrust to her today?",
+      "meditations": [
+        {
+          "id": "coronation.liguori",
+          "saint": "St. Alphonsus Liguori",
+          "text": "Let those who can, comprehend with what love the most holy Trinity blessed her. Let them comprehend what a welcome the eternal Father gave to his daughter, the Son to his mother, the Holy Spirit to his spouse. The Father crowns her by sharing with her his power, the Son his wisdom, the Holy Spirit his love.",
+          "source": "St. Alphonsus Liguori, The Glories of Mary, anonymous translation, Second American Edition (New York: Edward Dunigan and Brother, 1852), Project Gutenberg eBook #72411, Part II, Discourse VIII 'Another Discourse on the Assumption of Mary', end of First Point",
+          "sourceURL": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
+          "license": "public domain",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "1852 translation, public domain. Strip Project Gutenberg branding if redistributing.",
+          "excerptNote": "Devotional depiction of Mary's crowning by the Trinity."
+        },
+        {
+          "id": "coronation.john-paul-ii",
+          "saint": "St. John Paul II",
+          "text": "Crowned in glory – as she appears in the last glorious mystery – Mary shines forth as Queen of the Angels and Saints, the anticipation and the supreme realization of the eschatological state of the Church.",
+          "source": "St. John Paul II, Apostolic Letter Rosarium Virginis Mariae (16 October 2002), 23; official English translation (vatican.va)",
+          "sourceURL": "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html",
+          "license": "short attributed excerpt",
+          "verified": true,
+          "verificationNote": "Checked word for word against the text at sourceURL, downloaded 1 October 2026: identical apart from whitespace, curly quotes, and dash style.",
+          "copyrightNote": "Copyright (c) Libreria Editrice Vaticana. Each excerpt is 1-2 sentences, but the many RVM excerpts together cover a sizeable share of sections 20-23; for a commercial app use only a subset or obtain LEV permission."
+        }
+      ]
+    }
   ]
 }

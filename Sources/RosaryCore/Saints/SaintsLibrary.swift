@@ -10,13 +10,42 @@ public struct SaintMeditation: Codable, Hashable, Identifiable, Sendable {
     /// Work, chapter/section/paragraph or date, and translation.
     public var source: String?
     public var sourceURL: String?
-    /// "public domain" or "short attributed excerpt" (or "unknown" for placeholders).
+    /// "public domain" or "short attributed excerpt"; placeholders may say "copyrighted" or "unknown".
     public var license: String
     public var verified: Bool
     public var verificationNote: String?
+    /// Licensing details for whoever ships the app. Not shown to people praying.
     public var copyrightNote: String?
+    /// Where the excerpt sits in the source, e.g. that it begins mid-paragraph.
+    public var excerptNote: String?
     /// For placeholders: where a human might look for a suitable text.
     public var suggestedSource: String?
+
+    public init(
+        id: String,
+        saint: String,
+        text: String?,
+        source: String?,
+        sourceURL: String? = nil,
+        license: String,
+        verified: Bool,
+        verificationNote: String? = nil,
+        copyrightNote: String? = nil,
+        excerptNote: String? = nil,
+        suggestedSource: String? = nil
+    ) {
+        self.id = id
+        self.saint = saint
+        self.text = text
+        self.source = source
+        self.sourceURL = sourceURL
+        self.license = license
+        self.verified = verified
+        self.verificationNote = verificationNote
+        self.copyrightNote = copyrightNote
+        self.excerptNote = excerptNote
+        self.suggestedSource = suggestedSource
+    }
 
     public var isDisplayable: Bool {
         verified && !(text?.isEmpty ?? true) && !(source?.isEmpty ?? true)

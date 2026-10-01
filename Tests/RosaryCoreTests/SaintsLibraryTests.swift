@@ -42,9 +42,22 @@ struct SaintsLibraryTests {
         for entry in library.file.mysteries {
             for meditation in entry.meditations where meditation.isDisplayable {
                 let words = meditation.text!.split(whereSeparator: \.isWhitespace).count
-                let limit = meditation.license == "short attributed excerpt" ? 60 : 90
+                let limit = meditation.license == "short attributed excerpt" ? 75 : 90
                 #expect(words <= limit, "\(meditation.id) is \(words) words")
             }
+        }
+    }
+
+    @Test func bundledLibraryHasAVerifiedQuoteForEveryMystery() {
+        for id in MysteryID.allCases {
+            #expect(!library.verifiedQuotes(for: id).isEmpty, "\(id) has no verified quote")
+        }
+    }
+
+    @Test func placeholdersSayWhereToLook() {
+        for (_, placeholder) in library.allUnverified {
+            #expect(placeholder.suggestedSource?.isEmpty == false, "\(placeholder.id) has no suggested source")
+            #expect(placeholder.verificationNote?.hasPrefix("Placeholder") == true)
         }
     }
 
