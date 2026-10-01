@@ -12,13 +12,16 @@ It is built with SwiftPM and [xtool](https://xtool.sh) so that it can be develop
 | Full Rosary (opening prayers, five decades, closing prayers), all four mystery sets, weekday schedule with optional seasonal Sundays | Done |
 | Family mode: editable members, a leader per decade, next leader shown and announced, rotation remembered across sessions | Done |
 | Saints library: 20 mysteries, 56 verified quotations, 7 placeholders | Done; see [docs/CONTENT_TODO.md](docs/CONTENT_TODO.md) |
+| Tracking mode shows the mystery's meditation for the whole decade | Done |
+| Narration: best installed voice picked automatically, calm pacing with pauses, voice picker with previews | Done |
+| Recorded prayers can replace the synthesized voice, part by part | Ready; no recordings yet, see [docs/RECORDINGS.md](docs/RECORDINGS.md) |
 | Habits: streak, one-line journal, intentions, plain-text export | Done |
 | Large Dynamic Type, dark (default) and light, high contrast, VoiceOver actions | Done |
-| `swift test` on Linux | 94 tests passing |
+| `swift test` on Linux | 137 tests passing |
 | iOS app target compiled for arm64 against the iPhoneOS 26.5 SDK on Linux | Passing (`scripts/ios-compile-check.sh`) |
-| Signed build installed on a real iPhone | **Not yet done.** This needs the owner's build machine, see [Build verification so far](#build-verification-so-far) |
+| Signed build installed on a real iPhone | Done by the owner, on an iPhone 11 |
 
-Because the app hasn't run on a device yet, the parts that only exist on iOS (microphone, speech recogniser, narration voice, haptics, audio interruptions) are compiled and type-checked but untested. Thresholds such as the silence windows in `SessionTiming` will probably need tuning once it's in hand.
+The meditation panel and the new narration were built after that first try on the iPhone, so like the rest of the iOS layer they are compiled and type-checked on Linux but haven't been run on a device yet. Thresholds such as the silence windows in `SessionTiming`, and the pauses between spoken phrases in `SpeechPacing`, may need tuning in use.
 
 ## Features
 
@@ -29,6 +32,8 @@ Because the app hasn't run on a device yet, the parts that only exist on iOS (mi
 - **Family mode.** Add, rename, remove, and reorder members. Each decade has a leader. When a decade ends, the next leader's name fills the screen, with "leads the next decade" underneath, and is announced aloud. The app remembers who should start next time.
 - **Mysteries for every day.** Monday and Saturday Joyful, Tuesday and Friday Sorrowful, Wednesday and Sunday Glorious, Thursday Luminous. Optionally, Sundays of Advent and Christmastide are Joyful and Sundays of Lent Sorrowful. You can always pick a different set or a single decade.
 - **Saints for each mystery.** A short verified quotation (rotating by day) or, where none is verified, a reflection prompt clearly marked as written for the app and not a quotation.
+- **Meditation while you pray.** In Tracking mode, a panel above the prayer keeps the current mystery's scripture, fruit, and meditation on screen through the decade. "Another meditation" steps through every verified quotation for that mystery, then the reflection prompt. The panel never takes more than half the space between the header and the controls: a long meditation scrolls inside it, so the bead counter and listening status stay visible. Hide or show it from the panel or in Settings; the choice is remembered.
+- **A natural, unhurried narrator.** The app reads with the best English voice installed on the phone: Premium first, then Enhanced, then Standard, preferring your region's accent and skipping the robotic legacy and novelty voices. Prayers are spoken phrase by phrase at a calm pace, with short pauses at semicolons and between sentences. Settings › Narrator voice lists every installed voice with a preview, and explains how to download Premium and Enhanced voices; pace and pitch have their own sliders.
 - **Habits.** Daily streak, a one-line journal note after each session, intentions you can offer and mark answered, and a plain-text export via the share sheet.
 
 ## Build and install on an iPhone (free Apple account)
@@ -90,7 +95,7 @@ The first time, iOS refuses to open an app from an untrusted developer. Go to **
 
 - Allow the microphone and speech recognition when asked. Both prompts say that audio stays on the phone.
 - Voice tracking needs Apple's **on-device** English speech model. If the app says it isn't installed, turn on **Settings › General › Keyboard › Enable Dictation** (with English as a keyboard language) and wait for the download. Rosary never falls back to server-based recognition; until the model is there, tap to move through the prayers.
-- For the best narration voice, download an enhanced or premium English voice in **Settings › Accessibility › Spoken Content › Voices**, then choose it in Rosary's Settings.
+- For the most natural narration, download a Premium or Enhanced English voice in **Settings › Accessibility › Spoken Content › Voices › English** (free, and it works offline). Rosary picks it up automatically; to choose a different one, use **Settings › Narrator voice** in Rosary.
 
 ### Free account limits
 
@@ -113,7 +118,7 @@ All of the app's logic lives in `RosaryCore`, a pure-Swift target with no UIKit,
 
 ```bash
 swift build
-swift test              # 94 tests
+swift test              # 137 tests
 ```
 
 The iOS layer (`Sources/Rosary`) is wrapped in `#if os(iOS)`, so on Linux it compiles to an empty module. To check it properly without a Mac, compile both targets for arm64 iOS against an iPhoneOS SDK:
@@ -137,19 +142,27 @@ Sources/RosaryCore/               pure Swift, tested on Linux
   Plan/                           the ordered steps of a session (single decade, five decades, full Rosary)
   Matching/                       text normalisation, approximate phrase matching, AnchorDetector
   Session/                        SessionEngine (deterministic state machine) and SessionController
+  Narration/                      what is said aloud, phrase pacing, recordings, voice ranking, playback order
   Family/, Habits/                rotation policies, streaks, journal export, intentions
   Persistence/                    AppModel, settings, JSON files in Application Support
-  Saints/, Resources/             saints library and saints_meditations.json
+  Saints/, Resources/             saints library, saints_meditations.json, Recordings/
 Sources/Rosary/                   SwiftUI app, iOS only
-  Services/                       on-device SFSpeechRecognizer, AVSpeechSynthesizer, haptics, audio session
+  Services/                       on-device SFSpeechRecognizer, speech and recording playback, voices, haptics, audio session
   Session/                        the prayer screen and the end-of-session summary
-  Screens/, Components/           Home, Intentions, Journal, Saints, Settings; shared views and theme
+  Screens/, Components/           Home, Intentions, Journal, Saints, Settings, Narrator voice; shared views and theme
 Tests/RosaryCoreTests/            Swift Testing suites, including scripted-transcript runs
 docs/CONTENT_TODO.md              unverified saint slots and licensing notes
+docs/RECORDINGS.md                every recording slot, its file name, and the exact words
 scripts/                          iOS compile check, icon generator
 ```
 
 `SessionEngine` turns events (a transcript update, a tap, narration finished, a clock tick) into effects (speak this, listen with this epoch, play a haptic, advance). It takes timestamps as input and never reads the clock, so the tests drive whole sessions from scripted transcripts. Those scripts include partial results, recogniser restarts, misheard words, and people talking over the narrator, and the tests check exactly when and why each step advanced. The iOS services implement small protocols declared in `RosaryCore` (`Session/Services.swift`), so the same engine runs with the real speech recogniser on the phone.
+
+Narration goes through the same kind of seam. The engine emits a `Narration`: a list of parts, where fixed wording (a prayer's leader part, an intention, a mystery announcement) is tagged with a `NarrationClip` and names are plain text. `NarrationPlanner` turns each part into either a recording, if one is bundled for that clip, or paced phrases for the voice (`SpeechPacing`). `NarrationSequencer` plays the items in order through a `NarrationOutput`, which on the phone is `SpeechOutput` (AVSpeechSynthesizer and AVAudioPlayer), and reports back to the engine once. If a recording can't be played, the voice reads that part instead. `VoiceCatalog` ranks the installed voices. All of this except `SpeechOutput` is in `RosaryCore` and tested on Linux.
+
+## Recorded prayers
+
+Any fixed wording can be replaced by a real recording without code changes. Name the file after its slot (for example `prayer.hailMary.m4a`, `prayer.gloryBe.holyGhost.m4a`, `intention.faith.m4a`, `mystery.scourging.m4a`; `m4a`, `caf`, `wav`, `aiff`, and `mp3` all work), put it in `Sources/RosaryCore/Resources/Recordings/`, and rebuild. Parts without a recording keep using the voice, so a set can be recorded a few files at a time. [docs/RECORDINGS.md](docs/RECORDINGS.md) lists all 34 slots with the exact words to record; a test keeps that list in step with the prayer texts. Nothing is downloaded and no cloud voice is used.
 
 Data is stored as JSON in the app's Application Support folder: `settings.json`, `sessions.json`, and `intentions.json`. A missing or corrupt file falls back to defaults instead of crashing.
 
@@ -165,9 +178,9 @@ Quotations are held to strict rules: every one is the saint's own words, copied 
 
 ## Build verification so far
 
-The development environment for this repo is a Linux VM without an Apple ID, so a signed build hasn't been made yet. This is what was run there:
+The development environment for this repo is a Linux VM without an Apple ID, so signed builds are made on the owner's machine (the first one has been installed on an iPhone 11). This is what was run in the VM:
 
-1. `swift test`: 94 tests pass on Linux (Swift 6.4).
+1. `swift test`: 137 tests pass on Linux (Swift 6.4).
 2. `scripts/ios-compile-check.sh` against an iPhoneOS 26.5 SDK: both `RosaryCore` (Swift 6 language mode) and the SwiftUI app (Swift 5 mode) compile to arm64 iOS 17 object files with no warnings from the project's sources, and the `@main` entry point is present.
 3. `xtool dev build` (xtool 1.20.1):
    - Run non-interactively, it crashed immediately with `epoll_ctl(...): Operation not permitted` (see Troubleshooting).
@@ -185,7 +198,7 @@ The development environment for this repo is a Linux VM without an Apple ID, so 
      It stopped there, because downloading Xcode needs an Apple ID sign-in. On a machine where `xtool setup` has been done, `xtool dev build` continues to a full `.app`.
 4. Linking was also tried with the `ld64.lld` that ships with the Swift toolchain, but that build of lld refuses to link for the iOS platform, so linking and signing are left to xtool.
 
-The first real check is therefore `xtool dev run --usb` on the owner's build machine.
+To try the latest changes, pull and run `xtool dev run --usb` again on the owner's build machine.
 
 ## Decisions for the owner
 
@@ -193,6 +206,6 @@ The first real check is therefore `xtool dev run --usb` on the owner's build mac
 2. **Thérèse translation.** The 1912 T. N. Taylor translation is public domain in the US; elsewhere it depends on the translator's death date, which hasn't been checked.
 3. **Padre Pio and St. Faustina.** Their English texts are copyrighted (Edizioni Padre Pio; Marian Press). Seven placeholder slots are waiting: ask for permission, or delete the slots.
 4. **Bundle ID.** `com.lojo.Rosary` in `xtool.yml`. Change it now if you want something else; changing it later creates a new app on the phone without the old data.
-5. **Defaults.** Guided mode, one decade, dark appearance, "Holy Spirit" (with a "Holy Ghost" option), seasonal Sundays off, the opening faith/hope/charity intentions on, a medium (8-second) pause after each mystery announcement, and narration slightly slower than the system rate. Family mode starts off, with placeholder members "Dad" and "Mom".
+5. **Defaults.** Guided mode, one decade, dark appearance, "Holy Spirit" (with a "Holy Ghost" option), seasonal Sundays off, the opening faith/hope/charity intentions on, a medium (8-second) pause after each mystery announcement, the meditation panel open in tracking mode, and narration with the best installed voice at a calm pace: rate 0.46 on iOS's 0-to-1 scale, where 0.5 is normal speed, and pitch 0.95, a touch below the voice's natural pitch. Settings saved at the old default pace (0.42) move to the new one; a pace someone chose is kept. Family mode starts off, with placeholder members "Dad" and "Mom".
 6. **What counts toward the streak.** A session is saved to history (and counts for the streak) only if at least one full decade was prayed; ending earlier saves nothing.
 7. **Optional prayers not included.** The closing has the Hail Holy Queen, the versicle, the Rosary prayer ("O God, whose only-begotten Son…"), and the Sign of the Cross. Some families add the St. Michael prayer or prayers for the Holy Father's intentions; neither is in the app yet.
