@@ -137,6 +137,20 @@ struct AppModelTests {
         #expect(model.nextStarter?.name == "Dad")
     }
 
+    @Test func oneDecadeSessionsSuggestTheNextDecade() {
+        let model = makeModel()
+        #expect(model.suggestedDecade(for: .luminous) == 1)
+        var setup = model.defaultSetup()
+        setup.decade = 5
+        model.record(model.prepare(setup), completedDecades: [5], completedAll: true)
+        #expect(model.suggestedDecade(for: .luminous) == 1)
+        setup.decade = 2
+        clock.now = clock.now.addingTimeInterval(60)
+        model.record(model.prepare(setup), completedDecades: [2], completedAll: true)
+        #expect(model.defaultSetup().decade == 3)
+        #expect(model.suggestedDecade(for: .joyful) == 1)
+    }
+
     @Test func meditationPauseSetsAnnouncementHold() {
         let model = makeModel()
         model.update { $0.meditationPause = 15 }

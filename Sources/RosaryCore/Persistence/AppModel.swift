@@ -130,11 +130,20 @@ public final class AppModel {
 
     // MARK: Sessions
 
+    /// For one-decade sessions: the decade after the last one prayed from this set.
+    public func suggestedDecade(for set: MysterySet) -> Int {
+        let last = sessions
+            .filter { $0.mysterySet == set && !$0.decadesCompleted.isEmpty }
+            .max { $0.startedAt < $1.startedAt }
+        guard let last, case .singleDecade(let decade) = last.scope else { return 1 }
+        return decade % 5 + 1
+    }
+
     public func defaultSetup() -> SessionSetup {
         SessionSetup(
             mode: settings.defaultMode,
             length: settings.defaultLength,
-            decade: 1,
+            decade: suggestedDecade(for: todaysSet),
             mysterySet: todaysSet,
             family: settings.family.isEnabled && !settings.family.members.isEmpty,
             starterID: nextStarter?.id
