@@ -4,6 +4,7 @@ import SwiftUI
 
 struct HomeView: View {
     let model: AppModel
+    let content: PrayerContent?
     let onBegin: (SessionSetup) -> Void
 
     @State private var setup: SessionSetup?
@@ -17,9 +18,21 @@ struct HomeView: View {
                     .padding(.bottom, 32)
             }
         }
-        .background(Theme.background.ignoresSafeArea())
+        .background(CandleBackground())
         .navigationTitle("Rosary")
         .toolbarBackground(Theme.background, for: .navigationBar)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            // Pinned above the tab bar. A Begin button at the bottom of the
+            // scroll ends up under the iOS 26 tab bar, so the UI test's tap
+            // never starts the prayer.
+            if let setup {
+                beginButton(setup)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                    .padding(.bottom, 8)
+                    .background(Theme.background)
+            }
+        }
         .onAppear { refresh() }
         .onChange(of: model.sessions.count) { refresh(afterSession: true) }
         .onChange(of: model.settings.family) { old, new in
@@ -36,12 +49,13 @@ struct HomeView: View {
     private func content(_ setup: Binding<SessionSetup>) -> some View {
         VStack(alignment: .leading, spacing: 22) {
             todayHeader(setup.wrappedValue)
+            artHeader(setup.wrappedValue)
             streakCard
             modeSection(setup)
             lengthSection(setup)
             familySection(setup)
             intentionsSection(setup.wrappedValue)
-            beginButton(setup.wrappedValue)
+            moreLinks
         }
     }
 
@@ -121,6 +135,7 @@ struct HomeView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .uiTag(mode == .guided ? UITag.modeGuided : UITag.modeTracking)
                 .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
             }
@@ -229,6 +244,7 @@ struct HomeView: View {
             .card()
         }
         .buttonStyle(.plain)
+        .uiTag(UITag.offerIntentions)
     }
 
     private func beginButton(_ setup: SessionSetup) -> some View {
@@ -239,6 +255,7 @@ struct HomeView: View {
                 Label("Begin", systemImage: "play.fill")
             }
             .buttonStyle(PrimaryButtonStyle())
+            .uiTag(UITag.beginRosary)
             .accessibilityHint(beginCaption(setup))
 
             Text(beginCaption(setup))
@@ -248,6 +265,41 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity)
         }
         .padding(.top, 4)
+    }
+
+    @ViewBuilder
+    private func artHeader(_ setup: SessionSetup) -> some View {
+        let mystery = setup.length == .oneDecade
+            ? setup.mysterySet.mysteries[setup.decade - 1]
+            : setup.mysterySet.mysteries[0]
+        if model.settings.showSacredArt, let content, let work = content.work(for: mystery.id) {
+            SacredArtView(work: work, data: content.imageData(for: work.mystery), height: 200)
+        }
+    }
+
+    private var moreLinks: some View {
+        VStack(spacing: 10) {
+            NavigationLink {
+                HoursView(model: model, content: content)
+            } label: {
+                Label(MarianHours.usesReginaCaeli(on: model.today) ? "Regina Caeli" : "The Angelus", systemImage: "bell")
+            }
+            .uiTag(UITag.openAngelus)
+            NavigationLink {
+                FeastCalendarView(model: model, content: content)
+            } label: {
+                Label("Marian feasts", systemImage: "star")
+            }
+            .uiTag(UITag.openCalendar)
+            NavigationLink {
+                JournalView(model: model)
+            } label: {
+                Label("Journal", systemImage: "book.closed")
+            }
+            .uiTag(UITag.openJournal)
+        }
+        .font(.headline)
+        .foregroundStyle(Theme.ink)
     }
 
     // MARK: - Helpers

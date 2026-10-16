@@ -8,4 +8,5 @@ DerivedData/
 .netrc
 
 /xtool
+/build
 __pycache__/

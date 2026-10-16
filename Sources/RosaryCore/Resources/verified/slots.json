@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "slots": [
+    {
+      "id": "divine-mercy.opening",
+      "title": "Divine Mercy opening prayer",
+      "reason": "The English chaplet prayers published for St. Faustina’s devotion are copyrighted by the Marians of the Immaculate Conception. They are not included."
+    },
+    {
+      "id": "divine-mercy.decade",
+      "title": "Divine Mercy decade prayer",
+      "reason": "The decade invocation is part of the copyrighted English chaplet. The bead is counted. The words are not shown."
+    },
+    {
+      "id": "divine-mercy.closing",
+      "title": "Divine Mercy closing prayer",
+      "reason": "The closing prayer of the chaplet is part of the copyrighted English text. It is not shown."
+    },
+    {
+      "id": "chant.recording",
+      "title": "Optional chant recording",
+      "reason": "No public-domain recording was bundled. The switch is in Settings and does nothing until a sourced recording is added."
+    },
+    {
+      "id": "fruit.short-labels",
+      "title": "One-word fruit of each mystery",
+      "reason": "The short names already in the app (Humility, Love of neighbor, and the rest, including the Luminous mysteries) were not found as a list in the 1926 Forrest chapter. They stay on screen as labels, marked as unchecked."
+    },
+    {
+      "id": "fruit.luminous-prayers",
+      "title": "Fruit prayers for the Luminous mysteries",
+      "reason": "Forrest’s 1926 pamphlet has fruit prayers for the fifteen mysteries only. No public-domain luminous fruit prayer was copied."
+    },
+    {
+      "id": "litany.post-1857",
+      "title": "Litany invocations added after 1857",
+      "reason": "Queen of the most holy Rosary, Queen of peace, Queen assumed into heaven, Mother of the Church, Queen of families, and any other later titles are not in the 1857 Raccolta text used here."
+    },
+    {
+      "id": "consecration.montfort-formula",
+      "title": "St. Louis de Montfort’s consecration formula",
+      "reason": "A word-for-word copy of the Faber translation was not cut into this build. Day 33 can use the 1883 Act of Consecration from the Seven Dolors chaplet, which is a different prayer and is labeled as such."
+    },
+    {
+      "id": "consecration.daily-readings",
+      "title": "Thirty-three daily consecration readings",
+      "reason": "No public-domain day-by-day lectionary was copied. The tracker counts the days. The reading for each day is this slot."
+    }
+  ]
+}

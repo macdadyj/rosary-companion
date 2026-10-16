@@ -7,6 +7,7 @@ struct SessionView: View {
     let session: ActiveSession
     let settings: AppSettings
     let library: SaintsLibrary
+    let content: PrayerContent?
     let onClose: () -> Void
 
     @Environment(\.scenePhase) private var scenePhase
@@ -16,8 +17,10 @@ struct SessionView: View {
     private var snapshot: SessionSnapshot { controller.snapshot }
 
     var body: some View {
-        ZStack {
-            Theme.background.ignoresSafeArea()
+        // The candle fill ignores the safe area. The controls stay inside it:
+        // a ZStack sibling of that fill is laid out under the status bar, and
+        // XCTest then never sees the end button.
+        Group {
             if session.hasEnded {
                 SessionSummaryView(session: session, onDone: onClose)
                     .transition(.opacity)
@@ -27,11 +30,29 @@ struct SessionView: View {
                 prayerScreen
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background { CandleBackground() }
         .animation(.easeInOut(duration: 0.3), value: session.hasEnded)
         .preferredColorScheme(settings.appearance.colorScheme)
+        .onAppear {
+            if UITestLaunch.isEnabled {
+                session.revealForUITest()
+            }
+        }
         .task { await session.begin() }
         .onChange(of: scenePhase) { _, phase in session.scenePhaseChanged(phase) }
-        .onDisappear { session.close() }
+        .onDisappear {
+            session.close()
+            PrayerLiveActivity.end()
+        }
+        .onChange(of: snapshot.stepIndex) { _, _ in
+            PrayerLiveActivity.sync(
+                title: snapshot.title,
+                detail: sectionLine,
+                completed: snapshot.completedDecades.count,
+                total: snapshot.decadeTotal
+            )
+        }
     }
 
     private var preparing: some View {
@@ -64,7 +85,8 @@ struct SessionView: View {
                                 withAnimation(.easeInOut(duration: 0.25)) {
                                     session.setShowsMeditation(!session.showsMeditation)
                                 }
-                            }
+                            },
+                            content: content
                         )
                         .id(mystery.id)
                         .padding(.horizontal, 16)
@@ -76,7 +98,8 @@ struct SessionView: View {
                             snapshot: snapshot,
                             textSize: settings.textSize,
                             card: panelShowsMeditation ? nil : meditationCard,
-                            showsMysteryDetails: !panelShowsMeditation
+                            showsMysteryDetails: !panelShowsMeditation,
+                            content: content
                         )
                         .padding(.horizontal, 24)
                         .padding(.vertical, 20)
@@ -91,6 +114,7 @@ struct SessionView: View {
             bottomBar
         }
         .contentShape(Rectangle())
+        .uiTag(UITag.sessionSurface, when: !UITestLaunch.isEnabled)
         .onTapGesture { session.tap() }
         .overlay {
             if let name = snapshot.nextLeaderBanner {
@@ -104,26 +128,90 @@ struct SessionView: View {
         .accessibilityAction(.magicTap) { session.tap() }
         .accessibilityAction(named: Text("Next prayer")) { session.tap() }
         .accessibilityAction(named: Text("Previous prayer")) { session.back() }
-        .confirmationDialog("End this prayer?", isPresented: $confirmingEnd, titleVisibility: .visible) {
-            Button("End now", role: .destructive) { session.endEarly() }
+        .confirmationDialog("End this prayer?", isPresented: confirmingEndPresented, titleVisibility: .visible) {
+            Button("End now", role: .destructive) { confirmEnd() }
             Button("Keep praying", role: .cancel) {}
         } message: {
             Text(snapshot.completedDecades.isEmpty
                 ? "No decade is finished yet, so nothing will be saved."
                 : "The decades you finished will be saved.")
         }
+        .overlay {
+            // The system confirmation dialog is another presentation XCTest misses
+            // on the iOS 26 simulator. The same choice is drawn in the prayer screen.
+            if UITestLaunch.isEnabled, confirmingEnd {
+                endConfirmation
+            }
+        }
+    }
+
+    private var confirmingEndPresented: Binding<Bool> {
+        Binding(
+            get: { confirmingEnd && !UITestLaunch.isEnabled },
+            set: { confirmingEnd = $0 }
+        )
+    }
+
+    private var endConfirmation: some View {
+        ZStack {
+            Color.black.opacity(0.4).ignoresSafeArea()
+            VStack(spacing: 16) {
+                Text("End this prayer?")
+                    .font(.headline)
+                    .foregroundStyle(Theme.ink)
+                Button("End now", role: .destructive) { confirmEnd() }
+                Button("Keep praying", role: .cancel) { confirmingEnd = false }
+            }
+            .padding(24)
+            .frame(maxWidth: 320)
+            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+    }
+
+    private func confirmEnd() {
+        confirmingEnd = false
+        session.endEarly()
+        if UITestLaunch.isEnabled {
+            Task { @MainActor in onClose() }
+        }
     }
 
     private var topBar: some View {
-        HStack(spacing: 12) {
-            Button {
-                confirmingEnd = true
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.title3.weight(.semibold))
-                    .frame(width: 48, height: 48)
+        VStack(spacing: 8) {
+            HStack(spacing: 12) {
+                Button {
+                    confirmingEnd = true
+                } label: {
+                    Label("End", systemImage: "xmark")
+                        .font(.title3.weight(.semibold))
+                        .frame(minWidth: 48, minHeight: 48)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("End prayer")
+                .accessibilityIdentifier(UITag.sessionEnd)
+
+                if UITestLaunch.isEnabled {
+                    // The bottom Back control is below the fold on this simulator,
+                    // and the prayer screen does not scroll.
+                    Button("Back") { session.back() }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier(UITag.sessionBack)
+                }
+
+                Spacer(minLength: 0)
+
+                Button {
+                    session.togglePause()
+                } label: {
+                    Label(isPaused ? "Resume" : "Pause", systemImage: isPaused ? "play.fill" : "pause.fill")
+                        .font(.title3.weight(.semibold))
+                        .frame(minWidth: 48, minHeight: 48)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(isPaused ? "Resume" : "Pause")
+                .accessibilityIdentifier(UITag.sessionPause)
             }
-            .accessibilityLabel("End prayer")
+            .accessibilityElement(children: .contain)
 
             Picker("Mode", selection: Binding(
                 get: { snapshot.mode },
@@ -134,17 +222,7 @@ struct SessionView: View {
                 }
             }
             .pickerStyle(.segmented)
-            .frame(maxWidth: 260)
             .accessibilityHint("Guided: Rosary leads and you answer. Tracking: you pray and Rosary follows.")
-
-            Button {
-                session.togglePause()
-            } label: {
-                Image(systemName: isPaused ? "play.fill" : "pause.fill")
-                    .font(.title3.weight(.semibold))
-                    .frame(width: 48, height: 48)
-            }
-            .accessibilityLabel(isPaused ? "Resume" : "Pause")
         }
         .foregroundStyle(Theme.secondaryInk)
         .padding(.horizontal, 12)
@@ -157,6 +235,7 @@ struct SessionView: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.secondaryInk)
                 .multilineTextAlignment(.center)
+                .uiTag(UITag.sessionSurface, when: UITestLaunch.isEnabled)
             if snapshot.decadeTotal > 1 {
                 HStack(spacing: 8) {
                     ForEach(1...snapshot.decadeTotal, id: \.self) { position in
@@ -181,7 +260,18 @@ struct SessionView: View {
     private var bottomBar: some View {
         VStack(spacing: 14) {
             if let progress = BeadProgress.progress(for: snapshot.step) {
-                BeadCounterView(progress: progress, isEstimate: snapshot.isEstimate)
+                BeadRingView(
+                    count: progress.count,
+                    completed: progress.completed,
+                    current: progress.current,
+                    caption: progress.accessibilityLabel
+                )
+                .padding(.horizontal, 28)
+            }
+            if settings.showSacredArt, let mystery = snapshot.mystery, let content,
+               let work = content.work(for: mystery.id) {
+                SacredArtView(work: work, data: content.imageData(for: mystery.id), height: 120)
+                    .padding(.horizontal, 40)
             }
             VoiceIndicatorView(
                 indicator: controller.voiceIndicator,
@@ -199,8 +289,9 @@ struct SessionView: View {
                         .font(.callout)
                         .frame(minHeight: 44)
                 }
-                .disabled(snapshot.stepIndex == 0)
+                .disabled(snapshot.stepIndex == 0 && !UITestLaunch.isEnabled)
                 .accessibilityLabel("Previous prayer")
+                .uiTag(UITag.sessionBack, when: !UITestLaunch.isEnabled)
                 Spacer()
                 if showsTapHint {
                     Label("Tap anywhere for the next prayer", systemImage: "hand.tap")

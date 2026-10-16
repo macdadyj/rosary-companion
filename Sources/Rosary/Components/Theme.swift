@@ -4,14 +4,16 @@ import SwiftUI
 import UIKit
 
 enum Theme {
-    /// Deep night blue in dark mode, warm parchment in light mode.
-    static let background = adaptive(light: (0.97, 0.95, 0.91), dark: (0.035, 0.05, 0.09))
-    static let surface = adaptive(light: (1.0, 0.99, 0.96), dark: (0.085, 0.105, 0.16))
-    static let raisedSurface = adaptive(light: (0.93, 0.90, 0.84), dark: (0.13, 0.155, 0.22))
-    static let ink = adaptive(light: (0.11, 0.09, 0.08), dark: (0.96, 0.94, 0.89))
-    static let secondaryInk = adaptive(light: (0.33, 0.30, 0.28), dark: (0.74, 0.72, 0.68))
-    /// Candle gold. Dark enough on parchment and bright enough on night blue for 4.5:1 contrast.
-    static let gold = adaptive(light: (0.52, 0.36, 0.05), dark: (0.94, 0.79, 0.47))
+    /// Parchment in light mode, candlelit brown-black in dark mode.
+    static let background = adaptive(light: (0.96, 0.93, 0.86), dark: (0.07, 0.035, 0.025))
+    static let surface = adaptive(light: (0.99, 0.96, 0.91), dark: (0.14, 0.08, 0.05))
+    static let raisedSurface = adaptive(light: (0.93, 0.86, 0.74), dark: (0.22, 0.13, 0.08))
+    static let ink = adaptive(light: (0.16, 0.09, 0.05), dark: (0.98, 0.93, 0.84))
+    static let secondaryInk = adaptive(light: (0.38, 0.26, 0.16), dark: (0.82, 0.72, 0.58))
+    /// Icon gold. Dark enough on parchment and bright enough on candlelit brown for contrast.
+    static let gold = adaptive(light: (0.48, 0.32, 0.06), dark: (0.95, 0.78, 0.42))
+    static let lapis = adaptive(light: (0.10, 0.22, 0.38), dark: (0.45, 0.62, 0.78))
+    static let burgundy = adaptive(light: (0.45, 0.12, 0.14), dark: (0.72, 0.28, 0.24))
     static let beadEmpty = adaptive(light: (0.80, 0.76, 0.70), dark: (0.25, 0.28, 0.36))
     static let listening = adaptive(light: (0.12, 0.42, 0.36), dark: (0.55, 0.85, 0.75))
     static let warning = adaptive(light: (0.62, 0.22, 0.12), dark: (0.98, 0.62, 0.50))
@@ -99,6 +101,32 @@ struct CardBackground: ViewModifier {
 
 extension View {
     func card() -> some View { modifier(CardBackground()) }
+    func uiTag(_ identifier: String) -> some View { accessibilityIdentifier(identifier) }
+
+    @ViewBuilder
+    func uiTag(_ identifier: String, when enabled: Bool) -> some View {
+        if enabled {
+            accessibilityIdentifier(identifier)
+        } else {
+            self
+        }
+    }
+}
+
+/// Warm dark with a candle glow at the top, parchment in light mode.
+struct CandleBackground: View {
+    var body: some View {
+        ZStack {
+            Theme.background
+            RadialGradient(
+                colors: [Theme.gold.opacity(0.28), Theme.burgundy.opacity(0.08), .clear],
+                center: .top,
+                startRadius: 12,
+                endRadius: 460
+            )
+        }
+        .ignoresSafeArea()
+    }
 }
 
 struct PrimaryButtonStyle: ButtonStyle {

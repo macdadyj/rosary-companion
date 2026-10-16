@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "title": "Chaplet or Crown in honour of the Seven Dolors of the most Holy Virgin Mary",
+  "source": "Patrick Francis Moran, The Catholic Prayer Book and Manual of Meditations (1883), “Chaplet or Crown in honour of the Seven Dolors of the most Holy Virgin Mary.” Wikisource transcription.",
+  "sourceURL": "https://en.wikisource.org/wiki/The_Catholic_Prayer_Book_and_Manual_of_Meditations/Chaplet_or_Crown_in_honor_of_the_Seven_Dolors_of_the_B.V.M.",
+  "license": "public domain",
+  "retrieved": "2026-10-15",
+  "note": "Wrapped lines in the transcription were joined, and zero-width spaces inserted at those wraps were removed. Our Father and Hail Mary use the Rosary texts already in the app. The 1883 page says “Our Father, etc., once” and “Hail Mary, seven times.”",
+  "offering": "MY God, I offer this Chaplet to thy greater glory and in honour of thy most holy Mother, to obtain, through her dolors, a spirit of compunction and penance for the sick and agonizing, as well for myself as for all sinners. Mother of my Redeemer! I offer it in reparation to thy most afflicted heart, which my sins have pierced with the sword of sorrow. May the blood flowing from the wounds of thy divine Son, effectively teach us that love is proved rather by action than by sentiment. My good angel, my faithful guardian, vouchsafe to present this Crown, that through thy mediation it may become more pleasing to the Queen of Angels.",
+  "offeringSha1": "0abdf6f0c42030997354c1da7721829facfd67cd",
+  "sorrows": [
+    {
+      "id": "prophecyOfSimeon",
+      "title": "THE PROPHECY OF VENERABLE SIMEON",
+      "meditation": "MEDITATE, with profound humility, the sorrow of the Mother of God, when presenting her divine Son in the temple, venerable Simeon announced to her, “ This child is set for the fall, and for the resurrection of many in Israel,\" and that her “ own soul a sword shall pierce.” (Luke ii.) Such was the sorrowful prophecy which announced to her at the same time the death of her divine Son, and the loss of many souls redeemed by his precious blood.",
+      "prayer": "O SORROWFUL Virgin! by the sword that pierced thy soul, obtain that the sufferings of thy beloved Son, and thy own sorrows, may be deeply imprinted on my heart; to the end, that sacrificing to God my entire will and affections, I may love him henceforth with a love, pure, ardent, and generous.",
+      "ourFather": 1,
+      "hailMarys": 7,
+      "sha1": "8a3a87c6bdb25e0d02656ab56da46285e278b19f"
+    },
+    {
+      "id": "flightIntoEgypt",
+      "title": "THE FLIGHT INTO EGYPT",
+      "meditation": "MEDITATE, with profound humility, the heart-rending grief of the Virgin Mother, when obliged to flee into Egypt, to preserve her divine Son from the persecution of impious Herod.",
+      "prayer": "O MOST afflicted Mother, by the sorrow that overwhelmed thee, when, to save the life of thy divine Son, thou wert forced to flee into Egypt, I conjure thee to be my guide and support during the exile of this life, that imitating thy perfect obedience I may persevere in justice, and, like thee, cling more closely to Jesus, during the trials of this life, in order that I may possess him with thee in eternity.",
+      "ourFather": 1,
+      "hailMarys": 7,
+      "sha1": "b781bf4836c40290cf039a1658555bca056aadda"
+    },
+    {
+      "id": "lossInTheTemple",
+      "title": "THE LOSING OF JESUS IN THE TEMPLE",
+      "meditation": "MEDITATE, with profound humility, the anguish with which the Blessed Virgin sought, during three days, her beloved Son, whom she had lost in the temple.",
+      "prayer": "O HOLY Virgin! by the bitter tears which thou didst shed in seeking thy beloved Son, obtain for me, I beseech thee, grace to know and detest the sins by which I have lost his divine presence, that increasing daily in his love, I may labour with such ardour and perseverance to repair by future fidelity my past abuse of grace, as never more to be separated from Jesus, thy divine Son.",
+      "ourFather": 1,
+      "hailMarys": 7,
+      "sha1": "fbceb6efbaa3d8738484479ff1c262d660526a39"
+    },
+    {
+      "id": "meetingWithTheCross",
+      "title": "THE MEETING WITH JESUS CARRYING HIS CROSS",
+      "meditation": "MEDITATE, with profound humility, the sorrow that penetrated the Virgin’s heart on meeting her divine Son sinking beneath the heavy cross which he bore to Calvary. What a heartrending spectacle for such a mother! yet, understanding that it was at this price alone our redemption could be accomplished, she unites the sacrifice of her own love to that of her divine Son, in whose sufferings she participates even to the last sigh.",
+      "prayer": "O MOTHER of my Redeemer! since my sins, in overwhelming thy beloved Son with the weight of this ignominious cross, have been also the cause of thy dolors, I conjure thee by thy tender compassion for his sufferings, to obtain for me grace to support patiently whatever he shall be pleased to send me; that by resignation in suffering, and fervour in his service, I may expiate the opprobrium he has endured for my iniquities.",
+      "ourFather": 1,
+      "hailMarys": 7,
+      "sha1": "1d8ebc739d1ceaf138ff10ff1826c7a6c075cc51"
+    },
+    {
+      "id": "crucifixion",
+      "title": "THE CRUCIFIXION",
+      "meditation": "MEDITATE, with profound humility, the agony this Mother of sorrows, in beholding her divine Son nailed to the cross, pouring forth his precious blood, and expiring between two criminals.",
+      "prayer": "MOST compassionate Mother I through thy inconceivable sorrow in beholding thy beloved Son expire amidst such excessive torments, obtain for me grace to participate in his sacrifice, by continual mortification of my passions, and abnegation of self. Vouchsafe, by thy maternal charity, to sustain me to the end in this painful and dangerous pilgrimage.",
+      "ourFather": 1,
+      "hailMarys": 7,
+      "sha1": "df9cf295b560671d159155a1688dc97865ac8ea9"
+    },
+    {
+      "id": "descentFromTheCross",
+      "title": "THE TAKING DOWN OF JESUS FROM THE CROSS",
+      "meditation": "MEDITATE, with profound humility, the intense sorrow of this heartbroken mother when her divine Son, being taken down from the cross, was laid in her arms; his countenance pale and livid, his eyes dimmed with the shade of death, his sacred body covered with wounds and blood.",
+      "prayer": "O MOTHER of mercy, I acknowledge, with confusion, that it is my sins which, in nailing thy well-beloved Son to the cross, have transpierced thy soul with sorrow. Yet deign, O refuge of sinners! to obtain my pardon, and permit me to adore, in thy maternal arms, my crucified God and Redeemer. Obtain also for me, I conjure thee, so to contemplate in his sacred wounds, his infinite love and the malice of sin, that by sincere contrition and the exercise of penitential works, I may deserve the application of his merits; and having cleansed my soul in his sacred blood from every stain, I may never offend him more.",
+      "ourFather": 1,
+      "hailMarys": 7,
+      "sha1": "7ee9ec2e728f311aba7af78bcb976fba26f8862b"
+    },
+    {
+      "id": "burial",
+      "title": "THE SEPULTURE OF JESUS CHRIST",
+      "meditation": "MEDITATE, with profound humility, the inexpressible anguish of this desolate mother, in beholding Joseph and Nicodemus enclose the lifeless body of her only beloved Son in the tomb, where her heart is deposited with him.",
+      "prayer": "O DESOLATE Mother! by thy agonizing grief in quitting the tomb that enclosed the well-beloved of thy soul, deign to obtain for me light to conceive the misfortune of a soul separated by sin from God; that entering into the sacred wounds of Jesus, and penetrating even to his adorable heart, I may draw thence a love so pure and constant, that in all my actions I may seek the interest and glory of God alone.",
+      "ourFather": 1,
+      "hailMarys": 7,
+      "sha1": "6709e9e9b724bf2fa20992c15a90421b82403567"
+    }
+  ],
+  "queenOfMartyrs": "O Queen of Martyrs! whose holy soul was overwhelmed with sorrow, I conjure thee by thy tears of anguish, to obtain for me and all sinners the grace of perfect contrition, that we may expiate our sins by works worthy of penance. Amen.",
+  "queenSha1": "0a4b1ef5a34a83d04629abab040d856f2b798d34",
+  "actOfConsecration": "HOLY Virgin, Mother of my Saviour, I invoke thee as my sovereign protectress and advocate with thy divine Son. I resolve never to abandon thy service, and I will endeavour to the utmost of my power to procure thee the honour and glory which are thy due. Impressed with profound veneration and lively confidence, I consecrate to thee, after God, all that is mine, particularly my heart, which desires to participate in that sorrow which transfixed thine at the foot of the cross. Remember, O gracious Virgin! that thy agonizing Son commended me to thy maternal care; vouchsafe then to admit me into the number of thy servants; assist me during life, but particularly at the hour of death. Obtain for me a constant fidelity in thy service, that associating myself in thy service in this valley of tears, I may merit, by the imitation of thy virtues, to partake in eternity of thy happiness and glory. Amen.",
+  "actSha1": "f131cfe2aa148903dd8a839b2cdf5def1be110d3"
+}

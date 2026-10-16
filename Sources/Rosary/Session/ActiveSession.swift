@@ -29,9 +29,13 @@ final class ActiveSession: Identifiable {
 
     init(prepared: PreparedSession, model: AppModel) {
         let settings = model.settings
-        let speech = settings.voiceTracking ? SpeechRecognitionService() : nil
+        let testing = UITestLaunch.isEnabled
+        let speech = settings.voiceTracking && !testing ? SpeechRecognitionService() : nil
+        let output: NarrationOutput = testing
+            ? HoldingNarration()
+            : SpeechOutput(voice: InstalledVoices.voice(selectedID: settings.narratorVoiceID))
         let narrator = NarrationSequencer(
-            output: SpeechOutput(voice: InstalledVoices.voice(selectedID: settings.narratorVoiceID)),
+            output: output,
             planner: NarrationPlanner(recordings: ActiveSession.recordings, pacing: settings.pacing)
         )
         let controller = SessionController(
@@ -50,6 +54,8 @@ final class ActiveSession: Identifiable {
         self.speech = speech
         self.narrator = narrator
         self.showsMeditation = settings.showsMeditationWhileTracking
+        // The end control has to be on the first frame the UI test looks at.
+        self.isPreparing = !testing
 
         controller.onFinished = { [weak self] in self?.sessionFinished() }
         audio.onInterruptionBegan = { [weak self] in self?.controller.pause(.interruption) }
@@ -68,12 +74,24 @@ final class ActiveSession: Identifiable {
         prepared.setup.intentionIDs.compactMap(model.intention)
     }
 
+    /// Shows the prayer controls immediately for UI tests, without the microphone.
+    func revealForUITest() {
+        guard !hasEnded else { return }
+        isPreparing = false
+        if case .notStarted = controller.snapshot.phase {
+            controller.start()
+        }
+    }
+
     /// Asks for permissions (first time only), then starts praying.
     func begin() async {
         guard isPreparing else { return }
-        if let speech { await speech.requestAccess() }
-        audio.activate(listening: speech != nil)
-        audio.keepScreenAwake(true)
+        let testing = ProcessInfo.processInfo.arguments.contains("--uitesting")
+        if let speech, !testing { await speech.requestAccess() }
+        if !testing {
+            audio.activate(listening: speech != nil)
+            audio.keepScreenAwake(true)
+        }
         isPreparing = false
         controller.start()
     }
@@ -144,5 +162,14 @@ final class ActiveSession: Identifiable {
         if let bundled = RecordingFolder.bundled { return bundled }
         return NoRecordings()
     }
+}
+
+/// UI tests stay on the first prayer. A simulator voice that finishes immediately
+/// would otherwise run the whole decade before XCTest looks for the end control.
+@MainActor
+private final class HoldingNarration: NarrationOutput {
+    func play(_ item: NarrationItem, preDelay: TimeInterval, completion: @escaping @MainActor (Bool) -> Void) {}
+
+    func stop() {}
 }
 #endif

@@ -48,6 +48,7 @@ public final class AppModel {
     public private(set) var settings: AppSettings
     public private(set) var sessions: [SessionRecord]
     public private(set) var intentions: [Intention]
+    public private(set) var consecration: ConsecrationProgress
     /// Set when the last write to disk failed, so the UI can say so.
     public private(set) var saveError: String?
 
@@ -58,6 +59,7 @@ public final class AppModel {
     static let settingsFile = "settings.json"
     static let sessionsFile = "sessions.json"
     static let intentionsFile = "intentions.json"
+    static let consecrationFile = "consecration.json"
 
     public init(store: JSONFileStore?, now: @escaping () -> Date = Date.init, calendar: Calendar = .current) {
         self.store = store
@@ -66,6 +68,7 @@ public final class AppModel {
         settings = (try? store?.load(AppSettings.self, from: Self.settingsFile)) ?? AppSettings()
         sessions = (try? store?.load([SessionRecord].self, from: Self.sessionsFile)) ?? []
         intentions = (try? store?.load([Intention].self, from: Self.intentionsFile)) ?? []
+        consecration = (try? store?.load(ConsecrationProgress.self, from: Self.consecrationFile)) ?? ConsecrationProgress()
     }
 
     // MARK: Settings
@@ -275,6 +278,22 @@ public final class AppModel {
 
     public func intention(_ id: UUID) -> Intention? {
         intentions.first { $0.id == id }
+    }
+
+    public func beginConsecration(on date: CivilDate) {
+        consecration.start = date
+        consecration.checked = []
+        persist(consecration, to: Self.consecrationFile)
+    }
+
+    public func setConsecrationDay(_ day: Int, checked: Bool) {
+        guard (1...ConsecrationProgress.length).contains(day) else { return }
+        if checked {
+            if !consecration.checked.contains(day) { consecration.checked.append(day) }
+        } else {
+            consecration.checked.removeAll { $0 == day }
+        }
+        persist(consecration, to: Self.consecrationFile)
     }
 
     public func sessionCount(for intentionID: UUID) -> Int {

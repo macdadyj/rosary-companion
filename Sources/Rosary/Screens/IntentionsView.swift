@@ -15,12 +15,14 @@ struct IntentionsView: View {
             Section {
                 HStack(spacing: 12) {
                     TextField("Add an intention", text: $newIntention)
+                        .uiTag(UITag.intentionField)
                         .focused($addFocused)
                         .submitLabel(.done)
                         .onSubmit(add)
                     Button(action: add) {
                         Image(systemName: "plus.circle.fill").font(.title2)
                     }
+                    .uiTag(UITag.intentionAdd)
                     .disabled(newIntention.trimmingCharacters(in: .whitespaces).isEmpty)
                     .accessibilityLabel("Add intention")
                 }
@@ -133,11 +135,23 @@ private struct IntentionEditor: View {
                     TextField("How it’s going, or how it was answered", text: $note, axis: .vertical)
                         .lineLimit(2...6)
                 }
-                Section {
-                    Picker("Status", selection: $status) {
-                        ForEach(IntentionStatus.allCases, id: \.self) { Text($0.title).tag($0) }
+                Section("Status") {
+                    Button { status = .ongoing } label: {
+                        HStack {
+                            Text("Ongoing")
+                            Spacer()
+                            if status == .ongoing { Image(systemName: "checkmark") }
+                        }
                     }
-                    .pickerStyle(.segmented)
+                    .uiTag(UITag.intentionOngoing)
+                    Button { status = .answered } label: {
+                        HStack {
+                            Text("Answered")
+                            Spacer()
+                            if status == .answered { Image(systemName: "checkmark") }
+                        }
+                    }
+                    .uiTag(UITag.intentionAnswered)
                 }
             }
             .scrollContentBackground(.hidden)
@@ -152,6 +166,7 @@ private struct IntentionEditor: View {
                         if status != intention.status { model.setStatus(status, for: intention.id) }
                         dismiss()
                     }
+                    .uiTag("intention.save")
                     .disabled(text.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }

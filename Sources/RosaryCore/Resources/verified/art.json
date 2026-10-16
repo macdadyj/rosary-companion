@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "retrieved": "2026-10-15",
+  "note": "commonsSha1 is the Wikimedia original, checked before resizing. sha1 is the JPEG shipped in the app.",
+  "works": [
+    {
+      "mystery": "annunciation",
+      "file": "annunciation.jpg",
+      "title": "Fra Angelico - The Annunciation - WGA0455.jpg",
+      "artist": "Fra Angelico",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"a/angelico/01/2prado\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AFra_Angelico_-_The_Annunciation_-_WGA0455.jpg",
+      "commonsSha1": "ef32e82af45670a2d44ff85bb3242c9b8016f83a",
+      "sha1": "a00058ff3360d0266fbc35b91ddda5860c8fb51a"
+    },
+    {
+      "mystery": "visitation",
+      "file": "visitation.jpg",
+      "title": "Raphael - The visitation.jpg",
+      "artist": "",
+      "credit": "",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3ARaphael_-_The_visitation.jpg",
+      "commonsSha1": "5059ac014312edc2bcc21433579f69514f3f8c52",
+      "sha1": "85664994ab06a18857310265aaafc27482114c36"
+    },
+    {
+      "mystery": "nativity",
+      "file": "nativity.jpg",
+      "title": "Giotto, Lower Church Assisi, Nativity 01.jpg",
+      "artist": "Giotto",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"g/giotto/assisi/lower/ceiling/02christ\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AGiotto%2C_Lower_Church_Assisi%2C_Nativity_01.jpg",
+      "commonsSha1": "412e88a4285f70de90395922b0edee2b7ef8ffb1",
+      "sha1": "59c7de6c4f34d531eceeae92ada666628d749520"
+    },
+    {
+      "mystery": "presentation",
+      "file": "presentation.jpg",
+      "title": "Fra Angelico - Presentation of Jesus in the Temple (Cell 10) - WGA00544.jpg",
+      "artist": "Fra Angelico",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"a/angelico/09/cells/10_prese\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AFra_Angelico_-_Presentation_of_Jesus_in_the_Temple_%28Cell_10%29_-_WGA00544.jpg",
+      "commonsSha1": "458d3b834b843f2ba8f2fb6dd98677c8ba08723d",
+      "sha1": "88e94b90c65dec3ca8e9f6a748c109f410c56c0f"
+    },
+    {
+      "mystery": "findingInTemple",
+      "file": "findingInTemple.jpg",
+      "title": "Paolo Veronese - Jesus among the Doctors - WGA24816.jpg",
+      "artist": "Paolo Veronese",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"v/veronese/03_1560s/6jesusdo\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3APaolo_Veronese_-_Jesus_among_the_Doctors_-_WGA24816.jpg",
+      "commonsSha1": "a34141660f35aa58406364458b19becfb73ea49f",
+      "sha1": "a5152af48c5c2a2c5143c065da61d1873a97526d"
+    },
+    {
+      "mystery": "baptism",
+      "file": "baptism.jpg",
+      "title": "Piero della Francesca - Baptism of Christ (detail) - WGA17597.jpg",
+      "artist": "Piero della Francesca",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"/p/piero/3/02bapti3\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3APiero_della_Francesca_-_Baptism_of_Christ_%28detail%29_-_WGA17597.jpg",
+      "commonsSha1": "7e01bfd6436c5366e2b403569acdd5b6d37ba195",
+      "sha1": "7fb9db3c8bcb85a198ef269ddf02c7317cd716f5"
+    },
+    {
+      "mystery": "weddingAtCana",
+      "file": "weddingAtCana.jpg",
+      "title": "Giotto - Scrovegni - -24- - Marriage at Cana.jpg",
+      "artist": "Giotto",
+      "credit": "Unknown source Unknown source",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AGiotto_-_Scrovegni_-_-24-_-_Marriage_at_Cana.jpg",
+      "commonsSha1": "1c20a78d45a2d52867a4f55b9d4d05fceac62b4a",
+      "sha1": "bc0598a952c8ff5f71c15c27b8a46d333cd06343"
+    },
+    {
+      "mystery": "proclamation",
+      "file": "proclamation.jpg",
+      "title": "Bloch-SermonOnTheMount.jpg",
+      "artist": "Carl Bloch",
+      "credit": "https://freechristimages.com/bible-stories/sermon-on-the-mount.html and Carl Bloch , p. 313, ISBN 9788798746591",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3ABloch-SermonOnTheMount.jpg",
+      "commonsSha1": "b4c59d84ba5d1867b38a931acc42b1652639aa61",
+      "sha1": "9389edfe53fc664e7ced8f22bb2ab1bfa9942a16"
+    },
+    {
+      "mystery": "transfiguration",
+      "file": "transfiguration.jpg",
+      "title": "The Transfiguration of Christ.16th c.jpg",
+      "artist": "Onoufrios of Neokastro (Elbasan)",
+      "credit": "Museum of Albanian medieval art, Korce, Albania",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AThe_Transfiguration_of_Christ.16th_c.jpg",
+      "commonsSha1": "c1a2b74c667b8d3c24bc510d01c3ca5da8523b47",
+      "sha1": "f587b631d0d33085c787a8da1d6e0a8ee359bb07"
+    },
+    {
+      "mystery": "eucharist",
+      "file": "eucharist.jpg",
+      "title": "Restoration of copy of Leonardo da Vinci's Last Supper at Tongerlo Abbey.jpg",
+      "artist": "Editorq35",
+      "credit": "Own work",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3ARestoration_of_copy_of_Leonardo_da_Vinci%27s_Last_Supper_at_Tongerlo_Abbey.jpg",
+      "commonsSha1": "3cf3081d086eeb7bfa41179aaee328a66ac157da",
+      "sha1": "2af2bb38a9a77664d28fb13bd4012234490f7df0"
+    },
+    {
+      "mystery": "agonyInGarden",
+      "file": "agonyInGarden.jpg",
+      "title": "Workshop of Santi Buglioni - The Agony in the Garden of Gethsemane - Walters 27223.jpg",
+      "artist": "Workshop of Santi Buglioni",
+      "credit": "Walters Art Museum : Home page Info about artwork",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AWorkshop_of_Santi_Buglioni_-_The_Agony_in_the_Garden_of_Gethsemane_-_Walters_27223.jpg",
+      "commonsSha1": "83a3c34022fce900cb80c2538d502853a437a2d7",
+      "sha1": "3e9848114c659072873718481be3cea26113ab4b"
+    },
+    {
+      "mystery": "scourging",
+      "file": "scourging.jpg",
+      "title": "Albrecht Altdorfer - The Flagellation of Christ - WGA00225.jpg",
+      "artist": "Albrecht Altdorfer",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"a/altdorfe/3/2scenes2\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AAlbrecht_Altdorfer_-_The_Flagellation_of_Christ_-_WGA00225.jpg",
+      "commonsSha1": "d107f58c55b494ad288954d2c023b5be86ec3f14",
+      "sha1": "e7ff7d882a82b7daa23d4ba848b233548bdad94a"
+    },
+    {
+      "mystery": "crowningWithThorns",
+      "file": "crowningWithThorns.jpg",
+      "title": "Perugino (c.1450-1523) (attributed to) - Christ Crowned with Thorns - NG691 - National Gallery.jpg",
+      "artist": "Lo Spagna",
+      "credit": "Art UK",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3APerugino_%28c.1450-1523%29_%28attributed_to%29_-_Christ_Crowned_with_Thorns_-_NG691_-_National_Gallery.jpg",
+      "commonsSha1": "d817adf30022977a0a78c5d1bd0ce23331011e94",
+      "sha1": "daf3dee144b0310fe4139f9841dae5b817f81484"
+    },
+    {
+      "mystery": "carryingCross",
+      "file": "carryingCross.jpg",
+      "title": "Juan Sánchez Cotán - Christ Carrying the Cross.jpg",
+      "artist": "Juan Sánchez Cotán",
+      "credit": "Granada Charterhouse",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AJuan_S%C3%A1nchez_Cot%C3%A1n_-_Christ_Carrying_the_Cross.jpg",
+      "commonsSha1": "203829288ac337c6eca6fd540ae705c2c208f1e4",
+      "sha1": "b2c753b00c8e0a719b3342d461f787a03d7abb5a"
+    },
+    {
+      "mystery": "crucifixion",
+      "file": "crucifixion.jpg",
+      "title": "Matthias Grünewald - The Crucifixion - WGA10723.jpg",
+      "artist": "Matthias Grünewald",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"g/grunewal/2isenhei/1view/1view1c\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AMatthias_Gr%C3%BCnewald_-_The_Crucifixion_-_WGA10723.jpg",
+      "commonsSha1": "2b4a04f87aa2bed2d03f9eaab6e1ae87ee4b80d3",
+      "sha1": "87ee9180205f86583123ffa48f1bc7366911111b"
+    },
+    {
+      "mystery": "resurrection",
+      "file": "resurrection.jpg",
+      "title": "Piero della Francesca - Resurrection - WGA17609.jpg",
+      "artist": "Piero della Francesca",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"p/piero/3/08resur1\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3APiero_della_Francesca_-_Resurrection_-_WGA17609.jpg",
+      "commonsSha1": "4887ec13f8bd6f0175154abf34d08ebd5cba9f54",
+      "sha1": "290c29f5fcb1fa043c414e0de0a63d09c6b4daa4"
+    },
+    {
+      "mystery": "ascension",
+      "file": "ascension.jpg",
+      "title": "Giotto di Bondone - No. 38 Scenes from the Life of Christ - 22. Ascension - WGA09226.jpg",
+      "artist": "Giotto",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"/g/giotto/padova/3christ/scenes_4/chris22\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AGiotto_di_Bondone_-_No._38_Scenes_from_the_Life_of_Christ_-_22._Ascension_-_WGA09226.jpg",
+      "commonsSha1": "a0103b5182b188914643df96f62c23eebd4b721e",
+      "sha1": "38013a5e4aefdc350eeb1a5419b1b87aca71c0b7"
+    },
+    {
+      "mystery": "descentOfHolySpirit",
+      "file": "descentOfHolySpirit.jpg",
+      "title": "Giotto di Bondone - No. 39 Scenes from the Life of Christ - 23. Pentecost - WGA09227.jpg",
+      "artist": "Giotto",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"g/giotto/padova/3christ/scenes_4/chris23\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3AGiotto_di_Bondone_-_No._39_Scenes_from_the_Life_of_Christ_-_23._Pentecost_-_WGA09227.jpg",
+      "commonsSha1": "845bc8a7425372f6949cd09bb5861de3c5319bfc",
+      "sha1": "895811bef7a257d35512180793b904b96ad3f437"
+    },
+    {
+      "mystery": "assumption",
+      "file": "assumption.jpg",
+      "title": "Baroque Rubens Assumption-of-Virgin-3.jpg",
+      "artist": "Peter Paul Rubens",
+      "credit": "Web Gallery of Art : Image Info about artwork wga QS:P11807,\"r/rubens/11religi/08assum\"",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3ABaroque_Rubens_Assumption-of-Virgin-3.jpg",
+      "commonsSha1": "87c9980a19a3c8196b240e4d00a2d50e1fd24164",
+      "sha1": "5237fb9ff1bc8226c89ba708d96e31104fea7d8f"
+    },
+    {
+      "mystery": "coronation",
+      "file": "coronation.jpg",
+      "title": "Coronation of Mary by Fra Angelico (San Marco Cell 9).jpg",
+      "artist": "see filename or category",
+      "credit": "www.wga.hu",
+      "license": "Public domain",
+      "sourceURL": "https://commons.wikimedia.org/wiki/File%3ACoronation_of_Mary_by_Fra_Angelico_%28San_Marco_Cell_9%29.jpg",
+      "commonsSha1": "7dd2049b52b66ee839064ae2c383cd153e1a97d0",
+      "sha1": "98ca0194a117c327c07114acc19111e18a0f3a2c"
+    }
+  ]
+}

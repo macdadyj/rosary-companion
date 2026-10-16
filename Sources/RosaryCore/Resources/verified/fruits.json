@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "source": "Michael Davitt Forrest, The Rosary: Its History and How to Say It (1926), chapter VI, “Reflections and Prayers.” Wikisource transcription of the printed pamphlet.",
+  "sourceURL": "https://en.wikisource.org/wiki/The_Rosary_(Forrest)/Chapter_VI",
+  "license": "public domain",
+  "retrieved": "2026-10-15",
+  "note": "Line breaks in the transcription were joined. Wording and punctuation are otherwise as printed. The one-word fruit names already in the app are not in this chapter.",
+  "prayers": [
+    {
+      "mystery": "annunciation",
+      "heading": "The Annunciation",
+      "contemplate": "Let us contemplate, in this Mystery, how the Angel Gabriel saluted our Blessed Lady with the title. Full of Grace, and declared unto her the Incarnation of our Lord and Saviour Jesus Christ.",
+      "prayer": "O Holy Mary, Queen of Virgins, through the most high mystery of the Incarnation of thy beloved Son, our Lord Jesus Christ, wherein our salvation was begun, obtain for us, through thy most holy intercession, light to understand the greatness of the benefit He hath bestowed upon us, in vouchsafing to become our Brother, and in giving thee, His own beloved Mother, to be our Mother also. Amen.",
+      "sha1": "321609e87bea8e4274497040662c41703f187da4"
+    },
+    {
+      "mystery": "visitation",
+      "heading": "The Visitation",
+      "contemplate": "Let us contemplate, in this Mystery, how the Blessed Virgin Mary, understanding from the Angel that her cousin St. Elizabeth had conceived, went with haste into the mountains of Judea to visit her, and remained with her three months.",
+      "prayer": "O Holy Virgin, spotless Mirror of humility, by that exceeding love which moved thee to visit thy holy cousin St. Elizabeth, obtain for us through thine intercession that our hearts being visited by thy divine Son, and freed from all sin, we may praise and give thanks to Him forever. Amen.",
+      "sha1": "75d387af95001f487b08d497b7a236ebd73d3db4"
+    },
+    {
+      "mystery": "nativity",
+      "heading": "The Birth of Jesus Christ in Bethlehem",
+      "contemplate": "Let us contemplate, in this Mystery, how the Blessed Virgin Mary, when the time of her delivery was come, brought forth our Redeemer, Jesus Christ, at midnight, and laid Him in a manger, because there was no room for Him in the inns of Bethlehem.",
+      "prayer": "O pure Mother of God, through thy virginal and most joyful delivery, whereby thou gavest to the world thine only Son, our Saviour, obtain for us, we beseech thee, through thine intercession, the grace to lead such pure and holy lives in this world that we may become worthy to sing, without ceasing, the mercies of thy Son, and His benefits to us by thee. Amen.",
+      "sha1": "e6f0ddff182eeaaeb970943056e75a6de61e0e11"
+    },
+    {
+      "mystery": "presentation",
+      "heading": "The Presentation of Our Blessed Lord in the Temple",
+      "contemplate": "Let us contemplate, in this Mystery, how the Blessed Virgin Mary, on the day of her Purification, presented the Child Jesus in the Temple, where holy Simeon, giving thanks to God, with great devotion received Him into his arms.",
+      "prayer": "O Holy Virgin, most admirable example and pattern of obedience, who didst present in the Temple the Lord of the Temple, obtain for us, of thy Blessed Son, that, with holy Simeon and devout Anna, we may praise and glorify Him forever. Amen.",
+      "sha1": "ea1e5926d649d748c27f0b937bd27b9c38a8c47d"
+    },
+    {
+      "mystery": "findingInTemple",
+      "heading": "The Finding of the Child Jesus in the Temple",
+      "contemplate": "Let us contemplate, in this Mystery, how the Blessed Virgin Mary, after having lost her beloved Son in Jerusalem, sought Him for the space of three days; and at length found Him in the Temple, sitting in the midst of the Doctors, hearing them, and asking them questions.",
+      "prayer": "O Most Blessed Virgin, more than martyr in thy sufferings, and yet the comfort of such as are afflicted; by that unspeakable joy wherewith thy soul was filled when at length thou didst find thy dearly beloved Son in the Temple, teaching in the midst of the Doctors, obtain of Him that we may so seek Him and find Him in His holy Catholic Church as never more to be separated from Him. Amen.",
+      "sha1": "7a12838e70352c82d2d3315323e3ac4970105dda"
+    },
+    {
+      "mystery": "agonyInGarden",
+      "heading": "The Prayer and Bloody Sweat of Our Blessed Saviour in the Garden",
+      "contemplate": "Let us contemplate, in this Mystery, how our Lord Jesus was so afflicted for us in the Garden of Gethsemani that His Body was bathed in a bloody sweat, which ran down in great drops to the ground.",
+      "prayer": "O Holy Virgin, more than martyr, by that ardent prayer which our beloved Saviour poured forth to His Heavenly Father, vouchsafe to intercede for us, that, our passions being subjected to the obedience of reason, we may always, and in all things, conform and subject ourselves to the holy will of God. Amen.",
+      "sha1": "730863c9fe2d3ce0f6d536bff2accf72ae58b4f3"
+    },
+    {
+      "mystery": "scourging",
+      "heading": "The Scourging of Our Blessed Lord at the Pillar",
+      "contemplate": "Let us contemplate, in this Mystery, how our Lord Jesus Christ was most cruelly scourged in the house of Pilate; the number of stripes inflicted upon Him being, it is said, about five thousand.",
+      "prayer": "O Mother of God, Fountain of patience, through those stripes thy only and dearly beloved Son vouchsafed to suffer for us, obtain of Him for us grace to mortify our rebellious senses, to avoid the occasion of sin, and to be ready to suffer anything rather than offend God. Amen.",
+      "sha1": "a6a941f411ed6183c36956028e7ada4f8e7d56a0"
+    },
+    {
+      "mystery": "crowningWithThorns",
+      "heading": "The Crowning of Our Blessed Saviour with Thorns",
+      "contemplate": "Let us contemplate, in this Mystery, how those cruel ministers of Satan plaited a Crown of Thorns, and cruelly pressed it on the Sacred Head of our Lord Jesus Christ.",
+      "prayer": "O Mother of our Eternal Prince, the King of Glory, by those sharp Thorns wherewith His Sacred Head was pierced, we beseech thee to obtain, through thine intercession, that we may be delivered from all emotions of pride, and escape that shame which our sins deserve on the day of judgment. Amen.",
+      "sha1": "76e8c04b76adcc71fe9ff48e2dc871bf4f0a4702"
+    },
+    {
+      "mystery": "carryingCross",
+      "heading": "Jesus Carrying His Cross",
+      "contemplate": "Let us contemplate, in this Mystery, how our Lord Jesus Christ, being sentenced to die, bore, with most amazing patience, the Cross which was laid upon Him for His greater torment and ignominy.",
+      "prayer": "O Holy Virgin, model of patience, by the most painful carrying of the Cross, in which Thy Son, our Lord Jesus Christ, bore the heavy weight of our sins, obtain for us of Him, through thine intercession, courage and strength to follow His steps, and bear our cross after Him to the end of our lives. Amen.",
+      "sha1": "ed9c973a26a640e4d1cecbd96f56378be54ea957"
+    },
+    {
+      "mystery": "crucifixion",
+      "heading": "The Crucifixion of Our Lord Jesus Christ",
+      "contemplate": "Let us contemplate, in this Mystery, how our Lord Jesus Christ, being come to Mount Calvary, was stripped of His clothes, and His Hands and Feet were cruelly nailed to the Cross, in the presence of His most afflicted Mother.",
+      "prayer": "O Holy Mary, Mother of God, as the Body of thy beloved Son was for us stretched upon the Cross, so may we offer up our souls and bodies to be crucified with Him, and our hearts to be pierced with grief at His most bitter Passion; and thou, O most sorrowful Mother, graciously vouchsafe to help us, by thy all-powerful prayers, to accomplish the work of our salvation. Amen.",
+      "sha1": "2aac59cec3459a5b5bfd637f0375ae7612e58860"
+    },
+    {
+      "mystery": "resurrection",
+      "heading": "The Resurrection of Our Lord from the Dead",
+      "contemplate": "Let us contemplate, in this Mystery, how our Lord Jesus Christ, triumphing gloriously over death, rose again the third day, immortal and impassible.",
+      "prayer": "O Glorious Virgin Mary, by that unspeakable joy thou didst receive in the Resurrection of thy Divine Son, we beseech thee obtain for us of Him that our hearts may never go astray after the false joys of this world, but may be wholly employed in seeking the true and solid joys of heaven. Amen.",
+      "sha1": "70817307080096ce836c8b21d1ee807fb2260cad"
+    },
+    {
+      "mystery": "ascension",
+      "heading": "The Ascension of Christ Into Heaven",
+      "contemplate": "Let us contemplate, in this Mystery, how our Lord Jesus Christ, forty days after His Resurrection, ascended into heaven, attended by Angels, in the sight of His most Holy Mother and His holy Apostles and Disciples.",
+      "prayer": "O Mother of God, consoler of the afflicted, as thy beloved Son, when He ascended into heaven, lifted up His Hands, and blessed His Apostles, as He departed from them, so vouchsafe, most holy Mother, to lift up thy pure hands to Him on our behalf, that we may enjoy the benefits of His blessing, and of thine, here on earth, and hereafter in heaven. Amen.",
+      "sha1": "8b6c637f9088b49d13f817a8c7daf38d92d3273f"
+    },
+    {
+      "mystery": "descentOfHolySpirit",
+      "heading": "The Descent of the Holy Ghost Upon the Apostles",
+      "contemplate": "Let us contemplate, in this Mystery, how the Lord Jesus Christ, being seated on the right hand of God, sent, as He had promised, the Holy Ghost upon His Apostles, Who, after He had ascended, returned to Jerusalem, and continued in prayer and supplication, waiting for the fulfillment of His promise.",
+      "prayer": "O Sacred Virgin, Tabernacle of the Holy Ghost, we beseech thee to obtain, by thine intercession, that this Comforter, whom thy beloved Son sent down upon His Apostles, filling them thereby with spiritual joy, may teach us in this world the true way of salvation, and make us walk in the way of virtue and good works. Amen.",
+      "sha1": "7446c84ea2e9cdfcf1bdcd5a24c3d9c0cbe0256f"
+    },
+    {
+      "mystery": "assumption",
+      "heading": "The Assumption of the Blessed Virgin Mary Into Heaven",
+      "contemplate": "Let us contemplate, in this Mystery, how the glorious Virgin, twelve years after the Resurrection of her Son, passed out of this world unto Him, and was by Him taken up into heaven, attended by the holy Angels.",
+      "prayer": "O Holy Virgin, who, entering the heavenly mansions, didst fill the Angels with joy and man with hope, vouchsafe to intercede for us at the hour of our death, that, being delivered from the illusions and temptations of the devil, we may joyfully pass out of this earthly estate to enjoy the happiness of eternal life. Amen.",
+      "sha1": "0393b3135f59ab1854ba4ea29bd33c578a9f8bb5"
+    },
+    {
+      "mystery": "coronation",
+      "heading": "The Coronation of the Blessed Virgin Mary in Heaven",
+      "contemplate": "Let us contemplate, in this Mystery, how the glorious Virgin Mary was, to the great jubilee and exultation of the whole Court of heaven, crowned by her Son with the brightest diadem of glory.",
+      "prayer": "O Glorious Queen of all the heavenly host, we beseech thee to accept these prayers, which, as a Crown of Roses, we offer at thy feet; and grant, most gracious Lady, that by thy intercession, our souls may be inflamed with so ardent a desire of seeing thee so gloriously crowned, that it may never die within us until it shall be changed into the happy fruition of thy blessed sight. Amen.",
+      "sha1": "a44fde52a1dcaf41a4ce0c8123b9c0e4ac66e2fe"
+    }
+  ]
+}
