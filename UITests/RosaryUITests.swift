@@ -131,7 +131,11 @@ final class RosaryUITests: XCTestCase {
         let before = prayer.label
         let frame = app.descendants(matching: .any)[UITag.sessionArtFrame]
         let image = app.descendants(matching: .any)[UITag.sessionArtImage]
-        XCTAssertTrue(frame.waitForExistence(timeout: 10), "Missing \(UITag.sessionArtFrame)")
+        if !frame.waitForExistence(timeout: 8) {
+            let names = app.descendants(matching: .any).allElementsBoundByIndex.prefix(24).map { "\($0.identifier):\($0.label)" }.joined(separator: " | ")
+            XCTFail("Missing \(UITag.sessionArtFrame). elements=\(names)")
+            return
+        }
         XCTAssertTrue(image.waitForExistence(timeout: 4), "Missing \(UITag.sessionArtImage)")
         waitUntil("bundled image reports its size") { self.parsedSize(of: image) != nil }
         assertImageFits(image, in: frame)
