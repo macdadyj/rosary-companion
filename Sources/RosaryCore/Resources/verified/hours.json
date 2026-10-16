@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "source": "The Raccolta (1857), translated by Ambrose St. John, “The Angelus Domini, etc., or the Regina cœli, etc.” Wikisource transcription.",
+  "sourceURL": "https://en.wikisource.org/wiki/The_Raccolta_(1857)/The_%22Angelus_Domini%22,_etc.,_or_the_%22Regina_c%C5%93li%22,_etc.",
+  "license": "public domain",
+  "retrieved": "2026-10-15",
+  "seasonNote": "The same section says the Regina cœli replaces the Angelus “at Paschal-tide, that is, from Holy Saturday at midday to midday on the Saturday preceding the Feast of the Most Holy Trinity, inclusive.” The app treats the whole civil date of Holy Saturday as already in that season.",
+  "angelus": [
+    "V. The angel of the Lord declared unto Mary, and she conceived of the Holy Ghost.",
+    "Ave Maria.",
+    "V. Behold the handmaid of the Lord; be it done unto me according to Thy word.",
+    "Ave Maria.",
+    "V. And the Word was made Flesh, and dwelt among us.",
+    "Ave Maria.",
+    "V. Pray for us, Holy Mother of God.",
+    "R. That we may be made worthy of the promises of Christ.",
+    "Let us pray.",
+    "Pour down Thy grace into our souls, we beseech Thee, O Lord; that as we have known the Incarnation of Christ Thy Son by the message of an angel, so by His Passion and Cross we may come to the glory of the resurrection. Through the same Christ our Lord. R. Amen."
+  ],
+  "reginaCaeli": [
+    "Queen of Heaven, rejoice. Alleluia.",
+    "He whom thou wast made worthy to bear. Alleluia.",
+    "Hath risen as He said. Alleluia.",
+    "Pray for us to our God. Alleluia.",
+    "V. Rejoice and be glad, O Mary the Virgin. Alleluia.",
+    "R. For the Lord hath risen indeed. Alleluia.",
+    "Let us pray.",
+    "God, who through the resurrection of Thy Son our Lord Jesus Christ hast vouchsafed to make glad the whole world; grant us, we beseech Thee, that through the intercession of the Virgin Mary His Mother we may attain the joys of eternal life. Through the same our Lord Jesus Christ. Amen."
+  ],
+  "angelusSha1": "e80f2f826716219450adc5a2baabe58abd986ebd",
+  "reginaSha1": "64f06bf6b50760320424c4e99c05af207ebe4f78"
+}

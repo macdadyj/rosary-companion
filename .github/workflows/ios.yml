@@ -1,0 +1,210 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  unit:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          if [[ -d /Applications/Xcode_26.6.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_26.6.app
+          elif [[ -d /Applications/Xcode_26.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_26.app
+          else
+            sudo xcode-select -s /Applications/Xcode.app
+          fi
+          xcodebuild -version
+
+      - name: Archive script self-test
+        run: scripts/archive-upload.sh --self-test
+
+      - name: Unit tests
+        run: swift test
+
+  phone-ui:
+    runs-on: macos-26
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          if [[ -d /Applications/Xcode_26.6.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_26.6.app
+          elif [[ -d /Applications/Xcode_26.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_26.app
+          else
+            sudo xcode-select -s /Applications/Xcode.app
+          fi
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: xcodegen generate
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: build/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('project.yml', 'Package.swift') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Phone UI tests
+        run: |
+          set -euo pipefail
+          UDID="$(python3 - <<'PY'
+          import json, subprocess
+          raw = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"], text=True)
+          data = json.loads(raw)
+          chosen = ""
+          for runtime, devices in data.get("devices", {}).items():
+              if "iOS" not in runtime:
+                  continue
+              for device in devices:
+                  if device.get("name", "").startswith("iPhone") and device.get("isAvailable", True):
+                      chosen = device["udid"]
+          if not chosen:
+              raise SystemExit("No available iPhone simulator")
+          print(chosen)
+          PY
+          )"
+          xcodebuild test \
+            -project Rosary.xcodeproj \
+            -scheme RosaryUI \
+            -destination "platform=iOS Simulator,id=${UDID}" \
+            -clonedSourcePackagesDirPath build/SourcePackages \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="-" \
+            DEVELOPMENT_TEAM=""
+
+  watch-ui:
+    runs-on: macos-26
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          if [[ -d /Applications/Xcode_26.6.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_26.6.app
+          elif [[ -d /Applications/Xcode_26.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_26.app
+          else
+            sudo xcode-select -s /Applications/Xcode.app
+          fi
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: xcodegen generate
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: build/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('project.yml', 'Package.swift') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Watch UI tests
+        run: |
+          set -euo pipefail
+          UDID="$(python3 - <<'PY'
+          import json, subprocess
+          raw = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"], text=True)
+          data = json.loads(raw)
+          chosen = ""
+          for runtime, devices in data.get("devices", {}).items():
+              if "watchOS" not in runtime:
+                  continue
+              for device in devices:
+                  name = device.get("name", "")
+                  if name.startswith("Apple Watch") and device.get("isAvailable", True):
+                      chosen = device["udid"]
+          if not chosen:
+              raise SystemExit("No available Apple Watch simulator")
+          print(chosen)
+          PY
+          )"
+          xcodebuild test \
+            -project Rosary.xcodeproj \
+            -scheme RosaryWatch \
+            -destination "platform=watchOS Simulator,id=${UDID}" \
+            -clonedSourcePackagesDirPath build/SourcePackages \
+            -derivedDataPath build/WatchDerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="-" \
+            DEVELOPMENT_TEAM=""
+
+  # Upload waits for the unit tests and for both UI suites. It does not run on pull requests.
+  testflight:
+    needs: [unit, phone-ui, watch-ui]
+    if: github.event_name != 'pull_request'
+    concurrency:
+      group: testflight-${{ github.repository }}
+      cancel-in-progress: false
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          if [[ -d /Applications/Xcode_26.6.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_26.6.app
+          elif [[ -d /Applications/Xcode_26.app ]]; then
+            sudo xcode-select -s /Applications/Xcode_26.app
+          else
+            sudo xcode-select -s /Applications/Xcode.app
+          fi
+          xcodebuild -version
+
+      - name: Archive script self-test
+        run: scripts/archive-upload.sh --self-test
+
+      - name: Unit tests
+        run: swift test
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: xcodegen generate
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: build/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('project.yml', 'Package.swift') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Archive and upload to TestFlight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          DEVELOPMENT_TEAM: ${{ secrets.DEVELOPMENT_TEAM }}
+        run: scripts/archive-upload.sh

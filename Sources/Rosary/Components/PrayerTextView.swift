@@ -9,6 +9,7 @@ struct PrayerTextView: View {
     let card: MeditationCard?
     /// Scripture and fruit under a mystery's title; off when the meditation panel already shows them.
     var showsMysteryDetails = true
+    var content: PrayerContent?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -42,7 +43,7 @@ struct PrayerTextView: View {
                 .font(.prayer(textSize.prayerStyle, weight: .medium))
                 .foregroundStyle(Theme.ink)
             if showsMysteryDetails {
-                MysteryDetailsView(mystery: mystery)
+                MysteryDetailsView(mystery: mystery, content: content)
                     .font(.callout)
             }
             if let card {
@@ -109,11 +110,38 @@ struct PrayerTextView: View {
 
 struct MysteryDetailsView: View {
     let mystery: Mystery
+    var content: PrayerContent?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Label(mystery.scripture, systemImage: "book")
-            Label("Fruit of the mystery: \(mystery.fruit)", systemImage: "leaf")
+        VStack(alignment: .leading, spacing: 8) {
+            if let passage = content?.passage(for: mystery.id), passage.verified {
+                Text(passage.reference)
+                    .font(.caption.weight(.semibold))
+                Text(passage.body)
+                    .font(.prayer(.footnote))
+                    .foregroundStyle(Theme.ink)
+                Text(content?.scripture.translation ?? "")
+                    .font(.caption2)
+                if let note = passage.note {
+                    Text(note)
+                        .font(.caption2)
+                }
+            } else {
+                Label(mystery.scripture, systemImage: "book")
+            }
+            Text("Fruit of the mystery: \(mystery.fruit)")
+            Text("This short name has not been checked against one edition.")
+                .font(.caption2)
+            if let prayer = content?.fruitPrayer(for: mystery.id) {
+                Text(prayer.prayer)
+                    .font(.prayer(.footnote))
+                    .foregroundStyle(Theme.ink)
+                Text(content?.fruits.source ?? "")
+                    .font(.caption2)
+            } else if let slot = content?.slot("fruit.luminous-prayers"), mystery.set == .luminous {
+                Text(slot.reason)
+                    .font(.caption2)
+            }
         }
         .foregroundStyle(Theme.secondaryInk)
     }

@@ -7,7 +7,7 @@ public enum AppearancePreference: String, Codable, CaseIterable, Hashable, Senda
 
     public var title: String {
         switch self {
-        case .dark: "Dark"
+        case .dark: "Candlelight"
         case .light: "Light"
         case .system: "Match iPhone"
         }
@@ -70,6 +70,9 @@ public struct AppSettings: Codable, Hashable, Sendable {
     public var showsMeditationWhileTracking = true
     public var appearance: AppearancePreference = .dark
     public var textSize: PrayerTextSize = .large
+    /// Reserved for a sourced chant recording. Off, and silent, until one is bundled.
+    public var chantEnabled = false
+    public var showSacredArt = true
     public var family = FamilySettings()
 
     public init() {}
@@ -89,7 +92,7 @@ public struct AppSettings: Codable, Hashable, Sendable {
     enum CodingKeys: String, CodingKey {
         case defaultMode, defaultLength, openingIntentions, seasonalSundays, usesHolyGhost, voiceTracking
         case haptics, narrationRate, narrationPitch, narratorVoiceID, meditationPause
-        case showsMeditationWhileTracking, appearance, textSize, family
+        case showsMeditationWhileTracking, appearance, textSize, chantEnabled, showSacredArt, family
     }
 
     /// Missing keys fall back to defaults so older saved settings keep loading.
@@ -113,6 +116,8 @@ public struct AppSettings: Codable, Hashable, Sendable {
             ?? d.showsMeditationWhileTracking
         appearance = (try? c.decodeIfPresent(AppearancePreference.self, forKey: .appearance)) ?? d.appearance
         textSize = (try? c.decodeIfPresent(PrayerTextSize.self, forKey: .textSize)) ?? d.textSize
+        chantEnabled = try c.decodeIfPresent(Bool.self, forKey: .chantEnabled) ?? d.chantEnabled
+        showSacredArt = try c.decodeIfPresent(Bool.self, forKey: .showSacredArt) ?? d.showSacredArt
         family = try c.decodeIfPresent(FamilySettings.self, forKey: .family) ?? d.family
     }
 }

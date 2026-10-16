@@ -14,6 +14,10 @@
 	<string>Rosary uses on-device speech recognition to notice key phrases, like the Glory Be and the Fatima Prayer, so it can move to the next prayer for you. Nothing you say leaves your iPhone.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>UILaunchScreen</key>
+	<dict/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 </dict>

@@ -7,12 +7,18 @@ let package = Package(
     platforms: [
         .iOS(.v17),
         .macOS(.v14),
+        .watchOS(.v10),
     ],
     products: [
-        // xtool bundles exactly one library product as the iOS app (see xtool.yml).
+        // xtool bundles the Rosary library product as the iOS app (see xtool.yml).
         .library(
             name: "Rosary",
             targets: ["Rosary"]
+        ),
+        // The Xcode project used for TestFlight links this product into the app, widget, and watch.
+        .library(
+            name: "RosaryCore",
+            targets: ["RosaryCore"]
         ),
     ],
     targets: [

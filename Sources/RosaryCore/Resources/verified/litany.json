@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "title": "Litany of the Blessed Virgin, commonly called the Litany of Loretto",
+  "source": "The Raccolta (1857), translated by Ambrose St. John, section “The Litanies.” Wikisource transcription.",
+  "sourceURL": "https://en.wikisource.org/wiki/The_Raccolta_(1857)/The_Litanies",
+  "license": "public domain",
+  "retrieved": "2026-10-15",
+  "note": "Each row is one line of the 1857 table. This edition does not print a repeated response after every Marian title. Invocations added after 1857 are not in this text and are slots in VERIFY.md.",
+  "rows": [
+    {
+      "latin": "Kyrie eleison.",
+      "english": "Lord have mercy."
+    },
+    {
+      "latin": "Kyrie eleison.",
+      "english": "Lord have mercy."
+    },
+    {
+      "latin": "Christe eleison.",
+      "english": "Christ have mercy."
+    },
+    {
+      "latin": "Christe eleison.",
+      "english": "Christ have mercy."
+    },
+    {
+      "latin": "Kyrie eleison.",
+      "english": "Lord have mercy."
+    },
+    {
+      "latin": "Kyrie eleison.",
+      "english": "Lord have mercy."
+    },
+    {
+      "latin": "Christe audi nos.",
+      "english": "Christ hear us."
+    },
+    {
+      "latin": "Christe exaudi nos.",
+      "english": "Christ graciously hear us."
+    },
+    {
+      "latin": "Pater de cœlis Deus, Miserere nobis.",
+      "english": "God the Father of heaven, Have mercy on us."
+    },
+    {
+      "latin": "Fili Redemptor mundi Deus,",
+      "english": "God the Son, Redeemer of the world,"
+    },
+    {
+      "latin": "Spiritus Sancte Deus,",
+      "english": "God the Holy Ghost,"
+    },
+    {
+      "latin": "Sancta Trinitas, unus Deus,",
+      "english": "Holy Trinity, one God,"
+    },
+    {
+      "latin": "Sancta Maria,",
+      "english": "Holy Mary,"
+    },
+    {
+      "latin": "Sancta Dei Genitrix,",
+      "english": "Holy Mother of God,"
+    },
+    {
+      "latin": "Sancta Virgo Virginum,",
+      "english": "Holy Virgin of Virgins,"
+    },
+    {
+      "latin": "Mater Christi,",
+      "english": "Mother of Christ,"
+    },
+    {
+      "latin": "Mater divinæ gratiæ,",
+      "english": "Mother of divine grace."
+    },
+    {
+      "latin": "Mater purissima,",
+      "english": "Mother most pure,"
+    },
+    {
+      "latin": "Mater castissima,",
+      "english": "Mother most chaste."
+    },
+    {
+      "latin": "Mater inviolata,",
+      "english": "Mother inviolate,"
+    },
+    {
+      "latin": "Mater intemerata,",
+      "english": "Mother undefiled."
+    },
+    {
+      "latin": "Mater amabilis,",
+      "english": "Mother most amiable."
+    },
+    {
+      "latin": "Mater admirabilis,",
+      "english": "Mother most admirable,"
+    },
+    {
+      "latin": "Mater Creatoris,",
+      "english": "Mother of our Creator,"
+    },
+    {
+      "latin": "Mater Salvatoris,",
+      "english": "Mother of our Saviour,"
+    },
+    {
+      "latin": "Virgo prudentissima,",
+      "english": "Virgin most prudent,"
+    },
+    {
+      "latin": "Virgo veneranda,",
+      "english": "Virgin most venerable,"
+    },
+    {
+      "latin": "Virgo prædicanda,",
+      "english": "Virgin most renowned,"
+    },
+    {
+      "latin": "Virgo potens,",
+      "english": "Virgin most powerful,"
+    },
+    {
+      "latin": "Virgo clemens,",
+      "english": "Virgin most merciful,"
+    },
+    {
+      "latin": "Virgo fidelis,",
+      "english": "Virgin most faithful,"
+    },
+    {
+      "latin": "Speculum justitiæ,",
+      "english": "Mirror of justice."
+    },
+    {
+      "latin": "Sedes sapientiæ,",
+      "english": "Seat of Wisdom,"
+    },
+    {
+      "latin": "Causa nostræ lætitiæ,",
+      "english": "Cause of our joy,"
+    },
+    {
+      "latin": "Vas spirituale,",
+      "english": "Spiritual Vessel,"
+    },
+    {
+      "latin": "Vas honorabile,",
+      "english": "Vessel of honour,"
+    },
+    {
+      "latin": "Vas insigne devotionis,",
+      "english": "Singular Vessel of devotion."
+    },
+    {
+      "latin": "Rosa mystica,",
+      "english": "Mystical Rose,"
+    },
+    {
+      "latin": "Turris Davidica,",
+      "english": "Tower of David,"
+    },
+    {
+      "latin": "Turris eburnea,",
+      "english": "Tower of ivory."
+    },
+    {
+      "latin": "Domus aurea,",
+      "english": "House of gold,"
+    },
+    {
+      "latin": "Fœderis arca,",
+      "english": "Ark of the covenant,"
+    },
+    {
+      "latin": "Janua cœli,",
+      "english": "Gate of heaven,"
+    },
+    {
+      "latin": "Stella matutina,",
+      "english": "Morning star."
+    },
+    {
+      "latin": "Salus infirmorum,",
+      "english": "Health of the sick,"
+    },
+    {
+      "latin": "Refugium peccatorum,",
+      "english": "Refuge of sinners,"
+    },
+    {
+      "latin": "Consolatrix afflictorum,",
+      "english": "Comforter of the afflicted,"
+    },
+    {
+      "latin": "Auxilium Christianorum,",
+      "english": "Help of Christians,"
+    },
+    {
+      "latin": "Regina Angelorum,",
+      "english": "Queen of Angels,"
+    },
+    {
+      "latin": "Regina Patriarchamm,",
+      "english": "Queen of Patriarchs,"
+    },
+    {
+      "latin": "Regina Prophetarum,",
+      "english": "Queen of Prophets,"
+    },
+    {
+      "latin": "Regina Apostolorum,",
+      "english": "Queen of Apostles,"
+    },
+    {
+      "latin": "Regina Martyrum,",
+      "english": "Queen of Martyrs,"
+    },
+    {
+      "latin": "Regina Confessorum,",
+      "english": "Queen of Confessors,"
+    },
+    {
+      "latin": "Regina Virginum,",
+      "english": "Queen of Virgins,"
+    },
+    {
+      "latin": "Regina Sanctorum omnium,",
+      "english": "Queen of all Saints,"
+    },
+    {
+      "latin": "Regina sine labe originali concepta,",
+      "english": "Queen conceived without original sin,"
+    },
+    {
+      "latin": "Agnus Dei, qui tollis peccata mundi,",
+      "english": "Lamb of God, who takest away the sins of the world,"
+    },
+    {
+      "latin": "Parce nobis, Domine.",
+      "english": "Spare us, O Lord."
+    },
+    {
+      "latin": "Agnus Dei, qui tollis peccata mundi,",
+      "english": "Lamb of God, who takest away the sins of the world,"
+    },
+    {
+      "latin": "Exaudi nos, Domine.",
+      "english": "Graciously hear us, O Lord."
+    },
+    {
+      "latin": "Agnus Dei, qui tollis peccata mundi,",
+      "english": "Lamb of God, who takest away the sins of the world,"
+    },
+    {
+      "latin": "Miserere nobis.",
+      "english": "Have mercy on us."
+    },
+    {
+      "latin": "Christe audi nos.",
+      "english": "Christ hear us."
+    },
+    {
+      "latin": "Christe exaudi nos.",
+      "english": "Christ graciously hear us."
+    },
+    {
+      "latin": "V. Ora pro nobis, sancta Dei Genitrix.",
+      "english": "V. Pray for us, O holy Mother of God,"
+    },
+    {
+      "latin": "R. Ut digni efficiamur promissionibus Christi.",
+      "english": "R. That we may be made worthy of the promises of Christ."
+    },
+    {
+      "latin": "Oremus.",
+      "english": "Let us pray."
+    },
+    {
+      "latin": "Gratiam tuam, quæsumus Domine, mentibus nostris infunde: ut qui, angelo nuntiante, Christi Filii tui Incarnationem cognovimus, per Passionem ✠ ejus et Crucem ad resurrectionis gloriam perducamur. Per eundem Christum Dominum nostrum.",
+      "english": "Pour down, we beseech Thee, O Lord, Thy grace into our souls; that as we have known the Incarnation of Christ Thy Son by the message of an angel, so by His Passion ✠ and Cross we may be brought to the glory of the resurrection. Through the same Christ our Lord."
+    },
+    {
+      "latin": "R. Amen.",
+      "english": "R. Amen."
+    },
+    {
+      "latin": "V. Divinum auxilium maneat semper nobiscum.",
+      "english": "V. May the divine assistance remain always with us."
+    },
+    {
+      "latin": "R. Amen.",
+      "english": "R. Amen."
+    }
+  ],
+  "sha1": "e4437db1590456fd21c955d2b2ea3da55776a484"
+}

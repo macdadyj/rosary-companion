@@ -17,11 +17,13 @@ It is built with SwiftPM and [xtool](https://xtool.sh) so that it can be develop
 | Recorded prayers can replace the synthesized voice, part by part | Ready; no recordings yet, see [docs/RECORDINGS.md](docs/RECORDINGS.md) |
 | Habits: streak, one-line journal, intentions, plain-text export | Done |
 | Large Dynamic Type, dark (default) and light, high contrast, VoiceOver actions | Done |
-| `swift test` on Linux | 137 tests passing |
+| `swift test` on Linux | Rosary core, including the checked texts and paintings |
 | iOS app target compiled for arm64 against the iPhoneOS 26.5 SDK on Linux | Passing (`scripts/ios-compile-check.sh`) |
 | Signed build installed on a real iPhone | Done by the owner, on an iPhone 11 |
 
 The meditation panel and the new narration were built after that first try on the iPhone, so like the rest of the iOS layer they are compiled and type-checked on Linux but haven't been run on a device yet. Thresholds such as the silence windows in `SessionTiming`, and the pauses between spoken phrases in `SpeechPacing`, may need tuning in use.
+
+TestFlight is prepared in [docs/TESTFLIGHT.md](docs/TESTFLIGHT.md). The App Store bundle id is `com.lojo.Rosary`. Words that were not copied from a named edition are slots in [VERIFY.md](VERIFY.md), not guesses.
 
 ## Features
 
@@ -35,6 +37,9 @@ The meditation panel and the new narration were built after that first try on th
 - **Meditation while you pray.** In Tracking mode, a panel above the prayer keeps the current mystery's scripture, fruit, and meditation on screen through the decade. "Another meditation" steps through every verified quotation for that mystery, then the reflection prompt. The panel never takes more than half the space between the header and the controls: a long meditation scrolls inside it, so the bead counter and listening status stay visible. Hide or show it from the panel or in Settings; the choice is remembered.
 - **A natural, unhurried narrator.** The app reads with the best English voice installed on the phone: Premium first, then Enhanced, then Standard, preferring your region's accent and skipping the robotic legacy and novelty voices. Prayers are spoken phrase by phrase at a calm pace, with short pauses at semicolons and between sentences. Settings › Narrator voice lists every installed voice with a preview, and explains how to download Premium and Enhanced voices; pace and pitch have their own sliders.
 - **Habits.** Daily streak, a one-line journal note after each session, intentions you can offer and mark answered, and a plain-text export via the share sheet.
+- **Scripture and fruit.** Each mystery shows its Douay-Rheims passage. The fifteen older mysteries also show the 1926 fruit prayer. The one-word fruit names are labeled as unchecked.
+- **Other devotions.** Seven Dolors chaplet (1883), a Divine Mercy bead counter whose Mercy prayers are withheld until licensed, the 1857 Litany of Loreto, the Angelus and Regina Caeli, a 33-day counter, and the Ruthenian and Western Marian calendars.
+- **Art and the bead ring.** A public-domain painting for each mystery, with the credit under it, and a glowing ring that moves with the bead. Dark mode is candlelit. Settings shows the build number.
 
 ## Build and install on an iPhone (free Apple account)
 

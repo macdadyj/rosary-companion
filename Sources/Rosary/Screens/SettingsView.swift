@@ -4,6 +4,7 @@ import SwiftUI
 
 struct SettingsView: View {
     let model: AppModel
+    var content: PrayerContent?
 
     @State private var narrationRate = SpeechPacing.defaultRate
     @State private var narrationPitch = SpeechPacing.defaultPitch
@@ -45,7 +46,9 @@ struct SettingsView: View {
             }
             Toggle("Intentions on the first three Hail Marys", isOn: binding(\.openingIntentions))
             Toggle("Say “Holy Ghost”", isOn: binding(\.usesHolyGhost))
+                .uiTag(UITag.settingsHolyGhost)
             Toggle("Seasonal Sundays", isOn: binding(\.seasonalSundays))
+                .uiTag(UITag.settingsSeasonal)
             Picker("Quiet after each mystery", selection: binding(\.meditationPause)) {
                 ForEach(AppSettings.meditationPauseChoices, id: \.seconds) { choice in
                     Text("\(choice.title) (\(Int(choice.seconds)) s)").tag(choice.seconds)
@@ -61,11 +64,15 @@ struct SettingsView: View {
     private var listeningSection: some View {
         Section {
             Toggle("Voice tracking", isOn: binding(\.voiceTracking))
+                .uiTag(UITag.settingsVoice)
             Toggle("Haptics", isOn: binding(\.haptics))
+                .uiTag(UITag.settingsHaptics)
+            Toggle("Chant", isOn: binding(\.chantEnabled))
+                .uiTag(UITag.settingsChant)
         } header: {
             Text("Listening")
         } footer: {
-            Text("Voice tracking listens for key phrases, such as the Glory Be and the Fatima Prayer, using speech recognition on this iPhone only. Nothing is recorded or sent anywhere. With it off, tap anywhere to move to the next prayer.")
+            Text("Voice tracking listens for key phrases, such as the Glory Be and the Fatima Prayer, using speech recognition on this iPhone only. Nothing is recorded or sent anywhere. With it off, tap anywhere to move to the next prayer. Chant stays silent until a sourced recording is added. \(content?.slot("chant.recording")?.reason ?? "")")
         }
     }
 
@@ -76,6 +83,7 @@ struct SettingsView: View {
             } label: {
                 LabeledContent("Narrator voice", value: narratorName)
             }
+            .uiTag(UITag.settingsVoicePicker)
             VStack(alignment: .leading, spacing: 6) {
                 Text("Speaking pace")
                 Slider(value: $narrationRate, in: SpeechPacing.rateRange) {
@@ -144,6 +152,8 @@ struct SettingsView: View {
                 .padding(.vertical, 4)
                 .accessibilityLabel("Sample prayer text")
             Toggle("Meditation while tracking", isOn: binding(\.showsMeditationWhileTracking))
+            Toggle("Sacred art", isOn: binding(\.showSacredArt))
+                .uiTag(UITag.settingsArt)
         } header: {
             Text("Display")
         } footer: {
@@ -154,11 +164,13 @@ struct SettingsView: View {
     private var familySection: some View {
         Section {
             Toggle("Family Rosary", isOn: binding(\.family.isEnabled))
+                .uiTag(UITag.settingsFamily)
             NavigationLink {
                 FamilyMembersView(model: model)
             } label: {
                 LabeledContent("Family members", value: "\(settings.family.members.count)")
             }
+            .uiTag(UITag.settingsMembers)
             Picker("Taking turns", selection: binding(\.family.policy)) {
                 ForEach(RotationPolicy.allCases) { Text($0.title).tag($0) }
             }
@@ -182,6 +194,8 @@ struct SettingsView: View {
                     .foregroundStyle(Theme.warning)
             }
             LabeledContent("Version", value: Self.version)
+            LabeledContent("Build", value: Self.buildNumber)
+                .uiTag(UITag.settingsBuild)
         }
         .font(.subheadline)
     }
@@ -214,8 +228,11 @@ struct SettingsView: View {
     private static var version: String {
         let info = Bundle.main.infoDictionary
         let short = info?["CFBundleShortVersionString"] as? String ?? "?"
-        let build = info?["CFBundleVersion"] as? String ?? "?"
-        return "\(short) (\(build))"
+        return "\(short) (\(buildNumber))"
+    }
+
+    private static var buildNumber: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
     }
 }
 
@@ -234,9 +251,11 @@ struct FamilyMembersView: View {
 
                 HStack {
                     TextField("Add a name", text: $newName)
+                        .uiTag(UITag.familyField)
                         .submitLabel(.done)
                         .onSubmit(add)
                     Button("Add", action: add)
+                        .uiTag(UITag.familyAdd)
                         .disabled(newName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             } footer: {

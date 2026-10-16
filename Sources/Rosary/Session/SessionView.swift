@@ -7,6 +7,7 @@ struct SessionView: View {
     let session: ActiveSession
     let settings: AppSettings
     let library: SaintsLibrary
+    let content: PrayerContent?
     let onClose: () -> Void
 
     @Environment(\.scenePhase) private var scenePhase
@@ -17,7 +18,7 @@ struct SessionView: View {
 
     var body: some View {
         ZStack {
-            Theme.background.ignoresSafeArea()
+            CandleBackground()
             if session.hasEnded {
                 SessionSummaryView(session: session, onDone: onClose)
                     .transition(.opacity)
@@ -31,7 +32,18 @@ struct SessionView: View {
         .preferredColorScheme(settings.appearance.colorScheme)
         .task { await session.begin() }
         .onChange(of: scenePhase) { _, phase in session.scenePhaseChanged(phase) }
-        .onDisappear { session.close() }
+        .onDisappear {
+            session.close()
+            PrayerLiveActivity.end()
+        }
+        .onChange(of: snapshot.stepIndex) { _, _ in
+            PrayerLiveActivity.sync(
+                title: snapshot.title,
+                detail: sectionLine,
+                completed: snapshot.completedDecades.count,
+                total: snapshot.decadeTotal
+            )
+        }
     }
 
     private var preparing: some View {
@@ -60,6 +72,7 @@ struct SessionView: View {
                             textSize: settings.textSize,
                             isExpanded: session.showsMeditation,
                             maxHeight: proxy.size.height * 0.5,
+                            content: content,
                             onToggle: {
                                 withAnimation(.easeInOut(duration: 0.25)) {
                                     session.setShowsMeditation(!session.showsMeditation)
@@ -76,7 +89,8 @@ struct SessionView: View {
                             snapshot: snapshot,
                             textSize: settings.textSize,
                             card: panelShowsMeditation ? nil : meditationCard,
-                            showsMysteryDetails: !panelShowsMeditation
+                            showsMysteryDetails: !panelShowsMeditation,
+                            content: content
                         )
                         .padding(.horizontal, 24)
                         .padding(.vertical, 20)
@@ -91,6 +105,7 @@ struct SessionView: View {
             bottomBar
         }
         .contentShape(Rectangle())
+        .uiTag(UITag.sessionSurface)
         .onTapGesture { session.tap() }
         .overlay {
             if let name = snapshot.nextLeaderBanner {
@@ -124,6 +139,7 @@ struct SessionView: View {
                     .frame(width: 48, height: 48)
             }
             .accessibilityLabel("End prayer")
+            .uiTag(UITag.sessionEnd)
 
             Picker("Mode", selection: Binding(
                 get: { snapshot.mode },
@@ -145,6 +161,7 @@ struct SessionView: View {
                     .frame(width: 48, height: 48)
             }
             .accessibilityLabel(isPaused ? "Resume" : "Pause")
+            .uiTag(UITag.sessionPause)
         }
         .foregroundStyle(Theme.secondaryInk)
         .padding(.horizontal, 12)
@@ -181,7 +198,18 @@ struct SessionView: View {
     private var bottomBar: some View {
         VStack(spacing: 14) {
             if let progress = BeadProgress.progress(for: snapshot.step) {
-                BeadCounterView(progress: progress, isEstimate: snapshot.isEstimate)
+                BeadRingView(
+                    count: progress.count,
+                    completed: progress.completed,
+                    current: progress.current,
+                    caption: progress.accessibilityLabel
+                )
+                .padding(.horizontal, 28)
+            }
+            if settings.showSacredArt, let mystery = snapshot.mystery, let content,
+               let work = content.work(for: mystery.id) {
+                SacredArtView(work: work, data: content.imageData(for: mystery.id), height: 120)
+                    .padding(.horizontal, 40)
             }
             VoiceIndicatorView(
                 indicator: controller.voiceIndicator,
@@ -201,6 +229,7 @@ struct SessionView: View {
                 }
                 .disabled(snapshot.stepIndex == 0)
                 .accessibilityLabel("Previous prayer")
+                .uiTag(UITag.sessionBack)
                 Spacer()
                 if showsTapHint {
                     Label("Tap anywhere for the next prayer", systemImage: "hand.tap")

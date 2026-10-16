@@ -4,6 +4,7 @@ import SwiftUI
 
 struct SaintsLibraryView: View {
     let library: SaintsLibrary
+    var content: PrayerContent?
 
     var body: some View {
         List {
@@ -16,7 +17,7 @@ struct SaintsLibraryView: View {
                 Section(set.title) {
                     ForEach(set.mysteries) { mystery in
                         NavigationLink {
-                            MysteryMeditationsView(mystery: mystery, library: library)
+                            MysteryMeditationsView(mystery: mystery, library: library, content: content)
                         } label: {
                             row(mystery)
                         }
@@ -40,12 +41,14 @@ struct SaintsLibraryView: View {
                 .foregroundStyle(Theme.secondaryInk)
         }
         .padding(.vertical, 2)
+        .uiTag(mystery.id == .annunciation ? UITag.saintMystery : "saint.\(mystery.id.rawValue)")
     }
 }
 
 struct MysteryMeditationsView: View {
     let mystery: Mystery
     let library: SaintsLibrary
+    var content: PrayerContent?
 
     var body: some View {
         ScrollView {
@@ -57,9 +60,7 @@ struct MysteryMeditationsView: View {
                     Text(mystery.title)
                         .font(.prayer(.largeTitle, weight: .semibold))
                         .foregroundStyle(Theme.ink)
-                    Text("\(mystery.scripture) · Fruit: \(mystery.fruit)")
-                        .font(.subheadline)
-                        .foregroundStyle(Theme.secondaryInk)
+                    MysteryDetailsView(mystery: mystery, content: content)
                 }
 
                 ForEach(library.verifiedQuotes(for: mystery.id)) { meditation in

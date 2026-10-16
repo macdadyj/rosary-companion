@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "retrieved": "2026-10-15",
+  "ruthenian": {
+    "name": "Byzantine Ruthenian calendar of the Metropolitan Church of Pittsburgh",
+    "source": "Metropolitan Cantor Institute, Calendar of Saints, taken from The Divine Liturgy of our Holy Father John Chrysostom (2006).",
+    "sourceURL": "https://mci.archpitt.org/liturgy/Calendar_of_Saints.html",
+    "feasts": [
+      {
+        "month": 9,
+        "day": 1,
+        "name": "The Synaxis of the Theotokos of Miasena.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 9,
+        "day": 7,
+        "name": "Pre-festive Day of the Nativity of the Theotokos.",
+        "rank": "six-stichera"
+      },
+      {
+        "month": 9,
+        "day": 8,
+        "name": "THE NATIVITY OF THE THEOTOKOS AND EVER-VIRGIN MARY.",
+        "rank": "great"
+      },
+      {
+        "month": 9,
+        "day": 9,
+        "name": "Post-festive Day of the Nativity of the Theotokos.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 9,
+        "day": 10,
+        "name": "Post-festive Day of the Nativity of the Theotokos.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 9,
+        "day": 11,
+        "name": "Post-festive Day of the Nativity of the Theotokos.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 9,
+        "day": 12,
+        "name": "Leave-taking of the Nativity of the Theotokos.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 10,
+        "day": 1,
+        "name": "THE PROTECTION OF THE THEOTOKOS AND EVER-VIRGIN MARY.",
+        "rank": "great"
+      },
+      {
+        "month": 11,
+        "day": 21,
+        "name": "THE ENTRANCE OF THE THEOTOKOS AND EVER-VIRGIN MARY INTO THE TEMPLE.",
+        "rank": "great"
+      },
+      {
+        "month": 12,
+        "day": 7,
+        "name": "Pre-festive Day of the Maternity.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 12,
+        "day": 8,
+        "name": "THE MATERNITY OF THE HOLY ANNA.",
+        "rank": "vigil"
+      },
+      {
+        "month": 12,
+        "day": 26,
+        "name": "THE SYNAXIS OF THE THEOTOKOS AND EVER-VIRGIN MARY.",
+        "rank": "doxology"
+      },
+      {
+        "month": 2,
+        "day": 2,
+        "name": "THE MEETING OF OUR LORD, GOD AND SAVIOR JESUS CHRIST WITH SIMEON AND ANNA",
+        "rank": "great"
+      },
+      {
+        "month": 3,
+        "day": 24,
+        "name": "Pre-festive Day of the Annunciation.",
+        "rank": "six-stichera"
+      },
+      {
+        "month": 3,
+        "day": 25,
+        "name": "THE ANNUNCIATION OF THE THEOTOKOS AND EVER-VIRGIN MARY.",
+        "rank": "great"
+      },
+      {
+        "month": 3,
+        "day": 26,
+        "name": "Leave-taking of the Annunciation.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 7,
+        "day": 2,
+        "name": "The Deposition of the Venerable Robes of the Theotokos at Blachernae (c. 465).",
+        "rank": "polyeleos"
+      },
+      {
+        "month": 7,
+        "day": 25,
+        "name": "The Dormition of the Holy Anna, Mother of the Theotokos.",
+        "rank": "polyeleos"
+      },
+      {
+        "month": 8,
+        "day": 14,
+        "name": "Pre-festive Day of the Dormition.",
+        "rank": "six-stichera"
+      },
+      {
+        "month": 8,
+        "day": 15,
+        "name": "THE DORMITION OF THE THEOTOKOS AND EVER-VIRGIN MARY.",
+        "rank": "great"
+      },
+      {
+        "month": 8,
+        "day": 16,
+        "name": "Post-festive Day of the Dormition.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 8,
+        "day": 17,
+        "name": "Post-festive Day of the Dormition.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 8,
+        "day": 18,
+        "name": "Post-festive Day of the Dormition.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 8,
+        "day": 19,
+        "name": "Post-festive Day of the Dormition.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 8,
+        "day": 20,
+        "name": "Post-festive Day of the Dormition.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 8,
+        "day": 21,
+        "name": "Post-festive Day of the Dormition.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 8,
+        "day": 22,
+        "name": "Post-festive Day of the Dormition.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 8,
+        "day": 23,
+        "name": "Leave-taking of the Dormition.",
+        "rank": "commemoration"
+      },
+      {
+        "month": 8,
+        "day": 31,
+        "name": "The Deposition of the Venerable Sash of the Theotokos in Calcoprateia (942).",
+        "rank": "polyeleos"
+      }
+    ]
+  },
+  "western": {
+    "name": "General Roman Calendar",
+    "source": "Titles and ranks as printed in the English Wikipedia article “General Roman Calendar,” which summarizes the calendar promulgated after Mysterii Paschalis and later inscriptions. Feast names below are the article’s list entries, not its prose.",
+    "sourceURL": "https://en.wikipedia.org/wiki/General_Roman_Calendar",
+    "feasts": [
+      {
+        "month": 1,
+        "day": 1,
+        "movable": null,
+        "name": "1 January: Solemnity of Mary, the Holy Mother of God – solemnity"
+      },
+      {
+        "month": 2,
+        "day": 11,
+        "movable": null,
+        "name": "11 February: Our Lady of Lourdes – optional memorial"
+      },
+      {
+        "month": 3,
+        "day": 19,
+        "movable": null,
+        "name": "19 March: Saint Joseph, Spouse of the Blessed Virgin Mary – solemnity"
+      },
+      {
+        "month": 3,
+        "day": 25,
+        "movable": null,
+        "name": "25 March: The Annunciation of the Lord – solemnity"
+      },
+      {
+        "month": 5,
+        "day": 13,
+        "movable": null,
+        "name": "13 May: Our Lady of Fatima – optional memorial"
+      },
+      {
+        "month": 5,
+        "day": 31,
+        "movable": null,
+        "name": "31 May: The Visitation of the Blessed Virgin Mary – feast"
+      },
+      {
+        "month": null,
+        "day": null,
+        "movable": "mondayAfterPentecost",
+        "name": "Monday after Pentecost: Blessed Virgin Mary, Mother of the Church – memorial"
+      },
+      {
+        "month": null,
+        "day": null,
+        "movable": "saturdayAfterSacredHeart",
+        "name": "Saturday after the Second Sunday after Pentecost: The Immaculate Heart of the Blessed Virgin Mary – memorial"
+      },
+      {
+        "month": 7,
+        "day": 16,
+        "movable": null,
+        "name": "16 July: Our Lady of Mount Carmel – optional memorial"
+      },
+      {
+        "month": 7,
+        "day": 26,
+        "movable": null,
+        "name": "26 July: Saints Joachim and Anne, Parents of the Blessed Virgin Mary – memorial"
+      },
+      {
+        "month": 8,
+        "day": 5,
+        "movable": null,
+        "name": "5 August: The Dedication of the Basilica of Saint Mary Major – optional memorial"
+      },
+      {
+        "month": 8,
+        "day": 15,
+        "movable": null,
+        "name": "15 August: The Assumption of the Blessed Virgin Mary – solemnity"
+      },
+      {
+        "month": 8,
+        "day": 22,
+        "movable": null,
+        "name": "22 August: The Queenship of the Blessed Virgin Mary – memorial"
+      },
+      {
+        "month": 9,
+        "day": 8,
+        "movable": null,
+        "name": "8 September: The Nativity of the Blessed Virgin Mary – feast"
+      },
+      {
+        "month": 9,
+        "day": 12,
+        "movable": null,
+        "name": "12 September: The Most Holy Name of Mary – optional memorial"
+      },
+      {
+        "month": 9,
+        "day": 15,
+        "movable": null,
+        "name": "15 September: Our Lady of Sorrows – memorial"
+      },
+      {
+        "month": 10,
+        "day": 7,
+        "movable": null,
+        "name": "7 October: Our Lady of the Rosary – memorial"
+      },
+      {
+        "month": 11,
+        "day": 21,
+        "movable": null,
+        "name": "21 November: The Presentation of the Blessed Virgin Mary – memorial"
+      },
+      {
+        "month": 12,
+        "day": 8,
+        "movable": null,
+        "name": "8 December: The Immaculate Conception of the Blessed Virgin Mary – solemnity"
+      },
+      {
+        "month": 12,
+        "day": 10,
+        "movable": null,
+        "name": "10 December: Our Lady of Loreto – optional memorial"
+      },
+      {
+        "month": 12,
+        "day": 12,
+        "movable": null,
+        "name": "12 December: Our Lady of Guadalupe – optional memorial"
+      }
+    ]
+  }
+}

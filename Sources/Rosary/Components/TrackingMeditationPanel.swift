@@ -13,6 +13,7 @@ struct TrackingMeditationPanel: View {
     let isExpanded: Bool
     let maxHeight: CGFloat
     let onToggle: () -> Void
+    var content: PrayerContent?
 
     @State private var index = 0
 
@@ -72,7 +73,7 @@ struct TrackingMeditationPanel: View {
 
     private var details: some View {
         VStack(alignment: .leading, spacing: 14) {
-            MysteryDetailsView(mystery: mystery)
+            MysteryDetailsView(mystery: mystery, content: content)
                 .font(.footnote)
             if cards.indices.contains(index) {
                 MeditationCardView(card: cards[index], textStyle: textSize.meditationStyle, framed: false)
