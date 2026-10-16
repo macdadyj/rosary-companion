@@ -33,38 +33,40 @@ struct SacredArtView: View {
         }
     }
 
-    @ViewBuilder
     private var tappablePicture: some View {
-        if let onTap {
-            framedPicture
-                .contentShape(Rectangle())
-                .onTapGesture(perform: onTap)
-                .accessibilityElement(children: .contain)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel("Open the painting")
-                .uiTag(sessionTag ?? "", when: sessionTag != nil)
-        } else {
-            framedPicture
-        }
+        framedPicture
+            .overlay {
+                if let onTap {
+                    Button(action: onTap) {
+                        Color.white.opacity(0.001)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Open the painting")
+                    .uiTag(sessionTag ?? "", when: sessionTag != nil)
+                }
+            }
+            .overlay {
+                if let frameTag {
+                    GeometryReader { geo in
+                        AccessibilityFrameProbe(identifier: frameTag, label: "Artwork frame", value: "frame")
+                            .frame(width: geo.size.width, height: geo.size.height)
+                            .allowsHitTesting(false)
+                    }
+                    .allowsHitTesting(false)
+                }
+            }
     }
 
-    @ViewBuilder
     private var framedPicture: some View {
-        let picture = GeometryReader { geo in
+        GeometryReader { geo in
             fittedWell(in: geo.size)
         }
         .frame(maxWidth: .infinity)
         .frame(height: height)
         .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
         .iconostasis()
-        if let frameTag {
-            picture
-                .accessibilityElement(children: .contain)
-                .accessibilityLabel("Artwork frame")
-                .accessibilityIdentifier(frameTag)
-        } else {
-            picture
-        }
     }
 
     private func fittedWell(in size: CGSize) -> some View {
@@ -100,6 +102,9 @@ struct SacredArtView: View {
                                 .allowsHitTesting(false)
                                 .accessibilityHidden(true)
                         }
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityAddTraits(.isImage)
+                        .accessibilityLabel(credit ?? "Mystery artwork")
                         .accessibilityHidden(imageTag != nil)
                     if let imageTag {
                         // A real view at the fitted size, so a test can measure the picture
@@ -114,11 +119,6 @@ struct SacredArtView: View {
                     }
                 }
                 .frame(width: fittedWidth, height: fittedHeight)
-                .modifier(FittedPictureAccess(
-                    exposesProbe: imageTag != nil,
-                    label: credit ?? "Mystery artwork",
-                    value: sizeValue
-                ))
             }
         }
         .frame(width: size.width, height: size.height)
@@ -126,27 +126,7 @@ struct SacredArtView: View {
     }
 }
 
-/// Home leaves the picture as one image. The prayer screen exposes the fitted probe instead.
-private struct FittedPictureAccess: ViewModifier {
-    var exposesProbe: Bool
-    var label: String
-    var value: String
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if exposesProbe {
-            content.accessibilityElement(children: .contain)
-        } else {
-            content
-                .accessibilityElement(children: .ignore)
-                .accessibilityAddTraits(.isImage)
-                .accessibilityLabel(label)
-                .accessibilityValue(value)
-        }
-    }
-}
-
-/// Reports the fitted picture as its own accessibility element, at that exact size.
+/// Reports a rectangle as its own accessibility element, at that view's exact size.
 private struct AccessibilityFrameProbe: UIViewRepresentable {
     var identifier: String
     var label: String
