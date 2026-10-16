@@ -68,12 +68,22 @@ final class ActiveSession: Identifiable {
         prepared.setup.intentionIDs.compactMap(model.intention)
     }
 
+    /// Shows the prayer controls immediately for UI tests, without the microphone.
+    func revealForUITest() {
+        guard isPreparing else { return }
+        isPreparing = false
+        controller.start()
+    }
+
     /// Asks for permissions (first time only), then starts praying.
     func begin() async {
         guard isPreparing else { return }
-        if let speech { await speech.requestAccess() }
-        audio.activate(listening: speech != nil)
-        audio.keepScreenAwake(true)
+        let testing = ProcessInfo.processInfo.arguments.contains("--uitesting")
+        if let speech, !testing { await speech.requestAccess() }
+        if !testing {
+            audio.activate(listening: speech != nil)
+            audio.keepScreenAwake(true)
+        }
         isPreparing = false
         controller.start()
     }

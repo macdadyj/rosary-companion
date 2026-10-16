@@ -1,7 +1,6 @@
 #if os(iOS)
 import RosaryCore
 import SwiftUI
-import UIKit
 
 @main
 struct RosaryApp: App {
@@ -14,7 +13,6 @@ struct RosaryApp: App {
         let store = testing ? nil : (try? JSONFileStore.applicationSupport())
         let model = AppModel(store: store)
         if testing {
-            UIView.setAnimationsEnabled(false)
             model.update { $0.voiceTracking = false }
         }
         // If Application Support is unavailable the app still runs; changes just aren't saved.

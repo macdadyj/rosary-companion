@@ -108,15 +108,36 @@ final class RosaryUITests: XCTestCase {
         goBack("Settings")
         tap(UITag.settingsVoicePicker)
         goBack("Settings")
-        let build = app.descendants(matching: .any)[UITag.settingsBuild]
-        XCTAssertTrue(build.waitForExistence(timeout: 5))
+        let build = reveal(UITag.settingsBuild)
+        XCTAssertTrue(build.waitForExistence(timeout: 2))
         XCTAssertFalse(build.label.isEmpty)
     }
 
     private func tap(_ identifier: String) {
-        let element = app.descendants(matching: .any)[identifier]
-        XCTAssertTrue(element.waitForExistence(timeout: 8), "Missing \(identifier)")
+        let element = reveal(identifier)
+        XCTAssertTrue(element.waitForExistence(timeout: 2), "Missing \(identifier)")
         element.tap()
+    }
+
+    /// A toolbar item and a list row can publish the same identifier on both the
+    /// control and its container. Prefer the button, then the first match, and
+    /// scroll a lazy form until the row is realized.
+    private func reveal(_ identifier: String) -> XCUIElement {
+        let button = app.buttons[identifier].firstMatch
+        if button.waitForExistence(timeout: 1) { return button }
+        let any = app.descendants(matching: .any)[identifier].firstMatch
+        if any.waitForExistence(timeout: 1) { return any }
+        for _ in 0..<4 {
+            app.swipeDown()
+            if button.exists { return button }
+            if any.exists { return any }
+        }
+        for _ in 0..<8 {
+            app.swipeUp()
+            if button.exists { return button }
+            if any.exists { return any }
+        }
+        return any
     }
 
     private func tapLabel(_ label: String) {
@@ -139,9 +160,9 @@ final class RosaryUITests: XCTestCase {
     }
 
     private func toggle(_ identifier: String) {
-        let element = app.switches[identifier]
-        let target = element.exists ? element : app.descendants(matching: .any)[identifier]
-        XCTAssertTrue(target.waitForExistence(timeout: 5), "Missing \(identifier)")
+        let toggle = app.switches[identifier].firstMatch
+        let target = toggle.waitForExistence(timeout: 1) ? toggle : reveal(identifier)
+        XCTAssertTrue(target.waitForExistence(timeout: 2), "Missing \(identifier)")
         target.tap()
     }
 }

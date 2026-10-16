@@ -20,6 +20,8 @@ struct SaintsLibraryView: View {
                             MysteryMeditationsView(mystery: mystery, library: library, content: content)
                         } label: {
                             row(mystery)
+                                .accessibilityElement(children: .combine)
+                                .uiTag(saintTag(mystery))
                         }
                     }
                 }
@@ -41,7 +43,10 @@ struct SaintsLibraryView: View {
                 .foregroundStyle(Theme.secondaryInk)
         }
         .padding(.vertical, 2)
-        .uiTag(mystery.id == .annunciation ? UITag.saintMystery : "saint.\(mystery.id.rawValue)")
+    }
+
+    private func saintTag(_ mystery: Mystery) -> String {
+        mystery.id == .annunciation ? UITag.saintMystery : "saint.\(mystery.id.rawValue)"
     }
 }
 

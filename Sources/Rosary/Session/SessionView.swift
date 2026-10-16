@@ -30,6 +30,13 @@ struct SessionView: View {
         }
         .animation(.easeInOut(duration: 0.3), value: session.hasEnded)
         .preferredColorScheme(settings.appearance.colorScheme)
+        .onAppear {
+            // UI tests need the end control on the first frame. The async task can
+            // still be waiting while XCTest looks for it.
+            if ProcessInfo.processInfo.arguments.contains("--uitesting"), session.isPreparing {
+                session.revealForUITest()
+            }
+        }
         .task { await session.begin() }
         .onChange(of: scenePhase) { _, phase in session.scenePhaseChanged(phase) }
         .onDisappear {
