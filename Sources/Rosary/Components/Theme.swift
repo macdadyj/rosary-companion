@@ -102,6 +102,15 @@ struct CardBackground: ViewModifier {
 extension View {
     func card() -> some View { modifier(CardBackground()) }
     func uiTag(_ identifier: String) -> some View { accessibilityIdentifier(identifier) }
+
+    @ViewBuilder
+    func uiTag(_ identifier: String, when enabled: Bool) -> some View {
+        if enabled {
+            accessibilityIdentifier(identifier)
+        } else {
+            self
+        }
+    }
 }
 
 /// Warm dark with a candle glow at the top, parchment in light mode.

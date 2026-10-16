@@ -114,7 +114,7 @@ struct SessionView: View {
             bottomBar
         }
         .contentShape(Rectangle())
-        .uiTag(UITag.sessionSurface)
+        .uiTag(UITag.sessionSurface, when: !UITestLaunch.isEnabled)
         .onTapGesture { session.tap() }
         .overlay {
             if let name = snapshot.nextLeaderBanner {
@@ -190,6 +190,14 @@ struct SessionView: View {
                 .accessibilityLabel("End prayer")
                 .accessibilityIdentifier(UITag.sessionEnd)
 
+                if UITestLaunch.isEnabled {
+                    // The bottom Back control is below the fold on this simulator,
+                    // and the prayer screen does not scroll.
+                    Button("Back") { session.back() }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier(UITag.sessionBack)
+                }
+
                 Spacer(minLength: 0)
 
                 Button {
@@ -227,6 +235,7 @@ struct SessionView: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.secondaryInk)
                 .multilineTextAlignment(.center)
+                .uiTag(UITag.sessionSurface, when: UITestLaunch.isEnabled)
             if snapshot.decadeTotal > 1 {
                 HStack(spacing: 8) {
                     ForEach(1...snapshot.decadeTotal, id: \.self) { position in
@@ -282,7 +291,7 @@ struct SessionView: View {
                 }
                 .disabled(snapshot.stepIndex == 0 && !UITestLaunch.isEnabled)
                 .accessibilityLabel("Previous prayer")
-                .uiTag(UITag.sessionBack)
+                .uiTag(UITag.sessionBack, when: !UITestLaunch.isEnabled)
                 Spacer()
                 if showsTapHint {
                     Label("Tap anywhere for the next prayer", systemImage: "hand.tap")
