@@ -17,8 +17,10 @@ struct SessionView: View {
     private var snapshot: SessionSnapshot { controller.snapshot }
 
     var body: some View {
-        ZStack {
-            CandleBackground()
+        // The candle fill ignores the safe area. The controls stay inside it:
+        // a ZStack sibling of that fill is laid out under the status bar, and
+        // XCTest then never sees the end button.
+        Group {
             if session.hasEnded {
                 SessionSummaryView(session: session, onDone: onClose)
                     .transition(.opacity)
@@ -28,6 +30,8 @@ struct SessionView: View {
                 prayerScreen
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background { CandleBackground() }
         .animation(.easeInOut(duration: 0.3), value: session.hasEnded)
         .preferredColorScheme(settings.appearance.colorScheme)
         .onAppear {
@@ -181,8 +185,9 @@ struct SessionView: View {
                     .font(.title3.weight(.semibold))
                     .frame(width: 48, height: 48)
             }
+            .buttonStyle(.plain)
             .accessibilityLabel("End prayer")
-            .uiTag(UITag.sessionEnd)
+            .accessibilityIdentifier(UITag.sessionEnd)
 
             Picker("Mode", selection: Binding(
                 get: { snapshot.mode },
