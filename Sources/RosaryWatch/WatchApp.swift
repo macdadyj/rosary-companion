@@ -22,11 +22,17 @@ struct WatchCounterView: View {
                 .font(.title2.monospacedDigit())
                 .accessibilityIdentifier(UITag.watchCount)
             Button("Bead") { counter.advance() }
+                .buttonStyle(.bordered)
+                .frame(maxWidth: .infinity, minHeight: 36)
                 .accessibilityIdentifier(UITag.watchAdvance)
             HStack {
                 Button("Back") { counter.back() }
+                    .buttonStyle(.bordered)
+                    .frame(maxWidth: .infinity, minHeight: 32)
                     .accessibilityIdentifier(UITag.watchBack)
                 Button("Reset") { counter.reset() }
+                    .buttonStyle(.bordered)
+                    .frame(maxWidth: .infinity, minHeight: 32)
                     .accessibilityIdentifier(UITag.watchReset)
             }
         }
