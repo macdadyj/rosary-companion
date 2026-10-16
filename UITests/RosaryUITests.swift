@@ -32,8 +32,9 @@ final class RosaryUITests: XCTestCase {
         begin.tap()
         let end = app.descendants(matching: .any)[UITag.sessionEnd]
         if !end.waitForExistence(timeout: 10) {
-            let texts = app.staticTexts.allElementsBoundByIndex.prefix(15).map(\.label).joined(separator: " | ")
-            XCTFail("Missing \(UITag.sessionEnd). texts=\(texts)")
+            let texts = app.staticTexts.allElementsBoundByIndex.prefix(12).map(\.label).joined(separator: " | ")
+            let buttons = app.buttons.allElementsBoundByIndex.prefix(12).map { "\($0.identifier):\($0.label)" }.joined(separator: " | ")
+            XCTFail("Missing \(UITag.sessionEnd). buttons=\(buttons). texts=\(texts)")
             return
         }
         tap(UITag.sessionPause)

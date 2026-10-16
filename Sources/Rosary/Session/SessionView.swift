@@ -177,17 +177,33 @@ struct SessionView: View {
     }
 
     private var topBar: some View {
-        HStack(spacing: 12) {
-            Button {
-                confirmingEnd = true
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.title3.weight(.semibold))
-                    .frame(width: 48, height: 48)
+        VStack(spacing: 8) {
+            HStack(spacing: 12) {
+                Button {
+                    confirmingEnd = true
+                } label: {
+                    Label("End", systemImage: "xmark")
+                        .font(.title3.weight(.semibold))
+                        .frame(minWidth: 48, minHeight: 48)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("End prayer")
+                .accessibilityIdentifier(UITag.sessionEnd)
+
+                Spacer(minLength: 0)
+
+                Button {
+                    session.togglePause()
+                } label: {
+                    Label(isPaused ? "Resume" : "Pause", systemImage: isPaused ? "play.fill" : "pause.fill")
+                        .font(.title3.weight(.semibold))
+                        .frame(minWidth: 48, minHeight: 48)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(isPaused ? "Resume" : "Pause")
+                .accessibilityIdentifier(UITag.sessionPause)
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("End prayer")
-            .accessibilityIdentifier(UITag.sessionEnd)
+            .accessibilityElement(children: .contain)
 
             Picker("Mode", selection: Binding(
                 get: { snapshot.mode },
@@ -198,18 +214,7 @@ struct SessionView: View {
                 }
             }
             .pickerStyle(.segmented)
-            .frame(maxWidth: 260)
             .accessibilityHint("Guided: Rosary leads and you answer. Tracking: you pray and Rosary follows.")
-
-            Button {
-                session.togglePause()
-            } label: {
-                Image(systemName: isPaused ? "play.fill" : "pause.fill")
-                    .font(.title3.weight(.semibold))
-                    .frame(width: 48, height: 48)
-            }
-            .accessibilityLabel(isPaused ? "Resume" : "Pause")
-            .uiTag(UITag.sessionPause)
         }
         .foregroundStyle(Theme.secondaryInk)
         .padding(.horizontal, 12)
