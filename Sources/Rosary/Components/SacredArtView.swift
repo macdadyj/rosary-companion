@@ -35,26 +35,25 @@ struct SacredArtView: View {
 
     private var tappablePicture: some View {
         framedPicture
+            .background {
+                if let frameTag {
+                    Color.clear
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Artwork frame")
+                        .accessibilityIdentifier(frameTag)
+                        .allowsHitTesting(false)
+                }
+            }
             .overlay {
                 if let onTap {
                     Button(action: onTap) {
-                        Color.white.opacity(0.001)
+                        Color.clear
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Open the painting")
                     .uiTag(sessionTag ?? "", when: sessionTag != nil)
-                }
-            }
-            .overlay {
-                if let frameTag {
-                    GeometryReader { geo in
-                        AccessibilityFrameProbe(identifier: frameTag, label: "Artwork frame", value: "frame")
-                            .frame(width: geo.size.width, height: geo.size.height)
-                            .allowsHitTesting(false)
-                    }
-                    .allowsHitTesting(false)
                 }
             }
     }
@@ -107,15 +106,16 @@ struct SacredArtView: View {
                         .accessibilityLabel(credit ?? "Mystery artwork")
                         .accessibilityHidden(imageTag != nil)
                     if let imageTag {
-                        // A real view at the fitted size, so a test can measure the picture
+                        // Its own element at the fitted size, so a test measures the picture
                         // rather than the well behind it.
-                        AccessibilityFrameProbe(
-                            identifier: imageTag,
-                            label: credit ?? "Mystery artwork",
-                            value: sizeValue
-                        )
-                        .frame(width: fittedWidth, height: fittedHeight)
-                        .allowsHitTesting(false)
+                        Color.clear
+                            .frame(width: fittedWidth, height: fittedHeight)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityAddTraits(.isImage)
+                            .accessibilityLabel(credit ?? "Mystery artwork")
+                            .accessibilityValue(sizeValue)
+                            .accessibilityIdentifier(imageTag)
+                            .allowsHitTesting(false)
                     }
                 }
                 .frame(width: fittedWidth, height: fittedHeight)
@@ -123,33 +123,6 @@ struct SacredArtView: View {
         }
         .frame(width: size.width, height: size.height)
         .clipped()
-    }
-}
-
-/// Reports a rectangle as its own accessibility element, at that view's exact size.
-private struct AccessibilityFrameProbe: UIViewRepresentable {
-    var identifier: String
-    var label: String
-    var value: String
-
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        view.backgroundColor = .clear
-        view.isUserInteractionEnabled = false
-        view.isAccessibilityElement = true
-        view.accessibilityTraits = .image
-        apply(to: view)
-        return view
-    }
-
-    func updateUIView(_ view: UIView, context: Context) {
-        apply(to: view)
-    }
-
-    private func apply(to view: UIView) {
-        view.accessibilityIdentifier = identifier
-        view.accessibilityLabel = label
-        view.accessibilityValue = value
     }
 }
 
