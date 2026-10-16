@@ -23,9 +23,10 @@ struct NextLeaderOverlay: View {
                 .foregroundStyle(Theme.secondaryInk)
                 .multilineTextAlignment(.center)
         }
-        .padding(32)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Theme.background.opacity(0.96))
+        .padding(28)
+        .frame(maxWidth: .infinity)
+        .background(Theme.background.opacity(0.94), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .chapelPanel()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("\(name) \(caption)"))
         .accessibilityAddTraits(.isHeader)

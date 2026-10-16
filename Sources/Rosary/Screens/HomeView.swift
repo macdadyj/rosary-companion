@@ -4,6 +4,7 @@ import SwiftUI
 
 struct HomeView: View {
     let model: AppModel
+    let art: SacredArtLibrary
     let content: PrayerContent?
     let onBegin: (SessionSetup) -> Void
 
@@ -272,8 +273,12 @@ struct HomeView: View {
         let mystery = setup.length == .oneDecade
             ? setup.mysterySet.mysteries[setup.decade - 1]
             : setup.mysterySet.mysteries[0]
-        if model.settings.showSacredArt, let content, let work = content.work(for: mystery.id) {
-            SacredArtView(work: work, data: content.imageData(for: work.mystery), height: 200)
+        if model.settings.showSacredArt {
+            SacredArtView(
+                data: art.imageData(for: mystery.id, content: content, on: model.today),
+                credit: art.creditLine(for: mystery.id, content: content, on: model.today),
+                height: 260
+            )
         }
     }
 

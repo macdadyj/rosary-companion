@@ -49,6 +49,7 @@ public enum UITag {
     public static let settingsMembers = "settings.members"
     public static let settingsVoicePicker = "settings.voicePicker"
     public static let settingsBuild = "settings.build"
+    public static let settingsRefreshArt = "settings.refreshArt"
     public static let familyAdd = "family.add"
     public static let familyField = "family.field"
 
@@ -56,6 +57,11 @@ public enum UITag {
     public static let sessionPause = "session.pause"
     public static let sessionBack = "session.back"
     public static let sessionSurface = "session.surface"
+    public static let sessionBeads = "session.beads"
+    public static let sessionScripture = "session.scripture"
+    public static let sessionArt = "session.art"
+    public static let sessionPrayer = "session.prayer"
+    public static let sessionRefreshArt = "session.refreshArt"
 
     public static let saintMystery = "saint.annunciation"
     public static let calendarToday = "calendar.today"
@@ -77,8 +83,10 @@ public enum UITag {
         intentionAdd, intentionField, intentionAnswered, intentionOngoing,
         settingsChant, settingsArt, settingsVoice, settingsHaptics, settingsHolyGhost,
         settingsSeasonal, settingsFamily, settingsMembers, settingsVoicePicker, settingsBuild,
+        settingsRefreshArt,
         familyAdd, familyField,
         sessionEnd, sessionPause, sessionBack, sessionSurface,
+        sessionBeads, sessionScripture, sessionArt, sessionPrayer, sessionRefreshArt,
         saintMystery, calendarToday,
         watchAdvance, watchBack, watchReset, watchCount,
     ]

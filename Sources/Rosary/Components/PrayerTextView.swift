@@ -26,6 +26,7 @@ struct PrayerTextView: View {
                 .font(.prayer(textSize.headingStyle, weight: .semibold))
                 .foregroundStyle(Theme.gold)
                 .accessibilityAddTraits(.isHeader)
+                .uiTag(UITag.sessionPrayer)
 
             switch snapshot.step.content {
             case .mysteryAnnouncement(let mystery):
@@ -111,27 +112,38 @@ struct PrayerTextView: View {
 struct MysteryDetailsView: View {
     let mystery: Mystery
     var content: PrayerContent?
+    var textStyle: Font.TextStyle = .body
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if let passage = content?.passage(for: mystery.id), passage.verified {
+        VStack(alignment: .leading, spacing: 10) {
+            if let passage = content?.passage(for: mystery.id), !passage.verses.isEmpty {
                 Text(passage.reference)
                     .font(.caption.weight(.semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(Theme.gold)
+                scriptureRule
                 Text(passage.body)
-                    .font(.prayer(.footnote))
+                    .font(.prayer(textStyle))
                     .foregroundStyle(Theme.ink)
+                    .lineSpacing(5)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .uiTag(UITag.sessionScripture)
                 Text(content?.scripture.translation ?? "")
                     .font(.caption2)
+                    .foregroundStyle(Theme.secondaryInk)
                 if let note = passage.note {
                     Text(note)
                         .font(.caption2)
+                        .foregroundStyle(Theme.secondaryInk)
                 }
             } else {
                 Label(mystery.scripture, systemImage: "book")
+                    .uiTag(UITag.sessionScripture)
+                Text("This short name has not been checked against one edition.")
+                    .font(.caption2)
             }
             Text("Fruit of the mystery: \(mystery.fruit)")
-            Text("This short name has not been checked against one edition.")
-                .font(.caption2)
+                .font(.subheadline)
             if let prayer = content?.fruitPrayer(for: mystery.id) {
                 Text(prayer.prayer)
                     .font(.prayer(.footnote))
@@ -144,6 +156,18 @@ struct MysteryDetailsView: View {
             }
         }
         .foregroundStyle(Theme.secondaryInk)
+    }
+
+    private var scriptureRule: some View {
+        HStack(spacing: 8) {
+            Rectangle().frame(height: 1)
+            Text("†")
+                .font(.caption)
+            Rectangle().frame(width: 28, height: 1)
+        }
+        .foregroundStyle(Theme.gold.opacity(0.8))
+        .frame(maxWidth: 160, alignment: .leading)
+        .accessibilityHidden(true)
     }
 }
 #endif

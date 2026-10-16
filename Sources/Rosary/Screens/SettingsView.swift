@@ -4,6 +4,7 @@ import SwiftUI
 
 struct SettingsView: View {
     let model: AppModel
+    let art: SacredArtLibrary
     var content: PrayerContent?
 
     @State private var narrationRate = SpeechPacing.defaultRate
@@ -154,10 +155,20 @@ struct SettingsView: View {
             Toggle("Meditation while tracking", isOn: binding(\.showsMeditationWhileTracking))
             Toggle("Sacred art", isOn: binding(\.showSacredArt))
                 .uiTag(UITag.settingsArt)
+            Button {
+                art.refresh(prioritizing: nil)
+            } label: {
+                Label(art.isRefreshing ? "Refreshing sacred art…" : "Refresh sacred art", systemImage: "arrow.clockwise")
+            }
+            .disabled(art.isRefreshing)
+            .uiTag(UITag.settingsRefreshArt)
+            Text(art.status)
+                .font(.footnote)
+                .foregroundStyle(Theme.secondaryInk)
         } header: {
             Text("Display")
         } footer: {
-            Text("Prayer text also grows with the iPhone’s Text Size setting. In tracking mode, the mystery’s meditation stays above the prayer for the whole decade; you can also hide or show it there.")
+            Text("Prayer text also grows with the iPhone’s Text Size setting. During a decade, the painting sits beside the Scripture. Refresh sacred art loads public-domain and openly licensed paintings and icons from Wikimedia Commons. They are kept on this iPhone, and the paintings in the app remain if Commons cannot be reached.")
         }
     }
 
@@ -187,8 +198,9 @@ struct SettingsView: View {
 
     private var privacySection: some View {
         Section("Privacy") {
-            Label("No accounts, ads, analytics, or network access.", systemImage: "lock")
-            Label("Your journal, intentions, and settings are saved only on this iPhone.", systemImage: "iphone")
+            Label("No accounts, ads, or analytics.", systemImage: "lock")
+            Label("Your journal, intentions, and settings stay on this iPhone.", systemImage: "iphone")
+            Label("Sacred art may be refreshed from Wikimedia Commons.", systemImage: "photo")
             if let error = model.saveError {
                 Label(error, systemImage: "exclamationmark.triangle")
                     .foregroundStyle(Theme.warning)

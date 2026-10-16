@@ -2,11 +2,12 @@
 import RosaryCore
 import SwiftUI
 
-/// The prayer screen. Everything is one big tap target: a tap anywhere moves to the next prayer.
+/// The prayer screen. Only the rosary beads move to the next prayer.
 struct SessionView: View {
     let session: ActiveSession
     let settings: AppSettings
     let library: SaintsLibrary
+    let art: SacredArtLibrary
     let content: PrayerContent?
     let onClose: () -> Void
 
@@ -74,35 +75,33 @@ struct SessionView: View {
             progressHeader
             GeometryReader { proxy in
                 VStack(spacing: 0) {
-                    if let mystery = trackingMystery {
-                        TrackingMeditationPanel(
+                    if let mystery = snapshot.mystery {
+                        ChapelMeditationView(
                             mystery: mystery,
-                            cards: library.cards(for: mystery.id, on: session.meditationDay),
+                            content: content,
+                            library: art,
+                            day: session.meditationDay,
                             textSize: settings.textSize,
-                            isExpanded: session.showsMeditation,
-                            maxHeight: proxy.size.height * 0.5,
-                            onToggle: {
-                                withAnimation(.easeInOut(duration: 0.25)) {
-                                    session.setShowsMeditation(!session.showsMeditation)
-                                }
-                            },
-                            content: content
+                            cards: library.cards(for: mystery.id, on: session.meditationDay),
+                            showsSaintCards: showsSaintCards,
+                            showsArt: settings.showSacredArt,
+                            onNewImage: { art.showAnother(mystery: mystery.id) }
                         )
+                        .frame(height: chapelHeight(in: proxy.size.height))
+                        .padding(.horizontal, 12)
+                        .padding(.top, 8)
                         .id(mystery.id)
-                        .padding(.horizontal, 16)
-                        .padding(.top, 12)
-                        .transition(.opacity)
                     }
                     ScrollView {
                         PrayerTextView(
                             snapshot: snapshot,
                             textSize: settings.textSize,
-                            card: panelShowsMeditation ? nil : meditationCard,
-                            showsMysteryDetails: !panelShowsMeditation,
+                            card: snapshot.mystery == nil ? meditationCard : nil,
+                            showsMysteryDetails: snapshot.mystery == nil,
                             content: content
                         )
                         .padding(.horizontal, 24)
-                        .padding(.vertical, 20)
+                        .padding(.vertical, 16)
                         .id(snapshot.stepIndex)
                         .transition(.opacity)
                     }
@@ -110,22 +109,19 @@ struct SessionView: View {
                     .animation(.easeInOut(duration: 0.25), value: snapshot.stepIndex)
                 }
             }
-            .animation(.easeInOut(duration: 0.3), value: trackingMystery?.id)
+            .animation(.easeInOut(duration: 0.3), value: snapshot.mystery?.id)
             bottomBar
         }
-        .contentShape(Rectangle())
-        .uiTag(UITag.sessionSurface, when: !UITestLaunch.isEnabled)
-        .onTapGesture { session.tap() }
-        .overlay {
+        .overlay(alignment: .top) {
             if let name = snapshot.nextLeaderBanner {
                 NextLeaderOverlay(name: name, caption: "leads the next decade")
-                    .contentShape(Rectangle())
-                    .onTapGesture { session.tap() }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 72)
+                    .allowsHitTesting(false)
                     .transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: snapshot.nextLeaderBanner)
-        .accessibilityAction(.magicTap) { session.tap() }
         .accessibilityAction(named: Text("Next prayer")) { session.tap() }
         .accessibilityAction(named: Text("Previous prayer")) { session.back() }
         .confirmationDialog("End this prayer?", isPresented: confirmingEndPresented, titleVisibility: .visible) {
@@ -235,7 +231,7 @@ struct SessionView: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.secondaryInk)
                 .multilineTextAlignment(.center)
-                .uiTag(UITag.sessionSurface, when: UITestLaunch.isEnabled)
+                .uiTag(UITag.sessionSurface)
             if snapshot.decadeTotal > 1 {
                 HStack(spacing: 8) {
                     ForEach(1...snapshot.decadeTotal, id: \.self) { position in
@@ -264,14 +260,13 @@ struct SessionView: View {
                     count: progress.count,
                     completed: progress.completed,
                     current: progress.current,
-                    caption: progress.accessibilityLabel
+                    caption: progress.accessibilityLabel,
+                    onAdvance: { session.tap() }
                 )
                 .padding(.horizontal, 28)
-            }
-            if settings.showSacredArt, let mystery = snapshot.mystery, let content,
-               let work = content.work(for: mystery.id) {
-                SacredArtView(work: work, data: content.imageData(for: mystery.id), height: 120)
-                    .padding(.horizontal, 40)
+            } else {
+                OpeningBeadControl { session.tap() }
+                    .padding(.horizontal, 28)
             }
             VoiceIndicatorView(
                 indicator: controller.voiceIndicator,
@@ -294,7 +289,7 @@ struct SessionView: View {
                 .uiTag(UITag.sessionBack, when: !UITestLaunch.isEnabled)
                 Spacer()
                 if showsTapHint {
-                    Label("Tap anywhere for the next prayer", systemImage: "hand.tap")
+                    Label("Tap the beads for the next prayer", systemImage: "hand.tap")
                         .font(.callout.weight(.medium))
                         .foregroundStyle(Theme.gold)
                         .transition(.opacity)
@@ -342,14 +337,14 @@ struct SessionView: View {
         return Theme.beadEmpty
     }
 
-    /// Tracking mode keeps the meditation on screen for the whole decade; guided mode shows it
-    /// with the announcement, while the narrator pauses.
-    private var trackingMystery: Mystery? {
-        snapshot.mode == .tracking ? snapshot.mystery : nil
+    /// The painting and Scripture stay up for the whole decade. Saint cards can be hidden in tracking.
+    private var showsSaintCards: Bool {
+        snapshot.mode == .guided || session.showsMeditation
     }
 
-    private var panelShowsMeditation: Bool {
-        trackingMystery != nil && session.showsMeditation
+    private func chapelHeight(in available: CGFloat) -> CGFloat {
+        let room = max(available - 56, 180)
+        return min(available * 0.74, room)
     }
 
     private var meditationCard: MeditationCard? {

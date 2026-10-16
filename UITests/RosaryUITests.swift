@@ -45,6 +45,27 @@ final class RosaryUITests: XCTestCase {
         XCTAssertTrue(app.tabBars.buttons["Pray"].waitForExistence(timeout: 5))
     }
 
+    /// The painting and the Scripture can be touched while meditating. Only the beads move on.
+    func testImageAndTextTapsDoNotAdvanceBeads() {
+        app.segmentedControls.buttons["One decade"].tap()
+        let begin = reveal(UITag.beginRosary)
+        XCTAssertTrue(begin.waitForExistence(timeout: 2))
+        begin.tap()
+        let prayer = app.descendants(matching: .any)[UITag.sessionPrayer]
+        XCTAssertTrue(prayer.waitForExistence(timeout: 10), "Missing \(UITag.sessionPrayer)")
+        let before = prayer.label
+        XCTAssertFalse(before.isEmpty)
+        tapInside(UITag.sessionArt, y: 0.4)
+        tapInside(UITag.sessionScripture, y: 0.08)
+        XCTAssertEqual(prayer.label, before, "Tapping the image or the Scripture moved the prayer")
+        tapInside(UITag.sessionBeads, y: 0.45)
+        let changed = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "label != %@", before),
+            object: prayer
+        )
+        XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 5), .completed, "Tapping the beads left the prayer on \"\(prayer.label)\"")
+    }
+
     func testDevotionScreens() {
         app.tabBars.buttons["Devotions"].tap()
         open(UITag.devotionSorrows)
@@ -125,6 +146,13 @@ final class RosaryUITests: XCTestCase {
         let element = reveal(identifier)
         XCTAssertTrue(element.waitForExistence(timeout: 2), "Missing \(identifier)")
         element.tap()
+    }
+
+    /// Hits the visible part of a tall passage instead of the middle, which can sit under the beads.
+    private func tapInside(_ identifier: String, y: CGFloat) {
+        let element = reveal(identifier)
+        XCTAssertTrue(element.waitForExistence(timeout: 4), "Missing \(identifier)")
+        element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: y)).tap()
     }
 
     /// A toolbar item and a list row can publish the same identifier on both the

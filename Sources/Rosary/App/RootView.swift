@@ -5,6 +5,7 @@ import SwiftUI
 struct RootView: View {
     let model: AppModel
     let library: SaintsLibrary
+    let art: SacredArtLibrary
     let content: PrayerContent?
 
     @State private var activeSession: ActiveSession?
@@ -20,7 +21,7 @@ struct RootView: View {
     }
 
     private func sessionScreen(_ session: ActiveSession) -> some View {
-        SessionView(session: session, settings: model.settings, library: library, content: content) {
+        SessionView(session: session, settings: model.settings, library: library, art: art, content: content) {
             activeSession = nil
         }
     }
@@ -28,7 +29,7 @@ struct RootView: View {
     private var tabs: some View {
         TabView {
             NavigationStack {
-                HomeView(model: model, content: content, onBegin: begin)
+                HomeView(model: model, art: art, content: content, onBegin: begin)
             }
             .tabItem { Label("Pray", systemImage: "hands.sparkles") }
             .uiTag(UITag.tabPray)
@@ -45,12 +46,13 @@ struct RootView: View {
                 .tabItem { Label("Saints", systemImage: "quote.bubble") }
                 .uiTag(UITag.tabSaints)
 
-            NavigationStack { SettingsView(model: model, content: content) }
+            NavigationStack { SettingsView(model: model, art: art, content: content) }
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .uiTag(UITag.tabSettings)
         }
         .tint(Theme.gold)
         .preferredColorScheme(model.settings.appearance.colorScheme)
+        .task { art.refreshIfDue() }
         .fullScreenCover(item: $activeSession) { session in
             sessionScreen(session)
         }
