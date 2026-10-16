@@ -9,19 +9,19 @@ struct RootView: View {
 
     @State private var activeSession: ActiveSession?
 
-    private var uiTesting: Bool {
-        ProcessInfo.processInfo.arguments.contains("--uitesting")
-    }
-
     var body: some View {
-        if uiTesting, let session = activeSession {
+        if UITestLaunch.isEnabled, let session = activeSession {
             // UI tests on the iOS 26 simulator never see a fullScreenCover, so the
-            // prayer screen replaces the tabs for that launch argument only.
-            SessionView(session: session, settings: model.settings, library: library, content: content) {
-                activeSession = nil
-            }
+            // prayer screen replaces the tabs for that launch only.
+            sessionScreen(session)
         } else {
             tabs
+        }
+    }
+
+    private func sessionScreen(_ session: ActiveSession) -> some View {
+        SessionView(session: session, settings: model.settings, library: library, content: content) {
+            activeSession = nil
         }
     }
 
@@ -52,14 +52,19 @@ struct RootView: View {
         .tint(Theme.gold)
         .preferredColorScheme(model.settings.appearance.colorScheme)
         .fullScreenCover(item: $activeSession) { session in
-            SessionView(session: session, settings: model.settings, library: library, content: content) {
-                activeSession = nil
-            }
+            sessionScreen(session)
         }
     }
 
     private func begin(_ setup: SessionSetup) {
-        activeSession = ActiveSession(prepared: model.prepare(setup), model: model)
+        let session = ActiveSession(prepared: model.prepare(setup), model: model)
+        if UITestLaunch.isEnabled {
+            // Swapping the tabs out for the prayer screen inside this button's
+            // action drops the state update, so the session never appears.
+            Task { @MainActor in activeSession = session }
+        } else {
+            activeSession = session
+        }
     }
 }
 #endif

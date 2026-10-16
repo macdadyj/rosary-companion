@@ -31,9 +31,7 @@ struct SessionView: View {
         .animation(.easeInOut(duration: 0.3), value: session.hasEnded)
         .preferredColorScheme(settings.appearance.colorScheme)
         .onAppear {
-            // UI tests need the end control on the first frame. The async task can
-            // still be waiting while XCTest looks for it.
-            if ProcessInfo.processInfo.arguments.contains("--uitesting"), session.isPreparing {
+            if UITestLaunch.isEnabled {
                 session.revealForUITest()
             }
         }
@@ -126,13 +124,51 @@ struct SessionView: View {
         .accessibilityAction(.magicTap) { session.tap() }
         .accessibilityAction(named: Text("Next prayer")) { session.tap() }
         .accessibilityAction(named: Text("Previous prayer")) { session.back() }
-        .confirmationDialog("End this prayer?", isPresented: $confirmingEnd, titleVisibility: .visible) {
-            Button("End now", role: .destructive) { session.endEarly() }
+        .confirmationDialog("End this prayer?", isPresented: confirmingEndPresented, titleVisibility: .visible) {
+            Button("End now", role: .destructive) { confirmEnd() }
             Button("Keep praying", role: .cancel) {}
         } message: {
             Text(snapshot.completedDecades.isEmpty
                 ? "No decade is finished yet, so nothing will be saved."
                 : "The decades you finished will be saved.")
+        }
+        .overlay {
+            // The system confirmation dialog is another presentation XCTest misses
+            // on the iOS 26 simulator. The same choice is drawn in the prayer screen.
+            if UITestLaunch.isEnabled, confirmingEnd {
+                endConfirmation
+            }
+        }
+    }
+
+    private var confirmingEndPresented: Binding<Bool> {
+        Binding(
+            get: { confirmingEnd && !UITestLaunch.isEnabled },
+            set: { confirmingEnd = $0 }
+        )
+    }
+
+    private var endConfirmation: some View {
+        ZStack {
+            Color.black.opacity(0.4).ignoresSafeArea()
+            VStack(spacing: 16) {
+                Text("End this prayer?")
+                    .font(.headline)
+                    .foregroundStyle(Theme.ink)
+                Button("End now", role: .destructive) { confirmEnd() }
+                Button("Keep praying", role: .cancel) { confirmingEnd = false }
+            }
+            .padding(24)
+            .frame(maxWidth: 320)
+            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+    }
+
+    private func confirmEnd() {
+        confirmingEnd = false
+        session.endEarly()
+        if UITestLaunch.isEnabled {
+            Task { @MainActor in onClose() }
         }
     }
 
@@ -234,7 +270,7 @@ struct SessionView: View {
                         .font(.callout)
                         .frame(minHeight: 44)
                 }
-                .disabled(snapshot.stepIndex == 0)
+                .disabled(snapshot.stepIndex == 0 && !UITestLaunch.isEnabled)
                 .accessibilityLabel("Previous prayer")
                 .uiTag(UITag.sessionBack)
                 Spacer()

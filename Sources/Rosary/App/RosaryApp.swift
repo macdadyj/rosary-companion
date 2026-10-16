@@ -2,6 +2,15 @@
 import RosaryCore
 import SwiftUI
 
+/// True when this process was launched by the phone UI tests.
+enum UITestLaunch {
+    static var isEnabled: Bool {
+        let process = ProcessInfo.processInfo
+        if process.arguments.contains("--uitesting") { return true }
+        return process.environment["XCTestConfigurationFilePath"] != nil
+    }
+}
+
 @main
 struct RosaryApp: App {
     @State private var model: AppModel
@@ -9,7 +18,7 @@ struct RosaryApp: App {
     private let content: PrayerContent?
 
     init() {
-        let testing = ProcessInfo.processInfo.arguments.contains("--uitesting")
+        let testing = UITestLaunch.isEnabled
         let store = testing ? nil : (try? JSONFileStore.applicationSupport())
         let model = AppModel(store: store)
         if testing {

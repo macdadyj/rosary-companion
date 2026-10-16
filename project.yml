@@ -152,5 +152,7 @@ schemes:
       executable: RosaryApp
     test:
       config: Debug
+      commandLineArguments:
+        "--uitesting": true
       targets:
         - RosaryUITests

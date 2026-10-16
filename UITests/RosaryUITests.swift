@@ -27,8 +27,15 @@ final class RosaryUITests: XCTestCase {
         goBack("Rosary")
         tap(UITag.openJournal)
         goBack("Rosary")
-        tap(UITag.beginRosary)
-        XCTAssertTrue(app.descendants(matching: .any)[UITag.sessionEnd].waitForExistence(timeout: 10))
+        let begin = reveal(UITag.beginRosary)
+        XCTAssertTrue(begin.waitForExistence(timeout: 2), "Missing \(UITag.beginRosary) frame=\(begin.frame) hittable=\(begin.isHittable)")
+        begin.tap()
+        let end = app.descendants(matching: .any)[UITag.sessionEnd]
+        if !end.waitForExistence(timeout: 10) {
+            let texts = app.staticTexts.allElementsBoundByIndex.prefix(12).map(\.label).joined(separator: " | ")
+            XCTFail("Missing \(UITag.sessionEnd). begin exists=\(begin.exists) frame=\(begin.frame) hittable=\(begin.isHittable). texts=\(texts)")
+            return
+        }
         tap(UITag.sessionPause)
         tap(UITag.sessionBack)
         tap(UITag.sessionSurface)

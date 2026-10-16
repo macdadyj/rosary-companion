@@ -21,6 +21,18 @@ struct HomeView: View {
         .background(CandleBackground())
         .navigationTitle("Rosary")
         .toolbarBackground(Theme.background, for: .navigationBar)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            // Pinned above the tab bar. A Begin button at the bottom of the
+            // scroll ends up under the iOS 26 tab bar, so the UI test's tap
+            // never starts the prayer.
+            if let setup {
+                beginButton(setup)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                    .padding(.bottom, 8)
+                    .background(Theme.background)
+            }
+        }
         .onAppear { refresh() }
         .onChange(of: model.sessions.count) { refresh(afterSession: true) }
         .onChange(of: model.settings.family) { old, new in
@@ -44,7 +56,6 @@ struct HomeView: View {
             familySection(setup)
             intentionsSection(setup.wrappedValue)
             moreLinks
-            beginButton(setup.wrappedValue)
         }
     }
 
