@@ -72,12 +72,12 @@ struct SessionView: View {
                             textSize: settings.textSize,
                             isExpanded: session.showsMeditation,
                             maxHeight: proxy.size.height * 0.5,
-                            content: content,
                             onToggle: {
                                 withAnimation(.easeInOut(duration: 0.25)) {
                                     session.setShowsMeditation(!session.showsMeditation)
                                 }
-                            }
+                            },
+                            content: content
                         )
                         .id(mystery.id)
                         .padding(.horizontal, 16)

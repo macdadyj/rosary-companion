@@ -45,7 +45,7 @@ On `macdadyj/rosary-companion`, open **Settings → Secrets and variables → Ac
 | `ASC_KEY_ID` | App Store Connect API key id |
 | `ASC_ISSUER_ID` | Issuer id |
 | `ASC_KEY_P8` | The `.p8` file, as PEM or base64 |
-| `DEVELOPMENT_TEAM` | The paid team id, with no `XTL-` prefix |
+| `DEVELOPMENT_TEAM` | `N9H4648NB9`, with no `XTL-` prefix |
 
 ### Billing
 

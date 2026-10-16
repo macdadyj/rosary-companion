@@ -34,6 +34,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.lojo.Rosary
+        DEVELOPMENT_TEAM: N9H4648NB9
         PRODUCT_NAME: Rosary
         INFOPLIST_FILE: Config/Info.plist
         GENERATE_INFOPLIST_FILE: YES
@@ -53,6 +54,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.lojo.Rosary.widget
+        DEVELOPMENT_TEAM: N9H4648NB9
         PRODUCT_NAME: RosaryWidget
         INFOPLIST_FILE: Config/WidgetInfo.plist
         GENERATE_INFOPLIST_FILE: NO
@@ -70,6 +72,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.lojo.Rosary.watchkitapp
+        DEVELOPMENT_TEAM: N9H4648NB9
         PRODUCT_NAME: RosaryWatch
         INFOPLIST_FILE: Config/WatchInfo.plist
         GENERATE_INFOPLIST_FILE: NO
