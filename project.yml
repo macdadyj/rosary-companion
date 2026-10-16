@@ -18,9 +18,14 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     ENABLE_USER_SCRIPT_SANDBOXING: NO
 targets:
-  Rosary:
+  # RosaryApp, not Rosary: Package.swift already has a target named Rosary. When both
+  # exist, xcodebuild resolves the UI-test host to the package product at
+  # Debug-iphonesimulator/Rosary and exits 65 because that path has no bundle id.
+  # productName keeps the installed app as Rosary.app.
+  RosaryApp:
     type: application
     platform: iOS
+    productName: Rosary
     sources:
       - path: Sources/Rosary
       - path: Config/Assets.xcassets
@@ -85,14 +90,14 @@ targets:
     sources:
       - path: UITests
     dependencies:
-      - target: Rosary
+      - target: RosaryApp
       - package: RosaryCore
         product: RosaryCore
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.lojo.Rosary.uitests
         GENERATE_INFOPLIST_FILE: YES
-        TEST_TARGET_NAME: Rosary
+        TEST_TARGET_NAME: RosaryApp
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
   RosaryWatchUITests:
     type: bundle.ui-testing
@@ -113,11 +118,12 @@ schemes:
   Rosary:
     build:
       targets:
-        Rosary: all
+        RosaryApp: all
         RosaryWidget: all
         RosaryWatch: all
     run:
       config: Debug
+      executable: RosaryApp
     test:
       config: Debug
       targets:
@@ -139,10 +145,11 @@ schemes:
   RosaryUI:
     build:
       targets:
-        Rosary: all
+        RosaryApp: all
         RosaryUITests: [test]
     run:
       config: Debug
+      executable: RosaryApp
     test:
       config: Debug
       targets:
