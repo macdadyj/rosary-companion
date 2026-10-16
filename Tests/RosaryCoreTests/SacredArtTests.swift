@@ -120,6 +120,26 @@ struct SacredArtTests {
         }
     }
 
+    @Test func tallAndWidePicturesFitInsideTheFrame() {
+        let square = ImageFraming.fittedSize(imageWidth: 400, imageHeight: 400, containerWidth: 200, containerHeight: 180)
+        #expect(square == FittedSize(width: 180, height: 180))
+
+        let wide = ImageFraming.fittedSize(imageWidth: 640, imageHeight: 160, containerWidth: 200, containerHeight: 180)
+        #expect(wide.width == 200)
+        #expect(abs(wide.height - 50) < 0.001)
+        #expect(wide.width <= 200)
+        #expect(wide.height <= 180)
+
+        let tall = ImageFraming.fittedSize(imageWidth: 160, imageHeight: 640, containerWidth: 200, containerHeight: 180)
+        #expect(abs(tall.width - 45) < 0.001)
+        #expect(tall.height == 180)
+        #expect(tall.width <= 200)
+        #expect(tall.height <= 180)
+
+        let empty = ImageFraming.fittedSize(imageWidth: 0, imageHeight: 10, containerWidth: 20, containerHeight: 20)
+        #expect(empty == FittedSize(width: 0, height: 0))
+    }
+
     private func candidate(
         title: String,
         license: String,

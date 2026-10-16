@@ -2,6 +2,7 @@
 import Foundation
 import Observation
 import RosaryCore
+import UIKit
 
 /// Bundled paintings first. A Commons refresh replaces them when a reverent image is cached.
 @MainActor
@@ -14,6 +15,16 @@ final class SacredArtLibrary {
     private(set) var status = "The paintings in the app are showing."
     private var refreshTask: Task<Void, Never>?
     private var refreshGeneration = 0
+    /// Mysteries whose next painting has not arrived yet. The well shows a shimmer instead of the previous picture.
+    private(set) var loadingMysteries: Set<MysteryID> = []
+    private var fixtures: [MysteryID: FixturePicture] = [:]
+    private var fixtureSteps: [MysteryID: Int] = [:]
+
+    private struct FixturePicture {
+        var token: String
+        var data: Data
+        var credit: String
+    }
 
     init(directory: URL) {
         store = SacredArtStore(directory: directory)
@@ -29,6 +40,8 @@ final class SacredArtLibrary {
 
     func imageData(for mystery: MysteryID, content: PrayerContent?, on day: CivilDate) -> Data? {
         _ = revision
+        if let fixture = fixtures[mystery] { return fixture.data }
+        if loadingMysteries.contains(mystery) { return nil }
         if let record = index.choice(for: mystery, on: day),
            let data = store.imageData(fileName: record.fileName) {
             return data
@@ -38,6 +51,7 @@ final class SacredArtLibrary {
 
     func creditLine(for mystery: MysteryID, content: PrayerContent?, on day: CivilDate) -> String {
         _ = revision
+        if let fixture = fixtures[mystery] { return fixture.credit }
         if let record = index.choice(for: mystery, on: day),
            store.imageData(fileName: record.fileName) != nil {
             return record.creditLine
@@ -45,12 +59,67 @@ final class SacredArtLibrary {
         return content?.work(for: mystery)?.creditLine ?? "Mystery artwork"
     }
 
+    /// Changes when the pixels change, so the frame can crossfade to the new painting.
+    func imageToken(for mystery: MysteryID, content: PrayerContent?, on day: CivilDate) -> String {
+        _ = revision
+        if let fixture = fixtures[mystery] { return fixture.token }
+        if loadingMysteries.contains(mystery) { return "loading-\(mystery.rawValue)" }
+        if let record = index.choice(for: mystery, on: day),
+           store.imageData(fileName: record.fileName) != nil {
+            return record.sha1
+        }
+        return "bundled-\(mystery.rawValue)"
+    }
+
+    func isLoading(_ mystery: MysteryID) -> Bool {
+        loadingMysteries.contains(mystery)
+    }
+
     /// Hand refresh: show the next cached painting, and ask Commons for more.
-    func showAnother(mystery: MysteryID) {
+    /// UI tests swap in a wide picture, then a tall one, and never touch the network.
+    func showAnother(mystery: MysteryID, on day: CivilDate) {
+        if UITestLaunch.isEnabled {
+            let step = (fixtureSteps[mystery] ?? 0) + 1
+            fixtureSteps[mystery] = step
+            let wide = step % 2 == 1
+            fixtures[mystery] = FixturePicture(
+                token: wide ? "wide-\(step)" : "tall-\(step)",
+                data: Self.fixturePNG(wide: wide),
+                credit: wide ? "Wide test image. UI test." : "Tall test image. UI test."
+            )
+            loadingMysteries.remove(mystery)
+            revision += 1
+            return
+        }
         index = index.advanced(mystery: mystery)
         try? store.save(index)
+        let ready = index.choice(for: mystery, on: day)
+            .flatMap { store.imageData(fileName: $0.fileName) } != nil
+        if ready {
+            loadingMysteries.remove(mystery)
+        } else {
+            loadingMysteries.insert(mystery)
+        }
         revision += 1
         refresh(prioritizing: mystery)
+    }
+
+    private static func fixturePNG(wide: Bool) -> Data {
+        let size = wide ? CGSize(width: 640, height: 160) : CGSize(width: 160, height: 640)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        let image = renderer.image { context in
+            UIColor(red: 0.16, green: 0.09, blue: 0.05, alpha: 1).setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+            UIColor(red: 0.95, green: 0.78, blue: 0.42, alpha: 1).setFill()
+            let bar = wide
+                ? CGRect(x: 16, y: size.height / 2 - 18, width: size.width - 32, height: 36)
+                : CGRect(x: size.width / 2 - 18, y: 16, width: 36, height: size.height - 32)
+            context.fill(bar)
+        }
+        return image.pngData() ?? Data()
     }
 
     func refreshIfDue() {
@@ -118,6 +187,9 @@ final class SacredArtLibrary {
             if Task.isCancelled { break }
             if category.mystery == mystery, !incoming.isEmpty, generation == refreshGeneration {
                 publish(incoming)
+                if let mystery, incoming.contains(where: { $0.mystery == mystery }) {
+                    loadingMysteries.remove(mystery)
+                }
             }
         }
         guard generation == refreshGeneration else { return }
@@ -129,6 +201,8 @@ final class SacredArtLibrary {
         } else if !Task.isCancelled {
             status = "Couldn't reach Wikimedia Commons. The paintings in the app are still here."
         }
+        loadingMysteries.removeAll()
+        revision += 1
     }
 
     private func publish(_ incoming: [SacredArtRecord]) {

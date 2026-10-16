@@ -13,6 +13,8 @@ struct SessionView: View {
 
     @Environment(\.scenePhase) private var scenePhase
     @State private var confirmingEnd = false
+    @State private var readingScripture = false
+    @State private var viewingArt = false
 
     private var controller: SessionController { session.controller }
     private var snapshot: SessionSnapshot { controller.snapshot }
@@ -85,7 +87,15 @@ struct SessionView: View {
                             cards: library.cards(for: mystery.id, on: session.meditationDay),
                             showsSaintCards: showsSaintCards,
                             showsArt: settings.showSacredArt,
-                            onNewImage: { art.showAnother(mystery: mystery.id) }
+                            onNewImage: { art.showAnother(mystery: mystery.id, on: session.meditationDay) },
+                            onReadScripture: {
+                                viewingArt = false
+                                readingScripture = true
+                            },
+                            onOpenArt: {
+                                readingScripture = false
+                                viewingArt = true
+                            }
                         )
                         .frame(height: chapelHeight(in: proxy.size.height))
                         .padding(.horizontal, 12)
@@ -138,6 +148,37 @@ struct SessionView: View {
             if UITestLaunch.isEnabled, confirmingEnd {
                 endConfirmation
             }
+        }
+        .overlay {
+            // A system sheet is invisible to XCTest on the iOS 26 simulator, so the
+            // reader and the painting viewer are drawn in the prayer screen.
+            if viewingArt, let mystery = snapshot.mystery {
+                SacredArtViewer(
+                    data: art.imageData(for: mystery.id, content: content, on: session.meditationDay),
+                    credit: art.creditLine(for: mystery.id, content: content, on: session.meditationDay),
+                    onClose: { viewingArt = false }
+                )
+                .transition(.opacity)
+            }
+        }
+        .overlay {
+            if readingScripture, let mystery = snapshot.mystery {
+                ScriptureReaderView(
+                    mystery: mystery,
+                    passage: content?.passage(for: mystery.id),
+                    translation: content?.scripture.translation ?? "",
+                    fruitPrayer: content?.fruitPrayer(for: mystery.id)?.prayer,
+                    textStyle: settings.textSize.prayerStyle,
+                    onClose: { readingScripture = false }
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: readingScripture)
+        .animation(.easeInOut(duration: 0.25), value: viewingArt)
+        .onChange(of: snapshot.mystery?.id) { _, _ in
+            readingScripture = false
+            viewingArt = false
         }
     }
 

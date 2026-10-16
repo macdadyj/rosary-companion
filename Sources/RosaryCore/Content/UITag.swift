@@ -62,6 +62,14 @@ public enum UITag {
     public static let sessionArt = "session.art"
     public static let sessionPrayer = "session.prayer"
     public static let sessionRefreshArt = "session.refreshArt"
+    public static let sessionArtFrame = "session.artFrame"
+    public static let sessionArtImage = "session.artImage"
+    public static let sessionArtViewer = "session.artViewer"
+    public static let sessionArtClose = "session.artClose"
+    public static let sessionArtCredit = "session.artCredit"
+    public static let sessionScriptureReader = "session.scriptureReader"
+    public static let sessionScriptureBody = "session.scriptureBody"
+    public static let sessionScriptureClose = "session.scriptureClose"
 
     public static let saintMystery = "saint.annunciation"
     public static let calendarToday = "calendar.today"
@@ -87,6 +95,8 @@ public enum UITag {
         familyAdd, familyField,
         sessionEnd, sessionPause, sessionBack, sessionSurface,
         sessionBeads, sessionScripture, sessionArt, sessionPrayer, sessionRefreshArt,
+        sessionArtFrame, sessionArtImage, sessionArtViewer, sessionArtClose, sessionArtCredit,
+        sessionScriptureReader, sessionScriptureBody, sessionScriptureClose,
         saintMystery, calendarToday,
         watchAdvance, watchBack, watchReset, watchCount,
     ]

@@ -277,7 +277,9 @@ struct HomeView: View {
             SacredArtView(
                 data: art.imageData(for: mystery.id, content: content, on: model.today),
                 credit: art.creditLine(for: mystery.id, content: content, on: model.today),
-                height: 260
+                height: 260,
+                isLoading: art.isLoading(mystery.id),
+                token: art.imageToken(for: mystery.id, content: content, on: model.today)
             )
         }
     }

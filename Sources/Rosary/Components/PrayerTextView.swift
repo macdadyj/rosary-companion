@@ -113,21 +113,50 @@ struct MysteryDetailsView: View {
     let mystery: Mystery
     var content: PrayerContent?
     var textStyle: Font.TextStyle = .body
+    /// Opens the full passage. The preview stays short so the decade still fits on the screen.
+    var onRead: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             if let passage = content?.passage(for: mystery.id), !passage.verses.isEmpty {
-                Text(passage.reference)
-                    .font(.caption.weight(.semibold))
-                    .tracking(0.6)
-                    .foregroundStyle(Theme.gold)
-                scriptureRule
-                Text(passage.body)
-                    .font(.prayer(textStyle))
-                    .foregroundStyle(Theme.ink)
-                    .lineSpacing(5)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .uiTag(UITag.sessionScripture)
+                if let onRead {
+                    Button(action: onRead) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(passage.reference)
+                                .font(.caption.weight(.semibold))
+                                .tracking(0.6)
+                                .foregroundStyle(Theme.gold)
+                            scriptureRule
+                            Text(passage.body)
+                                .font(.prayer(textStyle))
+                                .foregroundStyle(Theme.ink)
+                                .lineSpacing(5)
+                                .lineLimit(5)
+                                .multilineTextAlignment(.leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Text("Read the passage")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Theme.gold)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Read the Scripture passage")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier(UITag.sessionScripture)
+                } else {
+                    Text(passage.reference)
+                        .font(.caption.weight(.semibold))
+                        .tracking(0.6)
+                        .foregroundStyle(Theme.gold)
+                    scriptureRule
+                    Text(passage.body)
+                        .font(.prayer(textStyle))
+                        .foregroundStyle(Theme.ink)
+                        .lineSpacing(5)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .uiTag(UITag.sessionScripture)
+                }
                 Text(content?.scripture.translation ?? "")
                     .font(.caption2)
                     .foregroundStyle(Theme.secondaryInk)
@@ -136,6 +165,15 @@ struct MysteryDetailsView: View {
                         .font(.caption2)
                         .foregroundStyle(Theme.secondaryInk)
                 }
+            } else if let onRead {
+                Button(action: onRead) {
+                    Label(mystery.scripture, systemImage: "book")
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Read the Scripture passage")
+                .accessibilityIdentifier(UITag.sessionScripture)
+                Text("This short name has not been checked against one edition.")
+                    .font(.caption2)
             } else {
                 Label(mystery.scripture, systemImage: "book")
                     .uiTag(UITag.sessionScripture)
