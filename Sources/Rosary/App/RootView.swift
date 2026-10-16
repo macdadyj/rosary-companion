@@ -9,7 +9,23 @@ struct RootView: View {
 
     @State private var activeSession: ActiveSession?
 
+    private var uiTesting: Bool {
+        ProcessInfo.processInfo.arguments.contains("--uitesting")
+    }
+
     var body: some View {
+        if uiTesting, let session = activeSession {
+            // UI tests on the iOS 26 simulator never see a fullScreenCover, so the
+            // prayer screen replaces the tabs for that launch argument only.
+            SessionView(session: session, settings: model.settings, library: library, content: content) {
+                activeSession = nil
+            }
+        } else {
+            tabs
+        }
+    }
+
+    private var tabs: some View {
         TabView {
             NavigationStack {
                 HomeView(model: model, content: content, onBegin: begin)
