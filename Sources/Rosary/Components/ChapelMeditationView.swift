@@ -13,6 +13,8 @@ struct ChapelMeditationView: View {
     var showsSaintCards: Bool
     var showsArt: Bool
     let onNewImage: () -> Void
+    let onReadScripture: () -> Void
+    let onOpenArt: () -> Void
 
     var body: some View {
         GeometryReader { geo in
@@ -43,12 +45,17 @@ struct ChapelMeditationView: View {
                 data: library.imageData(for: mystery.id, content: content, on: day),
                 credit: nil,
                 height: imageHeight,
-                sessionTag: UITag.sessionArt
+                sessionTag: UITag.sessionArt,
+                frameTag: UITag.sessionArtFrame,
+                imageTag: UITag.sessionArtImage,
+                isLoading: library.isLoading(mystery.id),
+                token: library.imageToken(for: mystery.id, content: content, on: day),
+                onTap: onOpenArt
             )
             Text(credit)
                 .font(.caption2)
                 .foregroundStyle(Theme.secondaryInk)
-                .lineLimit(3)
+                .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
             Button(action: onNewImage) {
                 Text("New image")
@@ -66,7 +73,12 @@ struct ChapelMeditationView: View {
             Text(mystery.title)
                 .font(.prayer(.headline, weight: .semibold))
                 .foregroundStyle(Theme.gold)
-            MysteryDetailsView(mystery: mystery, content: content, textStyle: textSize.meditationStyle)
+            MysteryDetailsView(
+                mystery: mystery,
+                content: content,
+                textStyle: textSize.meditationStyle,
+                onRead: onReadScripture
+            )
             if showsSaintCards {
                 if cards.isEmpty {
                     Text("No meditation for this mystery yet.")

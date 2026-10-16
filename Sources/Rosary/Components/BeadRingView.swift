@@ -1,7 +1,6 @@
 #if os(iOS)
 import RosaryCore
 import SwiftUI
-import UIKit
 
 /// A glowing ring of beads. The current bead is larger and lit.
 /// Tapping the ring is the only way the prayer screen moves ahead.
@@ -115,48 +114,6 @@ struct OpeningBeadControl: View {
             .fill(Theme.gold)
             .frame(width: 18, height: 18)
             .shadow(color: Theme.gold.opacity(0.8), radius: 6)
-    }
-}
-
-struct SacredArtView: View {
-    let data: Data?
-    var credit: String?
-    var height: CGFloat = 220
-    /// Set on the prayer screen so a test can tap the picture without moving a bead.
-    var sessionTag: String?
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            image
-                .frame(maxWidth: .infinity)
-                .frame(height: height)
-                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
-                .iconostasis()
-                .accessibilityLabel(credit ?? "Mystery artwork")
-                .uiTag(sessionTag ?? "", when: sessionTag != nil)
-            if let credit, !credit.isEmpty {
-                Text(credit)
-                    .font(.caption2)
-                    .foregroundStyle(Theme.secondaryInk)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var image: some View {
-        if let data, let image = UIImage(data: data) {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
-        } else {
-            ZStack {
-                Theme.raisedSurface
-                Text("†")
-                    .font(.prayer(.largeTitle))
-                    .foregroundStyle(Theme.gold)
-            }
-        }
     }
 }
 
