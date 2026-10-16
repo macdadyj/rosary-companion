@@ -4,13 +4,25 @@ import SwiftUI
 import UIKit
 
 /// A glowing ring of beads. The current bead is larger and lit.
+/// Tapping the ring is the only way the prayer screen moves ahead.
 struct BeadRingView: View {
     let count: Int
     let completed: Int
     let current: Int?
     var caption: String?
+    var diameter: CGFloat = 168
+    let onAdvance: () -> Void
 
     var body: some View {
+        Button(action: onAdvance) {
+            ring
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(UITag.sessionBeads)
+        .accessibilityLabel(accessibilityText)
+    }
+
+    private var ring: some View {
         VStack(spacing: 8) {
             GeometryReader { geo in
                 let side = min(geo.size.width, geo.size.height)
@@ -37,7 +49,7 @@ struct BeadRingView: View {
                 }
                 .frame(height: side)
             }
-            .frame(height: 230)
+            .frame(height: diameter)
             if let current {
                 Text("\(current) of \(count)")
                     .font(.headline.monospacedDigit())
@@ -48,8 +60,8 @@ struct BeadRingView: View {
                     .foregroundStyle(Theme.secondaryInk)
             }
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(accessibilityText)
+        .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
     }
 
     private var accessibilityText: String {
@@ -71,43 +83,80 @@ struct BeadRingView: View {
     }
 }
 
+/// Shown for the Creed and the closing prayers, which have no decade ring.
+/// It is still the only control that moves the prayer forward.
+struct OpeningBeadControl: View {
+    let onAdvance: () -> Void
+
+    var body: some View {
+        Button(action: onAdvance) {
+            VStack(spacing: 6) {
+                HStack(spacing: 14) {
+                    bead
+                    Text("†")
+                        .font(.prayer(.title))
+                        .foregroundStyle(Theme.gold)
+                    bead
+                }
+                Text("Tap the beads")
+                    .font(.caption)
+                    .foregroundStyle(Theme.secondaryInk)
+            }
+            .frame(maxWidth: .infinity, minHeight: 72)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(UITag.sessionBeads)
+        .accessibilityLabel("Rosary beads")
+    }
+
+    private var bead: some View {
+        Circle()
+            .fill(Theme.gold)
+            .frame(width: 18, height: 18)
+            .shadow(color: Theme.gold.opacity(0.8), radius: 6)
+    }
+}
+
 struct SacredArtView: View {
-    let work: SacredWork?
     let data: Data?
-    var height: CGFloat = 180
+    var credit: String?
+    var height: CGFloat = 220
+    /// Set on the prayer screen so a test can tap the picture without moving a bead.
+    var sessionTag: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Group {
-                if let data, let image = UIImage(data: data) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                } else {
-                    ZStack {
-                        Theme.raisedSurface
-                        Text("†")
-                            .font(.prayer(.largeTitle))
-                            .foregroundStyle(Theme.gold)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: height)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .strokeBorder(Theme.gold.opacity(0.7), lineWidth: 1.5)
-            )
-            if let work {
-                Text(work.creditLine)
+            image
+                .frame(maxWidth: .infinity)
+                .frame(height: height)
+                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                .iconostasis()
+                .accessibilityLabel(credit ?? "Mystery artwork")
+                .uiTag(sessionTag ?? "", when: sessionTag != nil)
+            if let credit, !credit.isEmpty {
+                Text(credit)
                     .font(.caption2)
                     .foregroundStyle(Theme.secondaryInk)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(work?.creditLine ?? "Mystery artwork")
+    }
+
+    @ViewBuilder
+    private var image: some View {
+        if let data, let image = UIImage(data: data) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+        } else {
+            ZStack {
+                Theme.raisedSurface
+                Text("†")
+                    .font(.prayer(.largeTitle))
+                    .foregroundStyle(Theme.gold)
+            }
+        }
     }
 }
 

@@ -14,6 +14,7 @@ enum UITestLaunch {
 @main
 struct RosaryApp: App {
     @State private var model: AppModel
+    @State private var art: SacredArtLibrary
     private let library: SaintsLibrary
     private let content: PrayerContent?
 
@@ -26,13 +27,14 @@ struct RosaryApp: App {
         }
         // If Application Support is unavailable the app still runs; changes just aren't saved.
         _model = State(initialValue: model)
+        _art = State(initialValue: SacredArtLibrary.live())
         library = (try? SaintsLibrary.bundled()) ?? .empty
         content = try? PrayerContent.bundled()
     }
 
     var body: some Scene {
         WindowGroup {
-            RootView(model: model, library: library, content: content)
+            RootView(model: model, library: library, art: art, content: content)
         }
     }
 }

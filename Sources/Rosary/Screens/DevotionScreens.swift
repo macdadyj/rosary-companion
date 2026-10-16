@@ -132,7 +132,12 @@ struct DevotionSessionView: View {
                     .padding(.horizontal, 20)
             } else if let bead {
                 if let index = bead.hailMaryIndex, let count = bead.hailMaryCount {
-                    BeadRingView(count: count, completed: index - 1, current: index)
+                    BeadRingView(
+                        count: count,
+                        completed: index - 1,
+                        current: index,
+                        onAdvance: { controller.tap() }
+                    )
                         .padding(.horizontal, 24)
                 }
                 ScrollView {

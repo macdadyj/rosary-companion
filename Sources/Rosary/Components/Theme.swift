@@ -91,16 +91,54 @@ struct CardBackground: ViewModifier {
         content
             .padding(18)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .strokeBorder(Theme.gold.opacity(0.18), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .strokeBorder(Theme.gold.opacity(0.45), lineWidth: 1)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .strokeBorder(Theme.gold.opacity(0.2), lineWidth: 1)
+                    .padding(4)
+            )
+    }
+}
+
+/// A narrow gold frame, the kind that holds an icon on an iconostasis.
+struct IconostasisFrame: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(5)
+            .background(Theme.gold.opacity(0.92))
+            .padding(2)
+            .background(Theme.burgundy.opacity(0.85))
+            .padding(3)
+            .background(Theme.gold)
+            .shadow(color: Theme.gold.opacity(0.28), radius: 10, y: 2)
+    }
+}
+
+struct ChapelPanel: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(8)
+            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .strokeBorder(Theme.gold, lineWidth: 1.5)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .strokeBorder(Theme.gold.opacity(0.35), lineWidth: 1)
+                    .padding(5)
             )
     }
 }
 
 extension View {
     func card() -> some View { modifier(CardBackground()) }
+    func iconostasis() -> some View { modifier(IconostasisFrame()) }
+    func chapelPanel() -> some View { modifier(ChapelPanel()) }
     func uiTag(_ identifier: String) -> some View { accessibilityIdentifier(identifier) }
 
     @ViewBuilder
@@ -113,16 +151,22 @@ extension View {
     }
 }
 
-/// Warm dark with a candle glow at the top, parchment in light mode.
+/// Candlelight from above and a smaller flame low in the chapel.
 struct CandleBackground: View {
     var body: some View {
         ZStack {
             Theme.background
             RadialGradient(
-                colors: [Theme.gold.opacity(0.28), Theme.burgundy.opacity(0.08), .clear],
-                center: .top,
-                startRadius: 12,
-                endRadius: 460
+                colors: [Theme.gold.opacity(0.34), Theme.burgundy.opacity(0.12), .clear],
+                center: UnitPoint(x: 0.5, y: 0.02),
+                startRadius: 8,
+                endRadius: 520
+            )
+            RadialGradient(
+                colors: [Theme.gold.opacity(0.16), .clear],
+                center: UnitPoint(x: 0.5, y: 1.05),
+                startRadius: 4,
+                endRadius: 280
             )
         }
         .ignoresSafeArea()
