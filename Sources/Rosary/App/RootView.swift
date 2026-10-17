@@ -34,10 +34,6 @@ struct RootView: View {
             .tabItem { Label("Pray", systemImage: "hands.sparkles") }
             .uiTag(UITag.tabPray)
 
-            NavigationStack { ReadingsView(model: model) }
-                .tabItem { Label("Today", systemImage: "sun.horizon") }
-                .uiTag(UITag.tabToday)
-
             NavigationStack { DevotionsView(model: model, content: content) }
                 .tabItem { Label("Devotions", systemImage: "flame") }
                 .uiTag(UITag.tabDevotions)

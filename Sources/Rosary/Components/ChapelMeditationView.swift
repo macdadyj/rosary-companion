@@ -39,7 +39,7 @@ struct ChapelMeditationView: View {
 
     private func artColumn(height: CGFloat) -> some View {
         let credit = library.creditLine(for: mystery.id, content: content, on: day)
-        let imageHeight = max(height - 92, 140)
+        let imageHeight = max(height - 78, 64)
         return VStack(alignment: .leading, spacing: 6) {
             SacredArtView(
                 data: library.imageData(for: mystery.id, content: content, on: day),

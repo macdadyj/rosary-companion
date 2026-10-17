@@ -73,9 +73,16 @@ struct HomeView: View {
             Text(scheduleReason)
                 .font(.subheadline)
                 .foregroundStyle(Theme.secondaryInk)
+            NavigationLink {
+                ReadingsView(model: model)
+            } label: {
+                Label("Today’s readings", systemImage: "sun.horizon")
+                    .font(.headline)
+                    .foregroundStyle(Theme.gold)
+            }
+            .uiTag(UITag.tabToday)
         }
         .padding(.top, 8)
-        .accessibilityElement(children: .combine)
     }
 
     private var streakCard: some View {
