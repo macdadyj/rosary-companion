@@ -176,7 +176,7 @@ final class RosaryUITests: XCTestCase {
         XCTAssertEqual(XCTWaiter.wait(for: [onOurFather], timeout: 5), .completed, "Mystery jump left the prayer on \"\(prayer.label)\"")
         let surface = app.descendants(matching: .any)[UITag.sessionSurface]
         XCTAssertTrue(surface.label.contains(mysteryTitle), "The header does not name \(mysteryTitle): \(surface.label)")
-        XCTAssertTrue(beads.label.contains("10 Hail Marys"), "The beads moved before a bead was tapped: \(beads.label)")
+        XCTAssertEqual(beads.label, "10 beads", "The beads moved before a bead was tapped: \(beads.label)")
         let beforeBead = prayer.label
         tapInside(UITag.sessionBeads, y: 0.45)
         let hailed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label != %@", beforeBead), object: prayer)
@@ -184,12 +184,13 @@ final class RosaryUITests: XCTestCase {
     }
 
     func testTodayAndAFullPrayer() {
-        app.tabBars.buttons["Today"].tap()
+        tap(UITag.tabToday)
         XCTAssertTrue(app.descendants(matching: .any)[UITag.readingsDay].waitForExistence(timeout: 8))
         let link = app.descendants(matching: .any)[UITag.readingsLink]
         XCTAssertTrue(link.waitForExistence(timeout: 4))
         let address = "\(link.label) \(link.value as? String ?? "")"
         XCTAssertTrue(address.contains("bible.usccb.org"), "USCCB link was \(address)")
+        goBack("Rosary")
         app.tabBars.buttons["Devotions"].tap()
         let search = app.textFields[UITag.librarySearch]
         XCTAssertTrue(search.waitForExistence(timeout: 5))
@@ -200,7 +201,6 @@ final class RosaryUITests: XCTestCase {
         XCTAssertTrue(body.waitForExistence(timeout: 5))
         XCTAssertTrue(body.label.contains("Remember, O most gracious"), body.label)
         goBack("Devotions")
-        tap(UITag.libraryOurLady)
     }
 
     func testDevotionScreens() {
@@ -215,6 +215,7 @@ final class RosaryUITests: XCTestCase {
         tap(UITag.devotionBack)
         tap(UITag.devotionEnd)
         open(UITag.devotionMercy)
+        tap(UITag.devotionStep)
         tap(UITag.devotionNext)
         tap(UITag.devotionEnd)
         open(UITag.devotionLitany)
