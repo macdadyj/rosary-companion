@@ -117,6 +117,11 @@ public struct RosaryPlan: Hashable, Sendable {
 
     public var decadeNumbers: [Int] { scope.decadeNumbers }
 
+    /// Index of the Our Father that opens the given decade.
+    public func ourFatherIndex(ofDecade decade: Int) -> Int? {
+        steps.firstIndex { $0.section == .decade(decade) && $0.prayerID == .ourFather }
+    }
+
     /// Index of the last step of the given decade (its Fatima Prayer).
     public func lastStepIndex(ofDecade decade: Int) -> Int? {
         steps.lastIndex { $0.section == .decade(decade) }

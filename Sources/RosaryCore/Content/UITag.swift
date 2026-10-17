@@ -3,6 +3,7 @@ import Foundation
 /// Stable names for the controls the UI tests tap. The iOS views use the same strings.
 public enum UITag {
     public static let tabPray = "tab.pray"
+    public static let tabToday = "tab.today"
     public static let tabDevotions = "tab.devotions"
     public static let tabIntentions = "tab.intentions"
     public static let tabSaints = "tab.saints"
@@ -27,9 +28,24 @@ public enum UITag {
     public static let devotionNext = "devotion.next"
     public static let devotionBack = "devotion.back"
     public static let devotionEnd = "devotion.end"
+    public static let devotionStep = "devotion.step"
+    public static let devotionFullText = "devotion.fulltext"
 
     public static let litanyNext = "litany.next"
     public static let litanyBack = "litany.back"
+    public static let litanyStep = "litany.step"
+    public static let litanyFullText = "litany.fulltext"
+
+    public static let librarySearch = "library.search"
+    public static let libraryBody = "library.body"
+    public static let libraryMemorare = "library.prayer.memorare"
+    public static let libraryMichael = "library.prayer.st-michael-chaplet"
+    public static let libraryOurLady = "library.category.ourLady"
+
+    public static let readingsDay = "readings.day"
+    public static let readingsBody = "readings.body"
+    public static let readingsLink = "readings.link"
+    public static let readingsColor = "readings.color"
 
     public static let consecrationBegin = "consecration.begin"
     public static let consecrationDay = "consecration.day.1"
@@ -70,6 +86,9 @@ public enum UITag {
     public static let sessionScriptureReader = "session.scriptureReader"
     public static let sessionScriptureBody = "session.scriptureBody"
     public static let sessionScriptureClose = "session.scriptureClose"
+    public static let sessionMysteryPrevious = "session.mystery.previous"
+    public static let sessionMysteryNext = "session.mystery.next"
+    public static func sessionMystery(_ number: Int) -> String { "session.mystery.\(number)" }
 
     public static let saintMystery = "saint.annunciation"
     public static let calendarToday = "calendar.today"
@@ -80,13 +99,15 @@ public enum UITag {
     public static let watchCount = "watch.count"
 
     public static let all = [
-        tabPray, tabDevotions, tabIntentions, tabSaints, tabSettings,
+        tabPray, tabToday, tabDevotions, tabIntentions, tabSaints, tabSettings,
         beginRosary, offerIntentions, openCalendar, openJournal, openAngelus,
         modeGuided, modeTracking,
         devotionSorrows, devotionMercy, devotionLitany, devotionHours,
         devotionConsecration, devotionCalendar, devotionJournal,
-        devotionNext, devotionBack, devotionEnd,
-        litanyNext, litanyBack,
+        devotionNext, devotionBack, devotionEnd, devotionStep, devotionFullText,
+        litanyNext, litanyBack, litanyStep, litanyFullText,
+        librarySearch, libraryBody, libraryMemorare, libraryMichael, libraryOurLady,
+        readingsDay, readingsBody, readingsLink, readingsColor,
         consecrationBegin, consecrationDay,
         intentionAdd, intentionField, intentionAnswered, intentionOngoing,
         settingsChant, settingsArt, settingsVoice, settingsHaptics, settingsHolyGhost,
@@ -97,6 +118,8 @@ public enum UITag {
         sessionBeads, sessionScripture, sessionArt, sessionPrayer, sessionRefreshArt,
         sessionArtFrame, sessionArtImage, sessionArtViewer, sessionArtClose, sessionArtCredit,
         sessionScriptureReader, sessionScriptureBody, sessionScriptureClose,
+        sessionMysteryPrevious, sessionMysteryNext,
+        sessionMystery(1), sessionMystery(2), sessionMystery(3), sessionMystery(4), sessionMystery(5),
         saintMystery, calendarToday,
         watchAdvance, watchBack, watchReset, watchCount,
     ]

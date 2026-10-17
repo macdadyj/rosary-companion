@@ -78,6 +78,7 @@ public final class SessionController {
     public func pause(_ reason: PauseReason = .user) { send(.pause(reason)) }
     public func resume() { send(.resume) }
     public func dismissBanner() { send(.dismissBanner) }
+    public func jumpToDecade(_ decade: Int) { send(.jumpToDecade(decade)) }
     public func end() { send(.end) }
     public func tick() { send(.tick) }
 
