@@ -158,9 +158,58 @@ final class RosaryUITests: XCTestCase {
         XCTAssertEqual(prayer.label, before, "Changing the painting moved the prayer")
     }
 
+    /// A one-decade prayer can still move to another mystery, and lands on its Our Father.
+    func testMysteryJumpLandsOnTheOurFather() {
+        app.segmentedControls.buttons["One decade"].tap()
+        let begin = reveal(UITag.beginRosary)
+        XCTAssertTrue(begin.waitForExistence(timeout: 2))
+        begin.tap()
+        let chip = app.buttons[UITag.sessionMystery(4)]
+        XCTAssertTrue(chip.waitForExistence(timeout: 10), "Missing mystery 4")
+        let mysteryTitle = chip.label
+        XCTAssertFalse(mysteryTitle.isEmpty)
+        let beads = app.descendants(matching: .any)[UITag.sessionBeads]
+        XCTAssertTrue(beads.waitForExistence(timeout: 4))
+        chip.tap()
+        let prayer = prayerLabel()
+        let onOurFather = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == %@", "Our Father"), object: prayer)
+        XCTAssertEqual(XCTWaiter.wait(for: [onOurFather], timeout: 5), .completed, "Mystery jump left the prayer on \"\(prayer.label)\"")
+        let surface = app.descendants(matching: .any)[UITag.sessionSurface]
+        XCTAssertTrue(surface.label.contains(mysteryTitle), "The header does not name \(mysteryTitle): \(surface.label)")
+        XCTAssertTrue(beads.label.contains("10 Hail Marys"), "The beads moved before a bead was tapped: \(beads.label)")
+        let beforeBead = prayer.label
+        tapInside(UITag.sessionBeads, y: 0.45)
+        let hailed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label != %@", beforeBead), object: prayer)
+        XCTAssertEqual(XCTWaiter.wait(for: [hailed], timeout: 5), .completed, "Tapping the beads left the prayer on \"\(prayer.label)\"")
+    }
+
+    func testTodayAndAFullPrayer() {
+        app.tabBars.buttons["Today"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)[UITag.readingsDay].waitForExistence(timeout: 8))
+        let link = app.descendants(matching: .any)[UITag.readingsLink]
+        XCTAssertTrue(link.waitForExistence(timeout: 4))
+        let address = "\(link.label) \(link.value as? String ?? "")"
+        XCTAssertTrue(address.contains("bible.usccb.org"), "USCCB link was \(address)")
+        app.tabBars.buttons["Devotions"].tap()
+        let search = app.textFields[UITag.librarySearch]
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
+        search.typeText("Memorare")
+        tap(UITag.libraryMemorare)
+        let body = app.descendants(matching: .any)[UITag.libraryBody]
+        XCTAssertTrue(body.waitForExistence(timeout: 5))
+        XCTAssertTrue(body.label.contains("Remember, O most gracious"), body.label)
+        goBack("Devotions")
+        tap(UITag.libraryOurLady)
+    }
+
     func testDevotionScreens() {
         app.tabBars.buttons["Devotions"].tap()
         open(UITag.devotionSorrows)
+        let sorrows = app.descendants(matching: .any)[UITag.devotionFullText]
+        XCTAssertTrue(sorrows.waitForExistence(timeout: 5), "The chaplet did not open as one page")
+        XCTAssertTrue(sorrows.label.contains("Offering") || sorrows.label.contains("SIMEON"), sorrows.label)
+        tap(UITag.devotionStep)
         tap(UITag.devotionNext)
         tap(UITag.devotionNext)
         tap(UITag.devotionBack)
@@ -169,6 +218,10 @@ final class RosaryUITests: XCTestCase {
         tap(UITag.devotionNext)
         tap(UITag.devotionEnd)
         open(UITag.devotionLitany)
+        let litany = app.descendants(matching: .any)[UITag.litanyFullText]
+        XCTAssertTrue(litany.waitForExistence(timeout: 5))
+        XCTAssertTrue(litany.label.contains("Lord have mercy"), litany.label)
+        tap(UITag.litanyStep)
         tap(UITag.litanyNext)
         tap(UITag.litanyBack)
         goBack("Devotions")

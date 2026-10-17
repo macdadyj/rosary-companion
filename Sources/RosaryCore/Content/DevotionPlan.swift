@@ -25,6 +25,16 @@ public struct DevotionPlan: Hashable, Sendable, Identifiable {
     public func bead(_ index: Int) -> DevotionBead? {
         beads.indices.contains(index) ? beads[index] : nil
     }
+
+    /// Every bead, in order, with its words. A counted invocation that has no text says so.
+    public var fullText: String {
+        beads.map { bead in
+            if let text = bead.text, !text.isEmpty {
+                return "\(bead.title)\n\(text)"
+            }
+            return "\(bead.title)\nCounted bead. Pray this invocation from an approved edition."
+        }.joined(separator: "\n\n")
+    }
 }
 
 public enum DevotionCatalog {
@@ -111,6 +121,92 @@ public enum DevotionCatalog {
             beads: beads
         )
     }
+
+    /// Chaplet of Saint Michael. The salutations are the traditional English of the chaplet
+    /// approved in 1851. Each choir is one salutation, one Our Father, and three Hail Marys,
+    /// then four Our Fathers and the closing prayers.
+    public static func stMichaelChaplet(book: PrayerBook) -> DevotionPlan {
+        var beads: [DevotionBead] = []
+        func add(title: String, text: String, prayer: PrayerID? = nil, hailIndex: Int? = nil, hailCount: Int? = nil) {
+            beads.append(DevotionBead(
+                id: beads.count,
+                title: title,
+                text: text,
+                prayer: prayer,
+                slotID: nil,
+                hailMaryIndex: hailIndex,
+                hailMaryCount: hailCount
+            ))
+        }
+        let glory = book.text(for: .gloryBe).full
+        add(
+            title: "Opening",
+            text: """
+            O God, come to my assistance.
+            O Lord, make haste to help me.
+            \(glory)
+            """
+        )
+        for choir in michaelChoirs {
+            add(title: choir.title, text: choir.text)
+            add(title: "Our Father", text: book.text(for: .ourFather).full, prayer: .ourFather)
+            for number in 1...3 {
+                add(
+                    title: "Hail Mary \(number) of 3",
+                    text: book.text(for: .hailMary).full,
+                    prayer: .hailMary,
+                    hailIndex: number,
+                    hailCount: 3
+                )
+            }
+        }
+        for (title, line) in michaelOurFathers {
+            add(title: title, text: "\(line)\n\(book.text(for: .ourFather).full)", prayer: .ourFather)
+        }
+        add(
+            title: "Closing",
+            text: """
+            \(michaelClosing)
+
+            \(LayPrayers.saintMichaelShort)
+            """
+        )
+        return DevotionPlan(
+            id: "stMichael",
+            title: "Chaplet of Saint Michael",
+            source: "Traditional English of the chaplet of Saint Michael, from the form approved in 1851 and printed in prayer books before 1928.",
+            sourceURL: "",
+            beads: beads
+        )
+    }
+
+    private static let michaelChoirs: [(title: String, text: String)] = [
+        ("Choir of Seraphim", "By the intercession of Saint Michael and the celestial Choir of Seraphim, may the Lord make us worthy to burn with the fire of perfect charity. Amen."),
+        ("Choir of Cherubim", "By the intercession of Saint Michael and the celestial Choir of Cherubim, may the Lord grant us the grace to leave the ways of sin and run in the paths of Christian perfection. Amen."),
+        ("Choir of Thrones", "By the intercession of Saint Michael and the celestial Choir of Thrones, may the Lord infuse into our hearts a true and sincere spirit of humility. Amen."),
+        ("Choir of Dominions", "By the intercession of Saint Michael and the celestial Choir of Dominions, may the Lord give us grace to govern our senses and overcome our passions. Amen."),
+        ("Choir of Powers", "By the intercession of Saint Michael and the celestial Choir of Powers, may the Lord protect our souls against the snares and temptations of the devil. Amen."),
+        ("Choir of Virtues", "By the intercession of Saint Michael and the celestial Choir of Virtues, may the Lord preserve us from evil and from falling into temptation. Amen."),
+        ("Choir of Principalities", "By the intercession of Saint Michael and the celestial Choir of Principalities, may God fill our souls with a true spirit of obedience. Amen."),
+        ("Choir of Archangels", "By the intercession of Saint Michael and the celestial Choir of Archangels, may the Lord give us perseverance in faith and in all good works, in order that we may attain the glory of Heaven. Amen."),
+        ("Choir of Angels", "By the intercession of Saint Michael and the celestial Choir of Angels, may the Lord grant us to be protected by them in this mortal life and conducted hereafter to eternal glory. Amen."),
+    ]
+
+    private static let michaelOurFathers: [(String, String)] = [
+        ("Our Father · Saint Michael", "One Our Father in honor of Saint Michael."),
+        ("Our Father · Saint Gabriel", "One Our Father in honor of Saint Gabriel."),
+        ("Our Father · Saint Raphael", "One Our Father in honor of Saint Raphael."),
+        ("Our Father · Guardian Angel", "One Our Father in honor of our Guardian Angel."),
+    ]
+
+    private static let michaelClosing = """
+    O glorious Prince Saint Michael, chief and commander of the heavenly hosts, guardian of souls, vanquisher of rebel spirits, servant in the house of the Divine King and our admirable conductor, who dost shine with excellence and superhuman virtue: vouchsafe to deliver us from all evil, who turn to thee with confidence, and enable us by thy gracious protection to serve God more and more faithfully every day.
+
+    Pray for us, O glorious Saint Michael, Prince of the Church of Jesus Christ.
+    That we may be made worthy of his promises.
+
+    Almighty and everlasting God, who by a prodigy of goodness and a merciful desire for the salvation of all men hast appointed the most glorious Archangel Saint Michael prince of thy Church: make us worthy, we beseech thee, to be delivered by his protection from all our enemies, that none of them may harass us at the hour of death, but that we may be conducted by him into thy presence. This we ask through the merits of Jesus Christ our Lord. Amen.
+    """
 }
 
 @Observable

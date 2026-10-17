@@ -112,6 +112,8 @@ final class ActiveSession: Identifiable {
 
     func back() { controller.back() }
 
+    func jumpToDecade(_ decade: Int) { controller.jumpToDecade(decade) }
+
     func switchMode(_ mode: PrayerMode) { controller.switchMode(mode) }
 
     func setShowsMeditation(_ shows: Bool) {

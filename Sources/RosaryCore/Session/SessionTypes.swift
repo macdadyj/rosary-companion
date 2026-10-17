@@ -104,6 +104,8 @@ public enum SessionEvent: Hashable, Sendable {
     case resume
     case dismissBanner
     case end
+    /// Land on that decade's Our Father. Decades are numbered 1...5 inside the mystery set.
+    case jumpToDecade(Int)
 }
 
 public struct EngineTiming: Hashable, Sendable {

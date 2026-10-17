@@ -117,6 +117,127 @@ public enum LiturgicalCalendar {
         if date.month == 12 { return date.day >= 25 }
         return date.month == 1 && date <= baptismOfTheLordSunday(year: date.year)
     }
+
+    public static func pentecost(year: Int) -> CivilDate {
+        easter(year: year).adding(days: 49)
+    }
+
+    public static func palmSunday(year: Int) -> CivilDate {
+        easter(year: year).adding(days: -7)
+    }
+
+    public static func holyThursday(year: Int) -> CivilDate {
+        easter(year: year).adding(days: -3)
+    }
+
+    public static func goodFriday(year: Int) -> CivilDate {
+        easter(year: year).adding(days: -2)
+    }
+
+    public static func holySaturday(year: Int) -> CivilDate {
+        easter(year: year).adding(days: -1)
+    }
+
+    /// Third Sunday of Advent.
+    public static func gaudeteSunday(year: Int) -> CivilDate {
+        firstSundayOfAdvent(year: year).adding(days: 14)
+    }
+
+    /// Fourth Sunday of Lent.
+    public static func laetareSunday(year: Int) -> CivilDate {
+        easter(year: year).adding(days: -21)
+    }
+
+    /// The USCCB readings page for a civil date, for example 17 October 2026 is `101726.cfm`.
+    public static func usccbReadingsURL(for date: CivilDate) -> URL {
+        let path = String(format: "%02d%02d%02d", date.month, date.day, date.year % 100)
+        return URL(string: "https://bible.usccb.org/bible/readings/\(path).cfm")!
+    }
+
+    /// Season and color for the Roman calendar. Feasts outside the seasons below stay with the season.
+    public static func day(_ date: CivilDate) -> LiturgicalDay {
+        let easterSunday = easter(year: date.year)
+        let pentecostSunday = pentecost(year: date.year)
+        if date == easterSunday {
+            return LiturgicalDay(date: date, season: .easter, color: .white, title: "Easter Sunday")
+        }
+        if date == pentecostSunday {
+            return LiturgicalDay(date: date, season: .easter, color: .red, title: "Pentecost")
+        }
+        if date == CivilDate(year: date.year, month: 12, day: 25) {
+            return LiturgicalDay(date: date, season: .christmas, color: .white, title: "Christmas Day")
+        }
+        if date == ashWednesday(year: date.year) {
+            return LiturgicalDay(date: date, season: .lent, color: .violet, title: "Ash Wednesday")
+        }
+        if date == palmSunday(year: date.year) {
+            return LiturgicalDay(date: date, season: .lent, color: .red, title: "Palm Sunday")
+        }
+        if date == holyThursday(year: date.year) {
+            return LiturgicalDay(date: date, season: .triduum, color: .white, title: "Holy Thursday")
+        }
+        if date == goodFriday(year: date.year) {
+            return LiturgicalDay(date: date, season: .triduum, color: .red, title: "Good Friday")
+        }
+        if date == holySaturday(year: date.year) {
+            return LiturgicalDay(date: date, season: .triduum, color: .white, title: "Holy Saturday")
+        }
+        if date == gaudeteSunday(year: date.year) {
+            return LiturgicalDay(date: date, season: .advent, color: .rose, title: "Gaudete Sunday")
+        }
+        if date == laetareSunday(year: date.year) {
+            return LiturgicalDay(date: date, season: .lent, color: .rose, title: "Laetare Sunday")
+        }
+        if isInAdvent(date) {
+            return LiturgicalDay(date: date, season: .advent, color: .violet, title: "Advent")
+        }
+        if isInChristmasSeason(date) {
+            return LiturgicalDay(date: date, season: .christmas, color: .white, title: "Christmas")
+        }
+        if date > easterSunday && date < pentecostSunday {
+            return LiturgicalDay(date: date, season: .easter, color: .white, title: "Easter")
+        }
+        if isInLent(date) {
+            return LiturgicalDay(date: date, season: .lent, color: .violet, title: "Lent")
+        }
+        return LiturgicalDay(date: date, season: .ordinary, color: .green, title: "Ordinary Time")
+    }
+}
+
+public enum LiturgicalSeason: String, Hashable, Sendable {
+    case advent, christmas, lent, triduum, easter, ordinary
+
+    public var title: String {
+        switch self {
+        case .advent: "Advent"
+        case .christmas: "Christmas"
+        case .lent: "Lent"
+        case .triduum: "Paschal Triduum"
+        case .easter: "Easter"
+        case .ordinary: "Ordinary Time"
+        }
+    }
+}
+
+public enum LiturgicalColor: String, Hashable, Sendable {
+    case green, violet, white, red, rose
+
+    public var title: String {
+        switch self {
+        case .green: "Green"
+        case .violet: "Violet"
+        case .white: "White"
+        case .red: "Red"
+        case .rose: "Rose"
+        }
+    }
+}
+
+public struct LiturgicalDay: Hashable, Sendable {
+    public let date: CivilDate
+    public let season: LiturgicalSeason
+    public let color: LiturgicalColor
+    public let title: String
 }
 
 public enum MysterySchedule {

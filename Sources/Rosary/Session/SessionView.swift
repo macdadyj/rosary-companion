@@ -267,12 +267,14 @@ struct SessionView: View {
     }
 
     private var progressHeader: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
             Text(sectionLine)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.secondaryInk)
                 .multilineTextAlignment(.center)
                 .uiTag(UITag.sessionSurface)
+                .gesture(mysterySwipe)
+            mysteryStrip
             if snapshot.decadeTotal > 1 {
                 HStack(spacing: 8) {
                     ForEach(1...snapshot.decadeTotal, id: \.self) { position in
@@ -292,6 +294,63 @@ struct SessionView: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 4)
+        .accessibilityAction(named: Text("Next mystery")) { jumpMystery(by: 1) }
+        .accessibilityAction(named: Text("Previous mystery")) { jumpMystery(by: -1) }
+    }
+
+    private var mysteryStrip: some View {
+        HStack(spacing: 8) {
+            mysteryStep(delta: -1, title: "Previous mystery", tag: UITag.sessionMysteryPrevious, symbol: "chevron.left")
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(snapshot.mysterySet.mysteries) { mystery in
+                        let selected = snapshot.mystery?.number == mystery.number
+                        Button {
+                            session.jumpToDecade(mystery.number)
+                        } label: {
+                            Text("\(mystery.number)")
+                                .font(.headline.monospacedDigit())
+                                .frame(width: 36, height: 36)
+                                .background(selected ? Theme.gold : Theme.raisedSurface, in: Circle())
+                                .foregroundStyle(selected ? Theme.background : Theme.ink)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(mystery.title)
+                        .accessibilityIdentifier(UITag.sessionMystery(mystery.number))
+                    }
+                }
+            }
+            mysteryStep(delta: 1, title: "Next mystery", tag: UITag.sessionMysteryNext, symbol: "chevron.right")
+        }
+    }
+
+    private func mysteryStep(delta: Int, title: String, tag: String, symbol: String) -> some View {
+        Button {
+            jumpMystery(by: delta)
+        } label: {
+            Image(systemName: symbol)
+                .font(.body.weight(.semibold))
+                .frame(width: 36, height: 36)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .uiTag(tag)
+    }
+
+    private var mysterySwipe: some Gesture {
+        DragGesture(minimumDistance: 36)
+            .onEnded { value in
+                let horizontal = value.translation.width
+                guard abs(horizontal) > abs(value.translation.height), abs(horizontal) > 48 else { return }
+                jumpMystery(by: horizontal < 0 ? 1 : -1)
+            }
+    }
+
+    private func jumpMystery(by delta: Int) {
+        let current = snapshot.mystery?.number ?? (delta > 0 ? 0 : 6)
+        let target = current + delta
+        guard (1...5).contains(target) else { return }
+        session.jumpToDecade(target)
     }
 
     private var bottomBar: some View {
@@ -366,14 +425,18 @@ struct SessionView: View {
         case .closing:
             return "Closing prayers"
         case .decade:
+            guard let mystery = snapshot.mystery else { return "Decade" }
+            if snapshot.decadeTotal == 1 {
+                return "Decade \(mystery.number) · \(mystery.title)"
+            }
             let position = snapshot.decadePosition.map { "Decade \($0) of \(snapshot.decadeTotal)" } ?? "Decade"
-            guard let mystery = snapshot.mystery else { return position }
             return "\(position) · \(mystery.title)"
         }
     }
 
     private func decadeFill(_ position: Int) -> Color {
-        if position <= snapshot.completedDecades.count { return Theme.gold }
+        // In a multi-decade Rosary, capsule 1 is decade 1. Membership keeps a skipped decade empty.
+        if snapshot.completedDecades.contains(position) { return Theme.gold }
         if position == snapshot.decadePosition { return Theme.gold.opacity(0.45) }
         return Theme.beadEmpty
     }

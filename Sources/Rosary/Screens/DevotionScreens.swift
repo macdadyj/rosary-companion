@@ -6,16 +6,75 @@ struct DevotionsView: View {
     let model: AppModel
     let content: PrayerContent?
 
+    @State private var query = ""
+    @State private var category: PrayerCategory = .ourLady
+
+    private var prayers: [LibraryPrayer] {
+        PrayerLibrary.catalog(book: PrayerBook(usesHolyGhost: model.settings.usesHolyGhost), content: content)
+    }
+
+    private var shown: [LibraryPrayer] {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty {
+            return prayers.filter { $0.category == category }
+        }
+        return PrayerLibrary.matching(trimmed, in: prayers)
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Other prayers")
+                Text("Prayers")
                     .font(.prayer(.largeTitle, weight: .semibold))
                     .foregroundStyle(Theme.ink)
-                Text("The Rosary is on the Pray tab. These are the other devotions, with the words that have been checked.")
+                Text("Each prayer is printed in full. Search, or choose a group.")
                     .font(.subheadline)
                     .foregroundStyle(Theme.secondaryInk)
-                link("Seven Sorrows", "Seven Hail Marys for each sorrow", "heart", UITag.devotionSorrows) {
+                TextField("Search prayers", text: $query)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.body)
+                    .uiTag(UITag.librarySearch)
+                    .autocorrectionDisabled()
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(PrayerCategory.allCases) { item in
+                            Button(item.title) { category = item }
+                                .font(.subheadline.weight(category == item ? .semibold : .regular))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(category == item ? Theme.gold : Theme.raisedSurface, in: Capsule())
+                                .foregroundStyle(category == item ? Theme.background : Theme.ink)
+                                .uiTag(item == .ourLady ? UITag.libraryOurLady : "library.category.\(item.rawValue)")
+                        }
+                    }
+                }
+                ForEach(shown) { prayer in
+                    NavigationLink {
+                        PrayerPageView(prayer: prayer, model: model, content: content)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(prayer.title)
+                                    .font(.prayer(.title3, weight: .semibold))
+                                    .foregroundStyle(Theme.ink)
+                                Text(prayer.category.title)
+                                    .font(.caption)
+                                    .foregroundStyle(Theme.secondaryInk)
+                            }
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(Theme.secondaryInk)
+                        }
+                        .card()
+                    }
+                    .buttonStyle(.plain)
+                    .uiTag("library.prayer.\(prayer.id)")
+                }
+                Text("Counted prayers")
+                    .font(.prayer(.title2, weight: .semibold))
+                    .foregroundStyle(Theme.ink)
+                    .padding(.top, 8)
+                link("Seven Sorrows", "The whole chaplet, with an optional bead-by-bead mode", "heart", UITag.devotionSorrows) {
                     DevotionSessionView(plan: sorrowsPlan, model: model, content: content)
                 }
                 link("Divine Mercy", "The beads are counted. The Mercy prayers are not included yet.", "sun.max", UITag.devotionMercy) {
@@ -86,13 +145,15 @@ struct DevotionSessionView: View {
 
     @State private var controller: DevotionController?
     @State private var speech: SpeechRecognitionService?
+    @State private var stepByStep: Bool
     @Environment(\.dismiss) private var dismiss
 
-    init(plan: DevotionPlan?, model: AppModel, content: PrayerContent?) {
+    init(plan: DevotionPlan?, model: AppModel, content: PrayerContent?, startsStepping: Bool = false) {
         self.plan = plan
         self.model = model
         self.content = content
         _controller = State(initialValue: plan.map(DevotionController.init(plan:)))
+        _stepByStep = State(initialValue: startsStepping)
     }
 
     var body: some View {
@@ -109,7 +170,47 @@ struct DevotionSessionView: View {
         .onDisappear { speech?.stop() }
     }
 
+    @ViewBuilder
     private func session(_ plan: DevotionPlan, _ controller: DevotionController) -> some View {
+        if stepByStep {
+            stepPage(plan, controller)
+        } else {
+            fullPage(plan)
+        }
+    }
+
+    private func fullPage(_ plan: DevotionPlan) -> some View {
+        VStack(spacing: 12) {
+            HStack {
+                Button("End") { dismiss() }
+                    .uiTag(UITag.devotionEnd)
+                Spacer()
+                Button("Step by step") { stepByStep = true }
+                    .uiTag(UITag.devotionStep)
+            }
+            .font(.headline)
+            .foregroundStyle(Theme.gold)
+            .padding(.horizontal, 16)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text(plan.title)
+                        .font(.prayer(.largeTitle, weight: .semibold))
+                        .foregroundStyle(Theme.ink)
+                    Text(plan.fullText)
+                        .font(.prayer(.title3))
+                        .foregroundStyle(Theme.ink)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .uiTag(UITag.devotionFullText)
+                    Text(plan.source)
+                        .font(.caption)
+                        .foregroundStyle(Theme.secondaryInk)
+                }
+                .padding(20)
+            }
+        }
+    }
+
+    private func stepPage(_ plan: DevotionPlan, _ controller: DevotionController) -> some View {
         let bead = controller.bead
         return VStack(spacing: 12) {
             HStack {
@@ -188,10 +289,11 @@ struct DevotionSessionView: View {
 struct LitanyView: View {
     let content: PrayerContent?
     @State private var index = 0
+    @State private var stepByStep = false
 
     var body: some View {
         VStack(spacing: 0) {
-            if let litany = content?.litany {
+            if let litany = content?.litany, stepByStep {
                 Text(litany.title)
                     .font(.prayer(.title2, weight: .semibold))
                     .foregroundStyle(Theme.ink)
@@ -228,6 +330,35 @@ struct LitanyView: View {
                 .font(.headline)
                 .foregroundStyle(Theme.gold)
                 .padding(20)
+            } else if let litany = content?.litany {
+                HStack {
+                    Button("Step by step") { stepByStep = true }
+                        .uiTag(UITag.litanyStep)
+                    Spacer()
+                }
+                .font(.headline)
+                .foregroundStyle(Theme.gold)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 18) {
+                        Text(litany.title)
+                            .font(.prayer(.largeTitle, weight: .semibold))
+                            .foregroundStyle(Theme.ink)
+                        Text(litany.note)
+                            .font(.caption)
+                            .foregroundStyle(Theme.secondaryInk)
+                        Text(litany.rows.map { "\($0.english)\n\($0.latin)" }.joined(separator: "\n\n"))
+                            .font(.prayer(.title3))
+                            .foregroundStyle(Theme.ink)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .uiTag(UITag.litanyFullText)
+                        Text(litany.source)
+                            .font(.caption)
+                            .foregroundStyle(Theme.secondaryInk)
+                    }
+                    .padding(20)
+                }
             } else {
                 Text("The litany text isn’t in this build.")
                     .foregroundStyle(Theme.secondaryInk)

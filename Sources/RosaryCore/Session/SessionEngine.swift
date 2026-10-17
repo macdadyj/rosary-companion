@@ -6,7 +6,7 @@ import Foundation
 /// recogniser results as `.transcript`, which is what makes it testable with scripted transcripts.
 public final class SessionEngine {
     public let configuration: SessionConfiguration
-    public let plan: RosaryPlan
+    public private(set) var plan: RosaryPlan
     public private(set) var mode: PrayerMode
     public private(set) var index = 0
     public private(set) var phase: SessionPhase = .notStarted
@@ -113,6 +113,9 @@ public final class SessionEngine {
         case .end:
             guard phase != .finished else { return [] }
             return finish()
+
+        case .jumpToDecade(let decade):
+            return jump(toDecade: decade)
         }
     }
 
@@ -283,6 +286,55 @@ public final class SessionEngine {
     }
 
     // MARK: - Taps and controls
+
+    /// Moves to the Our Father of a mystery. A one-decade session is rebuilt around that mystery.
+    /// Skipped decades are marked finished for the progress strip and are not announced.
+    private func jump(toDecade decade: Int) -> [SessionEffect] {
+        guard isActive, (1...5).contains(decade) else { return [] }
+        if case .paused = phase { return [] }
+
+        let completed: [Int]
+        let targetPlan: RosaryPlan
+        if plan.decadeNumbers.contains(decade) {
+            targetPlan = plan
+            // Keep decades already finished. A skipped decade stays unfinished.
+            completed = completedDecades.filter { $0 < decade }
+        } else if case .singleDecade = plan.scope {
+            targetPlan = RosaryPlan(
+                scope: .singleDecade(decade),
+                mysterySet: plan.mysterySet,
+                openingIntentions: configuration.openingIntentions
+            )
+            completed = []
+        } else {
+            return []
+        }
+        guard let target = targetPlan.ourFatherIndex(ofDecade: decade) else { return [] }
+        if targetPlan.steps.count == plan.steps.count, target == index, plan.scope == targetPlan.scope {
+            return []
+        }
+        let replacedPlan = targetPlan.steps != plan.steps
+        plan = targetPlan
+        if replacedPlan { advances = [] }
+        return land(on: target, completed: completed)
+    }
+
+    private func land(on target: Int, completed: [Int]) -> [SessionEffect] {
+        var effects: [SessionEffect] = []
+        if phase == .speaking {
+            effects.append(.stopSpeaking)
+        }
+        awaitingNarration = nil
+        narrationQueue = []
+        hailMary.clear()
+        lastAutoAdvanceAt = nil
+        nextLeaderBanner = nil
+        bannerUntil = nil
+        estimatedSteps = []
+        completedDecades = completed
+        acceptingEpoch = nil
+        return effects + enterStep(target)
+    }
 
     private func tap() -> [SessionEffect] {
         switch phase {
