@@ -8,9 +8,15 @@ struct DevotionsView: View {
 
     @State private var query = ""
     @State private var category: PrayerCategory = .ourLady
+    @State private var prayers: [LibraryPrayer]
 
-    private var prayers: [LibraryPrayer] {
-        PrayerLibrary.catalog(book: PrayerBook(usesHolyGhost: model.settings.usesHolyGhost), content: content)
+    init(model: AppModel, content: PrayerContent?) {
+        self.model = model
+        self.content = content
+        _prayers = State(initialValue: PrayerLibrary.catalog(
+            book: PrayerBook(usesHolyGhost: model.settings.usesHolyGhost),
+            content: content
+        ))
     }
 
     private var shown: [LibraryPrayer] {
@@ -35,18 +41,9 @@ struct DevotionsView: View {
                     .font(.body)
                     .uiTag(UITag.librarySearch)
                     .autocorrectionDisabled()
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(PrayerCategory.allCases) { item in
-                            Button(item.title) { category = item }
-                                .font(.subheadline.weight(category == item ? .semibold : .regular))
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background(category == item ? Theme.gold : Theme.raisedSurface, in: Capsule())
-                                .foregroundStyle(category == item ? Theme.background : Theme.ink)
-                                .uiTag(item == .ourLady ? UITag.libraryOurLady : "library.category.\(item.rawValue)")
-                        }
-                    }
+                if query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    categoryChips
+                    countedPrayers
                 }
                 ForEach(shown) { prayer in
                     NavigationLink {
@@ -70,36 +67,14 @@ struct DevotionsView: View {
                     .buttonStyle(.plain)
                     .uiTag("library.prayer.\(prayer.id)")
                 }
-                Text("Counted prayers")
-                    .font(.prayer(.title2, weight: .semibold))
-                    .foregroundStyle(Theme.ink)
-                    .padding(.top, 8)
-                link("Seven Sorrows", "The whole chaplet, with an optional bead-by-bead mode", "heart", UITag.devotionSorrows) {
-                    DevotionSessionView(plan: sorrowsPlan, model: model, content: content)
-                }
-                link("Divine Mercy", "The beads are counted. The Mercy prayers are not included yet.", "sun.max", UITag.devotionMercy) {
-                    DevotionSessionView(plan: mercyPlan, model: model, content: content)
-                }
-                link("Litany of Loreto", "The 1857 Raccolta, word for word", "list.bullet", UITag.devotionLitany) {
-                    LitanyView(content: content)
-                }
-                link("Angelus and Regina Caeli", "The hour changes with the season", "bell", UITag.devotionHours) {
-                    HoursView(model: model, content: content)
-                }
-                link("33-day consecration", "A count of days, and one sourced act of consecration", "calendar", UITag.devotionConsecration) {
-                    ConsecrationView(model: model, content: content)
-                }
-                link("Marian feasts", "Byzantine Ruthenian and Western", "star", UITag.devotionCalendar) {
-                    FeastCalendarView(model: model, content: content)
-                }
-                link("Journal", "Notes and answered prayers you have kept", "book.closed", UITag.devotionJournal) {
-                    JournalView(model: model)
-                }
             }
             .padding(20)
         }
         .background(CandleBackground())
         .navigationTitle("Devotions")
+        .onChange(of: model.settings.usesHolyGhost) { _, usesHolyGhost in
+            prayers = PrayerLibrary.catalog(book: PrayerBook(usesHolyGhost: usesHolyGhost), content: content)
+        }
     }
 
     private var sorrowsPlan: DevotionPlan? {
@@ -108,6 +83,52 @@ struct DevotionsView: View {
 
     private var mercyPlan: DevotionPlan? {
         content.map { DevotionCatalog.divineMercy(book: PrayerBook(usesHolyGhost: model.settings.usesHolyGhost), content: $0) }
+    }
+
+    private var categoryChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(PrayerCategory.allCases) { item in
+                    Button(item.title) { category = item }
+                        .font(.subheadline.weight(category == item ? .semibold : .regular))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(category == item ? Theme.gold : Theme.raisedSurface, in: Capsule())
+                        .foregroundStyle(category == item ? Theme.background : Theme.ink)
+                        .uiTag(item == .ourLady ? UITag.libraryOurLady : "library.category.\(item.rawValue)")
+                }
+            }
+        }
+    }
+
+    private var countedPrayers: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Counted prayers")
+                .font(.prayer(.title2, weight: .semibold))
+                .foregroundStyle(Theme.ink)
+                .padding(.top, 8)
+            link("Seven Sorrows", "The whole chaplet, with an optional bead-by-bead mode", "heart", UITag.devotionSorrows) {
+                DevotionSessionView(plan: sorrowsPlan, model: model, content: content)
+            }
+            link("Divine Mercy", "The beads are counted. The Mercy prayers are not included yet.", "sun.max", UITag.devotionMercy) {
+                DevotionSessionView(plan: mercyPlan, model: model, content: content)
+            }
+            link("Litany of Loreto", "The 1857 Raccolta, word for word", "list.bullet", UITag.devotionLitany) {
+                LitanyView(content: content)
+            }
+            link("Angelus and Regina Caeli", "The hour changes with the season", "bell", UITag.devotionHours) {
+                HoursView(model: model, content: content)
+            }
+            link("33-day consecration", "A count of days, and one sourced act of consecration", "calendar", UITag.devotionConsecration) {
+                ConsecrationView(model: model, content: content)
+            }
+            link("Marian feasts", "Byzantine Ruthenian and Western", "star", UITag.devotionCalendar) {
+                FeastCalendarView(model: model, content: content)
+            }
+            link("Journal", "Notes and answered prayers you have kept", "book.closed", UITag.devotionJournal) {
+                JournalView(model: model)
+            }
+        }
     }
 
     private func link<Destination: View>(_ title: String, _ subtitle: String, _ symbol: String, _ tag: String, @ViewBuilder destination: () -> Destination) -> some View {
@@ -196,17 +217,29 @@ struct DevotionSessionView: View {
                     Text(plan.title)
                         .font(.prayer(.largeTitle, weight: .semibold))
                         .foregroundStyle(Theme.ink)
-                    Text(plan.fullText)
-                        .font(.prayer(.title3))
-                        .foregroundStyle(Theme.ink)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .uiTag(UITag.devotionFullText)
+                    ForEach(plan.beads) { bead in
+                        beadBlock(bead)
+                            .accessibilityElement(children: .combine)
+                            .uiTag(UITag.devotionFullText, when: bead.id == plan.beads.first?.id)
+                    }
                     Text(plan.source)
                         .font(.caption)
                         .foregroundStyle(Theme.secondaryInk)
                 }
                 .padding(20)
             }
+        }
+    }
+
+    private func beadBlock(_ bead: DevotionBead) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(bead.title)
+                .font(.prayer(.title2, weight: .semibold))
+                .foregroundStyle(Theme.ink)
+            Text(bead.text ?? "Counted bead. Pray this invocation from an approved edition.")
+                .font(.prayer(.title3))
+                .foregroundStyle(Theme.ink)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -348,11 +381,18 @@ struct LitanyView: View {
                         Text(litany.note)
                             .font(.caption)
                             .foregroundStyle(Theme.secondaryInk)
-                        Text(litany.rows.map { "\($0.english)\n\($0.latin)" }.joined(separator: "\n\n"))
+                        ForEach(Array(litany.rows.enumerated()), id: \.offset) { index, row in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(row.english)
+                                    .foregroundStyle(Theme.ink)
+                                Text(row.latin)
+                                    .foregroundStyle(Theme.gold)
+                            }
                             .font(.prayer(.title3))
-                            .foregroundStyle(Theme.ink)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .uiTag(UITag.litanyFullText)
+                            .accessibilityElement(children: .combine)
+                            .uiTag(UITag.litanyFullText, when: index == 0)
+                        }
                         Text(litany.source)
                             .font(.caption)
                             .foregroundStyle(Theme.secondaryInk)

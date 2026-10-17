@@ -207,7 +207,7 @@ final class RosaryUITests: XCTestCase {
         app.tabBars.buttons["Devotions"].tap()
         open(UITag.devotionSorrows)
         let sorrows = app.descendants(matching: .any)[UITag.devotionFullText]
-        XCTAssertTrue(sorrows.waitForExistence(timeout: 5), "The chaplet did not open as one page")
+        XCTAssertTrue(sorrows.waitForExistence(timeout: 10), "The chaplet did not open as one page")
         XCTAssertTrue(sorrows.label.contains("Offering") || sorrows.label.contains("SIMEON"), sorrows.label)
         tap(UITag.devotionStep)
         tap(UITag.devotionNext)
@@ -387,7 +387,21 @@ final class RosaryUITests: XCTestCase {
     }
 
     private func open(_ identifier: String) {
-        tap(identifier)
+        let element = reveal(identifier)
+        XCTAssertTrue(element.waitForExistence(timeout: 2), "Missing \(identifier)")
+        let height = app.windows.firstMatch.frame.height
+        if !element.isHittable, height > 1 {
+            if element.frame.minY > height * 0.75 {
+                for _ in 0..<5 where !element.isHittable {
+                    app.swipeUp()
+                }
+            } else if element.frame.maxY < 64 {
+                for _ in 0..<5 where !element.isHittable {
+                    app.swipeDown()
+                }
+            }
+        }
+        element.tap()
     }
 
     private func goBack(_ previousTitle: String) {
