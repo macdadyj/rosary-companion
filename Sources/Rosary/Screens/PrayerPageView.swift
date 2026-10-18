@@ -10,9 +10,13 @@ struct PrayerPageView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text(prayer.title)
-                    .font(.prayer(.largeTitle, weight: .semibold))
-                    .foregroundStyle(Theme.ink)
+                HStack(alignment: .firstTextBaseline) {
+                    Text(prayer.title)
+                        .font(.prayer(.largeTitle, weight: .semibold))
+                        .foregroundStyle(Theme.ink)
+                    Spacer(minLength: 8)
+                    FavoriteStar(id: prayer.id, model: model)
+                }
                 Text(prayer.body)
                     .font(.prayer(.title3))
                     .foregroundStyle(Theme.ink)
@@ -38,6 +42,7 @@ struct PrayerPageView: View {
         .background(CandleBackground())
         .navigationTitle(prayer.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear { model.rememberPrayer(prayer.id) }
     }
 
     private var book: PrayerBook {

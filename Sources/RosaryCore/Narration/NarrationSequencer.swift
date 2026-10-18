@@ -8,6 +8,10 @@ public protocol NarrationOutput: AnyObject {
     /// it couldn't (an unreadable recording, say). Calls that arrive after `stop()` are ignored.
     func play(_ item: NarrationItem, preDelay: TimeInterval, completion: @escaping @MainActor (_ played: Bool) -> Void)
     func stop()
+    /// Hold the current utterance. The completion stays pending.
+    func pause()
+    /// Continue an utterance held by `pause()`.
+    func resume()
 }
 
 /// The app's narrator: plans each narration into items and plays them in order, reporting
@@ -42,6 +46,15 @@ public final class NarrationSequencer: SpeechNarrating {
         queue.removeAll()
         output.stop()
         finish()
+    }
+
+    /// Holds the voice without dropping the queue or the completion.
+    public func pause() {
+        output.pause()
+    }
+
+    public func resume() {
+        output.resume()
     }
 
     private func playNext(preDelay: TimeInterval, generation: Int) {

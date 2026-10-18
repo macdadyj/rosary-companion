@@ -5,6 +5,8 @@ public enum PrayerMode: String, Codable, CaseIterable, Hashable, Sendable, Ident
     case guided
     /// "I pray, you track": the person prays everything; the app follows along.
     case tracking
+    /// Reads every prayer aloud, leaves a quiet moment for the response, and moves on by a tap or a pause.
+    case guidedRosary
 
     public var id: String { rawValue }
 
@@ -12,6 +14,7 @@ public enum PrayerMode: String, Codable, CaseIterable, Hashable, Sendable, Ident
         switch self {
         case .guided: "You pray, I listen"
         case .tracking: "I pray, you track"
+        case .guidedRosary: "Guided Rosary"
         }
     }
 
@@ -19,6 +22,7 @@ public enum PrayerMode: String, Codable, CaseIterable, Hashable, Sendable, Ident
         switch self {
         case .guided: "I'll lead each prayer aloud and you answer. I'll count the Hail Marys."
         case .tracking: "Pray at your own pace. I'll follow along and keep your place."
+        case .guidedRosary: "I'll read each prayer aloud, then leave a quiet moment for your response. Tap a bead to move on sooner."
         }
     }
 }
@@ -84,6 +88,10 @@ public struct AdvanceRecord: Hashable, Sendable {
 public enum SessionEffect: Hashable, Sendable {
     case speak(Narration, id: Int, preDelay: TimeInterval)
     case stopSpeaking
+    /// Keep the current utterance and the queue, and hold the voice where it is.
+    case pauseSpeaking
+    /// Continue an utterance that `pauseSpeaking` held.
+    case resumeSpeaking
     /// Start listening (or restart recognition) and tag results with `epoch`.
     case listen(epoch: Int)
     case stopListening
@@ -106,6 +114,8 @@ public enum SessionEvent: Hashable, Sendable {
     case end
     /// Land on that decade's Our Father. Decades are numbered 1...5 inside the mystery set.
     case jumpToDecade(Int)
+    /// Read the mystery, Scripture, and meditation at the start of each decade. Does not restart the current utterance.
+    case setReadsMeditations(Bool)
 }
 
 public struct EngineTiming: Hashable, Sendable {
@@ -120,6 +130,8 @@ public struct EngineTiming: Hashable, Sendable {
     public var checkpointSilence: TimeInterval = 1.8
     /// Guided: pause after announcing a mystery.
     public var announcementHold: TimeInterval = 2.5
+    /// Guided Rosary: quiet after each prayer so the person can answer, before the next bead.
+    public var guidedResponsePause: TimeInterval = 6
     /// A tap this soon after a voice advance confirms it instead of advancing again.
     public var tapAbsorbWindow: TimeInterval = 0.6
     /// Tracking: skipping ahead requires at least this much time per skipped step,
@@ -147,6 +159,10 @@ public struct SessionConfiguration: Hashable, Sendable {
     public var nextSessionLeader: String?
     public var announceNextLeader: Bool
     public var timing: EngineTiming
+    /// When true, a decade opens with the mystery, the Scripture, and the meditation.
+    public var readsMeditations: Bool
+    public var meditationScripture: [MysteryID: String]
+    public var meditationText: [MysteryID: String]
 
     public init(
         scope: SessionScope,
@@ -157,7 +173,10 @@ public struct SessionConfiguration: Hashable, Sendable {
         decadeLeaders: [Int: String] = [:],
         nextSessionLeader: String? = nil,
         announceNextLeader: Bool = true,
-        timing: EngineTiming = EngineTiming()
+        timing: EngineTiming = EngineTiming(),
+        readsMeditations: Bool = false,
+        meditationScripture: [MysteryID: String] = [:],
+        meditationText: [MysteryID: String] = [:]
     ) {
         self.scope = scope
         self.mysterySet = mysterySet
@@ -168,6 +187,9 @@ public struct SessionConfiguration: Hashable, Sendable {
         self.nextSessionLeader = nextSessionLeader
         self.announceNextLeader = announceNextLeader
         self.timing = timing
+        self.readsMeditations = readsMeditations
+        self.meditationScripture = meditationScripture
+        self.meditationText = meditationText
     }
 
     public var isFamily: Bool { !decadeLeaders.isEmpty }
@@ -202,4 +224,6 @@ public struct SessionSnapshot: Hashable, Sendable {
     public var showTapHint: Bool
     /// What we're waiting to hear in guided mode, e.g. "Holy Mary, Mother of God…"
     public var listeningFor: String?
+    /// The prayer-screen switch: read the meditation at the next decade.
+    public var readsMeditations: Bool = false
 }

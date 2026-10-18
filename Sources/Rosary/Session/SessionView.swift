@@ -15,6 +15,8 @@ struct SessionView: View {
     @State private var confirmingEnd = false
     @State private var readingScripture = false
     @State private var viewingArt = false
+    @State private var artGallery = ArtGallery(plates: [])
+    @State private var pace = SpeechPacing.defaultRate
 
     private var controller: SessionController { session.controller }
     private var snapshot: SessionSnapshot { controller.snapshot }
@@ -38,6 +40,7 @@ struct SessionView: View {
         .animation(.easeInOut(duration: 0.3), value: session.hasEnded)
         .preferredColorScheme(settings.appearance.colorScheme)
         .onAppear {
+            pace = settings.narrationRate
             if UITestLaunch.isEnabled {
                 session.revealForUITest()
             }
@@ -74,6 +77,7 @@ struct SessionView: View {
     private var prayerScreen: some View {
         VStack(spacing: 0) {
             topBar
+            readAloudRow
             progressHeader
             GeometryReader { proxy in
                 VStack(spacing: 0) {
@@ -94,6 +98,9 @@ struct SessionView: View {
                             },
                             onOpenArt: {
                                 readingScripture = false
+                                if let mystery = snapshot.mystery {
+                                    artGallery = art.gallery(focus: mystery.id, content: content)
+                                }
                                 viewingArt = true
                             }
                         )
@@ -152,10 +159,11 @@ struct SessionView: View {
         .overlay {
             // A system sheet is invisible to XCTest on the iOS 26 simulator, so the
             // reader and the painting viewer are drawn in the prayer screen.
-            if viewingArt, let mystery = snapshot.mystery {
+            if viewingArt, !artGallery.plates.isEmpty {
                 SacredArtViewer(
-                    data: art.imageData(for: mystery.id, content: content, on: session.meditationDay),
-                    credit: art.creditLine(for: mystery.id, content: content, on: session.meditationDay),
+                    gallery: artGallery,
+                    image: { art.imageData(for: $0, content: content) },
+                    onStep: { artGallery = artGallery.stepped($0) },
                     onClose: { viewingArt = false }
                 )
                 .transition(.opacity)
@@ -264,6 +272,31 @@ struct SessionView: View {
         .foregroundStyle(Theme.secondaryInk)
         .padding(.horizontal, 12)
         .padding(.top, 4)
+    }
+
+    private var readAloudRow: some View {
+        HStack(spacing: 12) {
+            Toggle(isOn: Binding(
+                get: { snapshot.readsMeditations },
+                set: { session.setReadsMeditations($0) }
+            )) {
+                Text("Read meditation")
+                    .font(.footnote.weight(.semibold))
+            }
+            .font(.footnote)
+            .tint(Theme.gold)
+            .uiTag(UITag.sessionReadMeditation)
+            Slider(value: $pace, in: SpeechPacing.rateRange) {
+                Text("Speaking pace")
+            } onEditingChanged: { editing in
+                if !editing { session.setNarrationRate(pace) }
+            }
+            .tint(Theme.gold)
+            .uiTag(UITag.sessionRate)
+            .accessibilityLabel("Speaking pace")
+        }
+        .padding(.horizontal, 12)
+        .padding(.bottom, 2)
     }
 
     private var progressHeader: some View {
@@ -443,7 +476,7 @@ struct SessionView: View {
 
     /// The painting and Scripture stay up for the whole decade. Saint cards can be hidden in tracking.
     private var showsSaintCards: Bool {
-        snapshot.mode == .guided || session.showsMeditation
+        snapshot.mode == .guided || snapshot.mode == .guidedRosary || session.showsMeditation
     }
 
     private func chapelHeight(in available: CGFloat) -> CGFloat {

@@ -16,6 +16,13 @@ public enum UITag {
     public static let openAngelus = "home.angelus"
     public static let modeGuided = "home.mode.guided"
     public static let modeTracking = "home.mode.tracking"
+    public static let modeRosary = "home.mode.rosary"
+    public static let homeSearch = "home.search"
+    public static let homeSearchClear = "home.search.clear"
+    public static let homeFeast = "home.feast"
+    public static let homeNovena = "home.novena"
+    public static let homeFavorites = "home.favorites"
+    public static let homeRecent = "home.recent"
 
     public static let devotionSorrows = "devotion.sorrows"
     public static let devotionMercy = "devotion.mercy"
@@ -41,6 +48,7 @@ public enum UITag {
     public static let libraryMemorare = "library.prayer.memorare"
     public static let libraryMichael = "library.prayer.st-michael-chaplet"
     public static let libraryOurLady = "library.category.ourLady"
+    public static func libraryFavorite(_ id: String) -> String { "library.favorite.\(id)" }
 
     public static let readingsDay = "readings.day"
     public static let readingsBody = "readings.body"
@@ -66,6 +74,9 @@ public enum UITag {
     public static let settingsVoicePicker = "settings.voicePicker"
     public static let settingsBuild = "settings.build"
     public static let settingsRefreshArt = "settings.refreshArt"
+    public static let settingsReadMeditation = "settings.readMeditation"
+    public static let settingsReminder = "settings.reminder"
+    public static let settingsResponsePause = "settings.responsePause"
     public static let familyAdd = "family.add"
     public static let familyField = "family.field"
 
@@ -83,6 +94,11 @@ public enum UITag {
     public static let sessionArtViewer = "session.artViewer"
     public static let sessionArtClose = "session.artClose"
     public static let sessionArtCredit = "session.artCredit"
+    public static let sessionArtNext = "session.artNext"
+    public static let sessionArtPrevious = "session.artPrevious"
+    public static let sessionArtPage = "session.artPage"
+    public static let sessionReadMeditation = "session.readMeditation"
+    public static let sessionRate = "session.rate"
     public static let sessionScriptureReader = "session.scriptureReader"
     public static let sessionScriptureBody = "session.scriptureBody"
     public static let sessionScriptureClose = "session.scriptureClose"
@@ -101,22 +117,24 @@ public enum UITag {
     public static let all = [
         tabPray, tabToday, tabDevotions, tabIntentions, tabSaints, tabSettings,
         beginRosary, offerIntentions, openCalendar, openJournal, openAngelus,
-        modeGuided, modeTracking,
+        modeGuided, modeTracking, modeRosary, homeSearch, homeSearchClear, homeFeast, homeNovena, homeFavorites, homeRecent,
         devotionSorrows, devotionMercy, devotionLitany, devotionHours,
         devotionConsecration, devotionCalendar, devotionJournal,
         devotionNext, devotionBack, devotionEnd, devotionStep, devotionFullText,
         litanyNext, litanyBack, litanyStep, litanyFullText,
         librarySearch, libraryBody, libraryMemorare, libraryMichael, libraryOurLady,
+        libraryFavorite("memorare"),
         readingsDay, readingsBody, readingsLink, readingsColor,
         consecrationBegin, consecrationDay,
         intentionAdd, intentionField, intentionAnswered, intentionOngoing,
         settingsChant, settingsArt, settingsVoice, settingsHaptics, settingsHolyGhost,
         settingsSeasonal, settingsFamily, settingsMembers, settingsVoicePicker, settingsBuild,
-        settingsRefreshArt,
+        settingsRefreshArt, settingsReadMeditation, settingsReminder, settingsResponsePause,
         familyAdd, familyField,
         sessionEnd, sessionPause, sessionBack, sessionSurface,
         sessionBeads, sessionScripture, sessionArt, sessionPrayer, sessionRefreshArt,
         sessionArtFrame, sessionArtImage, sessionArtViewer, sessionArtClose, sessionArtCredit,
+        sessionArtNext, sessionArtPrevious, sessionArtPage, sessionReadMeditation, sessionRate,
         sessionScriptureReader, sessionScriptureBody, sessionScriptureClose,
         sessionMysteryPrevious, sessionMysteryNext,
         sessionMystery(1), sessionMystery(2), sessionMystery(3), sessionMystery(4), sessionMystery(5),

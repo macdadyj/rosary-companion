@@ -19,6 +19,8 @@ public final class SessionEngine {
     public private(set) var finishedAt: TimeInterval?
     /// True when the session reached its last prayer, false when it was ended early.
     public private(set) var completedAll = false
+    /// Read the mystery, Scripture, and meditation when a decade opens. Toggled without restarting speech.
+    public private(set) var readsMeditations: Bool
 
     private var timing: EngineTiming { configuration.timing }
     private let detector = AnchorDetector()
@@ -45,6 +47,8 @@ public final class SessionEngine {
     private var heardOrder: Int?
     private var hailMary = HailMaryLatch()
     private var now: TimeInterval = 0
+    /// A Pause button held the synthesizer mid-sentence. Resume continues it; other pauses re-read.
+    private var pausedMidSpeech = false
 
     private enum AfterNarration {
         case continueStep
@@ -59,6 +63,7 @@ public final class SessionEngine {
             openingIntentions: configuration.openingIntentions
         )
         self.mode = configuration.mode
+        self.readsMeditations = configuration.readsMeditations
     }
 
     public var currentStep: RosaryStep { plan.steps[index] }
@@ -116,6 +121,10 @@ public final class SessionEngine {
 
         case .jumpToDecade(let decade):
             return jump(toDecade: decade)
+
+        case .setReadsMeditations(let enabled):
+            readsMeditations = enabled
+            return []
         }
     }
 
@@ -129,21 +138,44 @@ public final class SessionEngine {
         holdUntil = nil
 
         switch mode {
-        case .guided:
+        case .guided, .guidedRosary:
             let lines = prelude + guidedNarration(for: currentStep)
-            if lines.isEmpty { return beginAwaitingResponse() }
+            if lines.isEmpty { return unspokenPrayer() }
             return speak(lines, then: .continueStep)
         case .tracking:
-            if !prelude.isEmpty { return speak(prelude, then: .resumeFollowing) }
+            var lines = prelude
+            if readsMeditations, currentStep.mystery != nil {
+                lines += guidedNarration(for: currentStep)
+            }
+            if !lines.isEmpty { return speak(lines, then: .resumeFollowing) }
             phase = .following
             return acceptingEpoch == nil ? newEpoch() : []
         }
     }
 
+    /// A prayer with nothing for the app to say. Guided Rosary waits; voice-guided listening still hears the response.
+    private func unspokenPrayer() -> [SessionEffect] {
+        if mode == .guidedRosary {
+            if responseText(for: currentStep).isEmpty {
+                return advance(to: index + 1, cause: .narrated)
+            }
+            phase = .holding
+            holdUntil = now + timing.guidedResponsePause
+            return []
+        }
+        return beginAwaitingResponse()
+    }
+
     private func guidedNarration(for step: RosaryStep) -> [Narration] {
         switch step.content {
         case .mysteryAnnouncement(let mystery):
-            return [Narration([mystery.announcementPart])]
+            let announcement = Narration([mystery.announcementPart])
+            guard readsMeditations else { return [announcement] }
+            return DecadeReading.narrations(
+                announcement: announcement,
+                scripture: configuration.meditationScripture[mystery.id] ?? "",
+                meditation: configuration.meditationText[mystery.id] ?? ""
+            )
         case .prayer(let id):
             guard let leader = configuration.prayerBook.leaderPart(for: id) else { return [] }
             if let intention = step.intention {
@@ -205,6 +237,11 @@ public final class SessionEngine {
             }
             if responseText(for: currentStep).isEmpty {
                 return advance(to: index + 1, cause: .narrated)
+            }
+            if mode == .guidedRosary {
+                phase = .holding
+                holdUntil = now + timing.guidedResponsePause
+                return []
             }
             return beginAwaitingResponse()
         }
@@ -269,7 +306,8 @@ public final class SessionEngine {
 
     private func finish(completed: Bool = false) -> [SessionEffect] {
         var effects: [SessionEffect] = []
-        if phase == .speaking { effects.append(.stopSpeaking) }
+        if phase == .speaking || pausedMidSpeech { effects.append(.stopSpeaking) }
+        pausedMidSpeech = false
         phase = .finished
         finishedAt = now
         completedAll = completed
@@ -391,6 +429,13 @@ public final class SessionEngine {
     private func pause(_ reason: PauseReason) -> [SessionEffect] {
         guard isActive else { return [] }
         if case .paused = phase { return [] }
+        if reason == .user, phase == .speaking {
+            pausedMidSpeech = true
+            acceptingEpoch = nil
+            phase = .paused(.user)
+            return [.pauseSpeaking, .stopListening]
+        }
+        pausedMidSpeech = false
         var effects: [SessionEffect] = []
         if phase == .speaking { effects.append(.stopSpeaking) }
         awaitingNarration = nil
@@ -403,6 +448,11 @@ public final class SessionEngine {
 
     private func resume() -> [SessionEffect] {
         guard case .paused = phase else { return [] }
+        if pausedMidSpeech {
+            pausedMidSpeech = false
+            phase = .speaking
+            return [.resumeSpeaking]
+        }
         hailMary.clear()
         return enterStep(index)
     }
@@ -463,6 +513,8 @@ public final class SessionEngine {
         case .guided:
             guard phase == .awaitingResponse else { return [] }
             return AnchorLibrary.fragments(for: currentStep).filter { $0.part == .response }
+        case .guidedRosary:
+            return []
         case .tracking:
             var seen: Set<AnchorKind> = []
             var fragments: [AnchorFragment] = []
@@ -480,6 +532,7 @@ public final class SessionEngine {
             lastProgressAt = now
             switch mode {
             case .guided: effects += handleGuided(hit)
+            case .guidedRosary: break
             case .tracking: effects += handleTracking(hit)
             }
         }
@@ -640,7 +693,8 @@ public final class SessionEngine {
             nextLeaderBanner: nextLeaderBanner,
             nextSessionLeader: configuration.nextSessionLeader,
             showTapHint: showHint,
-            listeningFor: waitingFor
+            listeningFor: waitingFor,
+            readsMeditations: readsMeditations
         )
     }
 

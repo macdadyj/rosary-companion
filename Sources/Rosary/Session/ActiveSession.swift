@@ -26,6 +26,8 @@ final class ActiveSession: Identifiable {
     @ObservationIgnored private let speech: SpeechRecognitionService?
     @ObservationIgnored private let narrator: NarrationSequencer
     @ObservationIgnored private let audio = AudioSessionCoordinator()
+    @ObservationIgnored private let nowPlaying = NowPlaying()
+    @ObservationIgnored private var listeningSuspended = false
 
     init(prepared: PreparedSession, model: AppModel) {
         let settings = model.settings
@@ -58,6 +60,7 @@ final class ActiveSession: Identifiable {
         self.isPreparing = !testing
 
         controller.onFinished = { [weak self] in self?.sessionFinished() }
+        nowPlaying.install { [weak self] in self?.toggleFromRemote() }
         audio.onInterruptionBegan = { [weak self] in self?.controller.pause(.interruption) }
         audio.onMediaServicesReset = { [weak self] in
             guard let self else { return }
@@ -89,32 +92,62 @@ final class ActiveSession: Identifiable {
         let testing = ProcessInfo.processInfo.arguments.contains("--uitesting")
         if let speech, !testing { await speech.requestAccess() }
         if !testing {
-            audio.activate(listening: speech != nil)
+            audio.activate(listening: wantsMicrophone)
             audio.keepScreenAwake(true)
         }
         isPreparing = false
         controller.start()
+        refreshNowPlaying()
+    }
+
+    private var wantsMicrophone: Bool {
+        speech != nil && controller.snapshot.mode != .guidedRosary && controller.engine.mode != .guidedRosary
     }
 
     func tap() {
-        if case .paused = controller.snapshot.phase { audio.activate(listening: speech != nil) }
+        if case .paused = controller.snapshot.phase, !UITestLaunch.isEnabled {
+            audio.activate(listening: wantsMicrophone)
+        }
         controller.tap()
+        refreshNowPlaying()
     }
 
     func togglePause() {
         if case .paused = controller.snapshot.phase {
-            audio.activate(listening: speech != nil)
+            if !UITestLaunch.isEnabled { audio.activate(listening: wantsMicrophone) }
             controller.resume()
         } else {
             controller.pause(.user)
         }
+        refreshNowPlaying()
+    }
+
+    func toggleFromRemote() {
+        guard !hasEnded, !isPreparing else { return }
+        togglePause()
     }
 
     func back() { controller.back() }
 
     func jumpToDecade(_ decade: Int) { controller.jumpToDecade(decade) }
 
-    func switchMode(_ mode: PrayerMode) { controller.switchMode(mode) }
+    func switchMode(_ mode: PrayerMode) {
+        controller.switchMode(mode)
+        guard !UITestLaunch.isEnabled, !isPreparing else { return }
+        if mode == .guidedRosary { speech?.stop() }
+        audio.activate(listening: wantsMicrophone)
+        refreshNowPlaying()
+    }
+
+    func setReadsMeditations(_ enabled: Bool) {
+        controller.setReadsMeditations(enabled)
+        model.update { $0.readsMeditationsAloud = enabled }
+    }
+
+    func setNarrationRate(_ rate: Double) {
+        model.update { $0.narrationRate = rate }
+        narrator.planner.pacing = SpeechPacing(rate: rate, pitch: model.settings.narrationPitch)
+    }
 
     func setShowsMeditation(_ shows: Bool) {
         showsMeditation = shows
@@ -132,7 +165,38 @@ final class ActiveSession: Identifiable {
 
     func scenePhaseChanged(_ phase: ScenePhase) {
         guard !hasEnded, !isPreparing else { return }
-        if phase == .background { controller.pause(.background) }
+        switch phase {
+        case .background:
+            // Speech keeps going with the screen locked. The microphone does not.
+            controller.suspendListening()
+            listeningSuspended = true
+            if speech != nil, !UITestLaunch.isEnabled {
+                audio.activate(listening: false)
+            }
+            refreshNowPlaying()
+        case .active:
+            guard listeningSuspended else { return }
+            listeningSuspended = false
+            if !UITestLaunch.isEnabled {
+                audio.activate(listening: wantsMicrophone)
+            }
+            if wantsMicrophone { controller.resumeListeningIfNeeded() }
+            refreshNowPlaying()
+        case .inactive:
+            refreshNowPlaying()
+        @unknown default:
+            break
+        }
+    }
+
+    func refreshNowPlaying() {
+        let playing: Bool
+        switch controller.snapshot.phase {
+        case .speaking: playing = true
+        case .notStarted, .holding, .awaitingResponse, .following, .paused, .finished:
+            playing = false
+        }
+        nowPlaying.publish(title: controller.snapshot.title, playing: playing)
     }
 
     /// Releases the microphone, audio session, and screen-awake flag.
@@ -140,6 +204,7 @@ final class ActiveSession: Identifiable {
         controller.stopTicking()
         speech?.stop()
         narrator.stop()
+        nowPlaying.clear()
         audio.keepScreenAwake(false)
         audio.deactivate()
     }
@@ -155,6 +220,7 @@ final class ActiveSession: Identifiable {
         if !engine.completedDecades.isEmpty {
             record = model.record(prepared, completedDecades: engine.completedDecades, completedAll: engine.completedAll)
         }
+        model.rememberPrayer(PrayerCatalogue.rosaryID(for: prepared.setup.mysterySet))
         if prepared.starter != nil { nextStarterName = model.nextStarter?.name }
         audio.keepScreenAwake(false)
     }
@@ -173,5 +239,9 @@ private final class HoldingNarration: NarrationOutput {
     func play(_ item: NarrationItem, preDelay: TimeInterval, completion: @escaping @MainActor (Bool) -> Void) {}
 
     func stop() {}
+
+    func pause() {}
+
+    func resume() {}
 }
 #endif

@@ -75,6 +75,7 @@ extension PrayerMode {
         switch self {
         case .guided: "Guided"
         case .tracking: "Tracking"
+        case .guidedRosary: "Rosary"
         }
     }
 
@@ -82,6 +83,7 @@ extension PrayerMode {
         switch self {
         case .guided: "person.wave.2"
         case .tracking: "ear"
+        case .guidedRosary: "speaker.wave.2"
         }
     }
 }

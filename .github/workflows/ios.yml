@@ -85,16 +85,38 @@ jobs:
           print(chosen)
           PY
           )"
+          rm -rf build/PhoneResults.xcresult
           xcodebuild test \
             -project Rosary.xcodeproj \
             -scheme RosaryUI \
             -destination "platform=iOS Simulator,id=${UDID}" \
             -clonedSourcePackagesDirPath build/SourcePackages \
             -derivedDataPath build/DerivedData \
+            -resultBundlePath build/PhoneResults.xcresult \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="-" \
             DEVELOPMENT_TEAM=""
+
+      - name: Export simulator screenshots
+        if: always()
+        run: |
+          set +e
+          rm -rf build/PhoneShots
+          mkdir -p build/PhoneShots
+          xcrun xcresulttool export attachments \
+            --path build/PhoneResults.xcresult \
+            --output-path build/PhoneShots
+          find build/PhoneShots -type f | head -n 80
+          exit 0
+
+      - name: Upload simulator screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phone-screenshots
+          path: build/PhoneShots
+          if-no-files-found: ignore
 
   watch-ui:
     runs-on: macos-26

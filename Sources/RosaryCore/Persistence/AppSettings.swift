@@ -74,6 +74,16 @@ public struct AppSettings: Codable, Hashable, Sendable {
     public var chantEnabled = false
     public var showSacredArt = true
     public var family = FamilySettings()
+    /// Read the mystery, the Scripture, and the meditation at the start of each decade.
+    public var readsMeditationsAloud = true
+    /// Guided Rosary: seconds of quiet after each prayer for the response.
+    public var guidedResponsePause: Double = 6
+    public var favoritePrayerIDs: [String] = []
+    public var recentPrayerIDs: [String] = []
+    public var reminderEnabled = false
+    public var reminderHour = 7
+    public var reminderMinute = 0
+    public var novena: Novena?
 
     public init() {}
 
@@ -93,6 +103,8 @@ public struct AppSettings: Codable, Hashable, Sendable {
         case defaultMode, defaultLength, openingIntentions, seasonalSundays, usesHolyGhost, voiceTracking
         case haptics, narrationRate, narrationPitch, narratorVoiceID, meditationPause
         case showsMeditationWhileTracking, appearance, textSize, chantEnabled, showSacredArt, family
+        case readsMeditationsAloud, guidedResponsePause, favoritePrayerIDs, recentPrayerIDs
+        case reminderEnabled, reminderHour, reminderMinute, novena
     }
 
     /// Missing keys fall back to defaults so older saved settings keep loading.
@@ -119,5 +131,17 @@ public struct AppSettings: Codable, Hashable, Sendable {
         chantEnabled = try c.decodeIfPresent(Bool.self, forKey: .chantEnabled) ?? d.chantEnabled
         showSacredArt = try c.decodeIfPresent(Bool.self, forKey: .showSacredArt) ?? d.showSacredArt
         family = try c.decodeIfPresent(FamilySettings.self, forKey: .family) ?? d.family
+        readsMeditationsAloud = try c.decodeIfPresent(Bool.self, forKey: .readsMeditationsAloud) ?? d.readsMeditationsAloud
+        guidedResponsePause = try c.decodeIfPresent(Double.self, forKey: .guidedResponsePause) ?? d.guidedResponsePause
+        favoritePrayerIDs = try c.decodeIfPresent([String].self, forKey: .favoritePrayerIDs) ?? d.favoritePrayerIDs
+        recentPrayerIDs = try c.decodeIfPresent([String].self, forKey: .recentPrayerIDs) ?? d.recentPrayerIDs
+        reminderEnabled = try c.decodeIfPresent(Bool.self, forKey: .reminderEnabled) ?? d.reminderEnabled
+        reminderHour = try c.decodeIfPresent(Int.self, forKey: .reminderHour) ?? d.reminderHour
+        reminderMinute = try c.decodeIfPresent(Int.self, forKey: .reminderMinute) ?? d.reminderMinute
+        novena = try c.decodeIfPresent(Novena.self, forKey: .novena) ?? nil
     }
+
+    public static let responsePauseChoices: [(seconds: Double, title: String)] = [
+        (4, "Short"), (6, "Medium"), (10, "Long"),
+    ]
 }

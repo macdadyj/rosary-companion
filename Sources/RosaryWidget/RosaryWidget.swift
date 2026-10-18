@@ -25,12 +25,10 @@ struct RosaryProvider: TimelineProvider {
     }
 
     private func entry(for date: Date) -> RosaryEntry {
-        let set = MysterySchedule.set(for: date, seasonalSundays: false)
-        let feast = (try? PrayerContent.bundled())?
-            .feasts(on: CivilDate(date, calendar: .current), rite: .ruthenian)
-            .first?
-            .name
-        return RosaryEntry(date: date, title: set.title, detail: feast ?? "A decade is enough to begin.")
+        let content = try? PrayerContent.bundled()
+        let lectionary = try? LectionaryLibrary.bundled()
+        let card = TodayCard.make(date: date, calendar: .current, content: content, lectionary: lectionary)
+        return RosaryEntry(date: date, title: card.title, detail: card.detail)
     }
 }
 
@@ -59,7 +57,7 @@ struct RosaryHomeWidget: Widget {
             RosaryWidgetView(entry: entry)
         }
         .configurationDisplayName("Today’s Rosary")
-        .description("The mysteries for today, and a Byzantine feast when there is one.")
+        .description("Today’s mysteries, the Ruthenian and Roman calendars, and the gospel citation.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
