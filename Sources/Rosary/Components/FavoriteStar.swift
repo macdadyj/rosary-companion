@@ -15,10 +15,11 @@ struct FavoriteStar: View {
             Image(systemName: model.isFavorite(id) ? "star.fill" : "star")
                 .font(.title3)
                 .foregroundStyle(Theme.gold)
-                .frame(minWidth: 44, minHeight: 44)
+                .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.borderless)
+        .fixedSize()
         .accessibilityLabel(model.isFavorite(id) ? "Remove from favorites" : "Add to favorites")
         .uiTag(tag ?? UITag.libraryFavorite(id))
     }

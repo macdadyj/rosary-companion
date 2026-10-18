@@ -178,11 +178,21 @@ final class RosaryUITests: XCTestCase {
                 break
             }
         }
-        star.tap()
+        star.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         if app.descendants(matching: .any)[UITag.libraryBody].waitForExistence(timeout: 2) {
             goBack("Rosary")
         }
-        clear.tap()
+        let clearAgain = app.buttons[UITag.homeSearchClear]
+        if clearAgain.waitForExistence(timeout: 2) {
+            clearAgain.tap()
+        } else {
+            search.tap()
+            search.press(forDuration: 1.1)
+            if app.menuItems["Select All"].waitForExistence(timeout: 1) {
+                app.menuItems["Select All"].tap()
+            }
+            search.typeText(XCUIKeyboardKey.delete.rawValue)
+        }
         let favorites = reveal(UITag.homeFavorites)
         XCTAssertTrue(favorites.waitForExistence(timeout: 4))
         let memorare = app.staticTexts["The Memorare"].firstMatch
@@ -445,7 +455,7 @@ final class RosaryUITests: XCTestCase {
         if button.waitForExistence(timeout: 1) { return button }
         let any = app.descendants(matching: .any)[identifier].firstMatch
         if any.waitForExistence(timeout: 1) { return any }
-        for _ in 0..<4 {
+        for _ in 0..<14 {
             app.swipeDown()
             if button.exists { return button }
             if any.exists { return any }
