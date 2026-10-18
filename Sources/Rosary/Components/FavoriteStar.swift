@@ -6,6 +6,7 @@ import SwiftUI
 struct FavoriteStar: View {
     let id: String
     let model: AppModel
+    var tag: String?
 
     var body: some View {
         Button {
@@ -17,9 +18,9 @@ struct FavoriteStar: View {
                 .frame(minWidth: 44, minHeight: 44)
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.borderless)
         .accessibilityLabel(model.isFavorite(id) ? "Remove from favorites" : "Add to favorites")
-        .uiTag(UITag.libraryFavorite(id))
+        .uiTag(tag ?? UITag.libraryFavorite(id))
     }
 }
 #endif

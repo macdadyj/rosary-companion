@@ -84,7 +84,7 @@ struct HomeView: View {
                     .font(.prayer(.largeTitle, weight: .semibold))
                     .foregroundStyle(Theme.ink)
                 Spacer(minLength: 8)
-                FavoriteStar(id: PrayerCatalogue.rosaryID, model: model)
+                FavoriteStar(id: PrayerCatalogue.rosaryID, model: model, tag: "home.favorite.\(PrayerCatalogue.rosaryID)")
             }
             Text(model.todaysSet.title)
                 .font(.prayer(.title2, weight: .semibold))
@@ -455,7 +455,7 @@ struct HomeView: View {
             }
             .buttonStyle(.plain)
             .uiTag("library.prayer.\(prayer.id)")
-            FavoriteStar(id: prayer.id, model: model)
+            FavoriteStar(id: prayer.id, model: model, tag: "home.favorite.\(prayer.id)")
         }
         .card()
     }
@@ -466,7 +466,7 @@ struct HomeView: View {
                 .font(.prayer(.title3, weight: .semibold))
                 .foregroundStyle(Theme.ink)
             Spacer(minLength: 0)
-            FavoriteStar(id: id, model: model)
+            FavoriteStar(id: id, model: model, tag: "home.favorite.\(id)")
         }
         .card()
     }
