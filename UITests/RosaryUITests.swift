@@ -427,24 +427,47 @@ final class RosaryUITests: XCTestCase {
     }
 
     /// A toolbar item and a list row can publish the same identifier on both the
-    /// control and its container. Prefer the button, then the first match, and
-    /// scroll a lazy form until the row is realized.
+    /// control and its container. Prefer the button, then the switch, then the
+    /// first match. A lazy form only realizes rows that have been scrolled on
+    /// screen, and a swipe through the middle can land on a pace slider, so
+    /// scrolling drags the left edge.
     private func reveal(_ identifier: String) -> XCUIElement {
         let button = app.buttons[identifier].firstMatch
-        if button.waitForExistence(timeout: 1) { return button }
+        let toggle = app.switches[identifier].firstMatch
         let any = app.descendants(matching: .any)[identifier].firstMatch
-        if any.waitForExistence(timeout: 1) { return any }
-        for _ in 0..<14 {
-            app.swipeDown()
+        func match() -> XCUIElement? {
             if button.exists { return button }
+            if toggle.exists { return toggle }
             if any.exists { return any }
+            return nil
         }
-        for _ in 0..<8 {
-            app.swipeUp()
-            if button.exists { return button }
-            if any.exists { return any }
+        if let found = match() { return found }
+        for _ in 0..<24 {
+            drag(towardTop: true)
+            if let found = match() { return found }
+        }
+        for _ in 0..<24 {
+            drag(towardTop: false)
+            if let found = match() { return found }
         }
         return any
+    }
+
+    /// Finger moves down to reveal rows above. The drag stays on the left edge
+    /// so sliders and switches keep their values.
+    private func drag(towardTop: Bool) {
+        let window = app.windows.firstMatch
+        let height = window.frame.height
+        guard height > 1 else {
+            if towardTop { app.swipeDown() } else { app.swipeUp() }
+            return
+        }
+        let origin = window.coordinate(withNormalizedOffset: .zero)
+        let upper = height * 0.30
+        let lower = height * 0.78
+        let start = origin.withOffset(CGVector(dx: 18, dy: towardTop ? upper : lower))
+        let end = origin.withOffset(CGVector(dx: 18, dy: towardTop ? lower : upper))
+        start.press(forDuration: 0.01, thenDragTo: end)
     }
 
     private func tapLabel(_ label: String) {
