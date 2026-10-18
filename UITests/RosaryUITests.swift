@@ -165,10 +165,24 @@ final class RosaryUITests: XCTestCase {
         XCTAssertTrue(search.waitForExistence(timeout: 4), "Missing \(UITag.homeSearch)")
         search.tap()
         search.typeText("Memorare")
-        let star = app.buttons[UITag.libraryFavorite("memorare")].firstMatch
-        XCTAssertTrue(star.waitForExistence(timeout: 4), "Missing favorite star")
+        let clear = app.buttons[UITag.homeSearchClear]
+        XCTAssertTrue(clear.waitForExistence(timeout: 4), "Search did not offer \(UITag.homeSearchClear)")
+        let stars = app.buttons.matching(identifier: "home.favorite.memorare")
+        XCTAssertTrue(stars.firstMatch.waitForExistence(timeout: 4), "Missing favorite star")
+        var star = stars.firstMatch
+        let searchBottom = search.frame.maxY
+        for index in 0..<stars.count {
+            let candidate = stars.element(boundBy: index)
+            if candidate.exists, candidate.frame.minY >= searchBottom - 8 {
+                star = candidate
+                break
+            }
+        }
         star.tap()
-        tap(UITag.homeSearchClear)
+        if app.descendants(matching: .any)[UITag.libraryBody].waitForExistence(timeout: 2) {
+            goBack("Rosary")
+        }
+        clear.tap()
         let favorites = reveal(UITag.homeFavorites)
         XCTAssertTrue(favorites.waitForExistence(timeout: 4))
         let memorare = app.staticTexts["The Memorare"].firstMatch
