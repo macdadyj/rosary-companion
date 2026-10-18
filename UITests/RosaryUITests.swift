@@ -175,7 +175,13 @@ final class RosaryUITests: XCTestCase {
         XCTAssertTrue(memorare.waitForExistence(timeout: 4), "The starred prayer is missing from Favorites")
         shot("favorites")
 
-        app.segmentedControls.buttons["One decade"].tap()
+        let done = app.keyboards.buttons["done"]
+        if done.exists { done.tap() }
+        for _ in 0..<4 { app.swipeDown() }
+        let oneDecade = app.segmentedControls.buttons["One decade"]
+        XCTAssertTrue(oneDecade.waitForExistence(timeout: 4))
+        if !oneDecade.isHittable { app.swipeDown() }
+        oneDecade.tap()
         let begin = reveal(UITag.beginRosary)
         XCTAssertTrue(begin.waitForExistence(timeout: 2))
         begin.tap()
