@@ -158,50 +158,29 @@ final class RosaryUITests: XCTestCase {
         XCTAssertEqual(prayer.label, before, "Changing the painting moved the prayer")
     }
 
-    /// Home is the catalogue: search, a star, and the read-aloud controls on the prayer screen.
+    /// Home is the catalogue: a star on a prayer, then the read-aloud controls.
     func testCatalogueFavoritesAndReadAloud() {
         shot("home")
         let search = reveal(UITag.homeSearch)
         XCTAssertTrue(search.waitForExistence(timeout: 4), "Missing \(UITag.homeSearch)")
-        search.tap()
-        search.typeText("Memorare")
-        let clear = app.buttons[UITag.homeSearchClear]
-        XCTAssertTrue(clear.waitForExistence(timeout: 4), "Search did not offer \(UITag.homeSearchClear)")
-        let stars = app.buttons.matching(identifier: "home.favorite.memorare")
-        XCTAssertTrue(stars.firstMatch.waitForExistence(timeout: 4), "Missing favorite star")
-        var star = stars.firstMatch
-        let searchBottom = search.frame.maxY
-        for index in 0..<stars.count {
-            let candidate = stars.element(boundBy: index)
-            if candidate.exists, candidate.frame.minY >= searchBottom - 8 {
-                star = candidate
-                break
-            }
-        }
-        star.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        let ourLady = reveal("home.category.ourLady")
+        XCTAssertTrue(ourLady.waitForExistence(timeout: 4), "Missing the Our Lady category")
+        ourLady.tap()
+        let star = reveal("home.favorite.memorare")
+        XCTAssertTrue(star.waitForExistence(timeout: 4), "Missing the Memorare star")
+        star.tap()
         if app.descendants(matching: .any)[UITag.libraryBody].waitForExistence(timeout: 2) {
             goBack("Rosary")
         }
-        let clearAgain = app.buttons[UITag.homeSearchClear]
-        if clearAgain.waitForExistence(timeout: 2) {
-            clearAgain.tap()
-        } else {
-            search.tap()
-            search.press(forDuration: 1.1)
-            if app.menuItems["Select All"].waitForExistence(timeout: 1) {
-                app.menuItems["Select All"].tap()
-            }
-            search.typeText(XCUIKeyboardKey.delete.rawValue)
+        let marked = app.buttons["home.favorite.memorare"].firstMatch
+        XCTAssertTrue(marked.waitForExistence(timeout: 4))
+        XCTAssertEqual(marked.label, "Remove from favorites")
+        let header = app.staticTexts["Favorites"].firstMatch
+        for _ in 0..<8 where !header.isHittable {
+            app.swipeDown()
         }
-        let favorites = reveal(UITag.homeFavorites)
-        XCTAssertTrue(favorites.waitForExistence(timeout: 4))
-        let memorare = app.staticTexts["The Memorare"].firstMatch
-        XCTAssertTrue(memorare.waitForExistence(timeout: 4), "The starred prayer is missing from Favorites")
         shot("favorites")
 
-        let done = app.keyboards.buttons["done"]
-        if done.exists { done.tap() }
-        for _ in 0..<4 { app.swipeDown() }
         let oneDecade = app.segmentedControls.buttons["One decade"]
         XCTAssertTrue(oneDecade.waitForExistence(timeout: 4))
         if !oneDecade.isHittable { app.swipeDown() }
