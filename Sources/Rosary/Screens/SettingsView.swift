@@ -21,6 +21,7 @@ struct SettingsView: View {
             narratorSection
             listeningSection
             displaySection
+            reminderSection
             familySection
             privacySection
         }
@@ -50,6 +51,14 @@ struct SettingsView: View {
                 .uiTag(UITag.settingsHolyGhost)
             Toggle("Seasonal Sundays", isOn: binding(\.seasonalSundays))
                 .uiTag(UITag.settingsSeasonal)
+            Toggle("Read the meditation aloud", isOn: binding(\.readsMeditationsAloud))
+                .uiTag(UITag.settingsReadMeditation)
+            Picker("Quiet for the response", selection: binding(\.guidedResponsePause)) {
+                ForEach(AppSettings.responsePauseChoices, id: \.seconds) { choice in
+                    Text("\(choice.title) (\(Int(choice.seconds)) s)").tag(choice.seconds)
+                }
+            }
+            .uiTag(UITag.settingsResponsePause)
             Picker("Quiet after each mystery", selection: binding(\.meditationPause)) {
                 ForEach(AppSettings.meditationPauseChoices, id: \.seconds) { choice in
                     Text("\(choice.title) (\(Int(choice.seconds)) s)").tag(choice.seconds)
@@ -58,7 +67,7 @@ struct SettingsView: View {
         } header: {
             Text("Prayer")
         } footer: {
-            Text("Seasonal Sundays: Joyful Mysteries on Sundays of Advent and Christmastide, Sorrowful on Sundays of Lent. Otherwise Sundays are Glorious. In guided mode, the quiet after each mystery gives time to read the meditation; a tap moves on sooner.")
+            Text("Seasonal Sundays: Joyful Mysteries on Sundays of Advent and Christmastide, Sorrowful on Sundays of Lent. Otherwise Sundays are Glorious. Read the meditation aloud speaks the mystery, the Scripture, and a short meditation at the start of each decade. In Guided Rosary, the quiet after each prayer is for your response; a tap moves on sooner.")
         }
     }
 
@@ -129,13 +138,11 @@ struct SettingsView: View {
                     }
                 }
             }
-            if !catalog.hasNaturalVoice {
-                DownloadVoicesHint(prominent: true)
-            }
+            DownloadVoicesHint(prominent: !catalog.hasNaturalVoice)
         } header: {
             Text("Narrator")
         } footer: {
-            Text("Prayers are read on this iPhone, with short pauses between phrases. For the most natural sound, download a Premium or Enhanced voice in the Settings app › Accessibility › Spoken Content › Voices › English.")
+            Text("Prayers are read on this iPhone with the best installed voice: Premium first, then Enhanced, then Standard. For a warmer voice, download one in the Settings app › Accessibility › Spoken Content › Voices › English, then pick it under Narrator voice.")
         }
     }
 
@@ -169,6 +176,50 @@ struct SettingsView: View {
             Text("Display")
         } footer: {
             Text("Prayer text also grows with the iPhone’s Text Size setting. During a decade, the painting sits beside the Scripture. Refresh sacred art loads public-domain and openly licensed paintings and icons from Wikimedia Commons. They are kept on this iPhone, and the paintings in the app remain if Commons cannot be reached.")
+        }
+    }
+
+    private var reminderSection: some View {
+        Section {
+            Toggle("Daily reminder", isOn: Binding(
+                get: { settings.reminderEnabled },
+                set: { enabled in
+                    model.update { $0.reminderEnabled = enabled }
+                    scheduleReminder()
+                }
+            ))
+            .uiTag(UITag.settingsReminder)
+            if settings.reminderEnabled {
+                Stepper(value: binding(\.reminderHour), in: 5...21) {
+                    Text("At \(settings.reminderHour):00")
+                }
+                .onChange(of: settings.reminderHour) { _, _ in scheduleReminder() }
+            }
+        } header: {
+            Text("Reminder")
+        } footer: {
+            Text("A notification on this iPhone, at the hour you choose, naming today’s mysteries. When a novena is underway, it includes the day.")
+        }
+    }
+
+    private func scheduleReminder() {
+        let day = model.today
+        let east = content?.feasts(on: day, rite: .ruthenian).first?.name
+        let west = content?.feasts(on: day, rite: .western).first?.name
+        let named = [east, west].compactMap { $0 }.filter { !$0.isEmpty }
+        let feast = named.isEmpty ? LiturgicalCalendar.day(day).title : named.joined(separator: ", ")
+        let novena = model.settings.novena
+        let body = ReminderPlan.message(
+            mysteries: model.todaysSet.title,
+            feast: feast,
+            novenaDay: novena?.dayNumber(on: day),
+            intention: novena?.intention
+        )
+        let enabled = model.settings.reminderEnabled
+        let hour = model.settings.reminderHour
+        let minute = model.settings.reminderMinute
+        Task {
+            await PrayerReminder.schedule(enabled: enabled, hour: hour, minute: minute, body: body)
         }
     }
 

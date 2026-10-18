@@ -38,6 +38,22 @@ final class SacredArtLibrary {
         return SacredArtLibrary(directory: base.appendingPathComponent("Rosary/SacredArt", isDirectory: true))
     }
 
+    func gallery(focus: MysteryID, content: PrayerContent?) -> ArtGallery {
+        _ = revision
+        return ArtGallery.assemble(works: content?.art.works ?? [], records: index.records, focus: focus)
+    }
+
+    func imageData(for plate: ArtPlate, content: PrayerContent?) -> Data? {
+        _ = revision
+        if let fixture = fixtures[plate.mystery] { return fixture.data }
+        switch plate.kind {
+        case .bundled:
+            return content?.imageData(for: plate.mystery)
+        case .cached(let fileName):
+            return store.imageData(fileName: fileName) ?? content?.imageData(for: plate.mystery)
+        }
+    }
+
     func imageData(for mystery: MysteryID, content: PrayerContent?, on day: CivilDate) -> Data? {
         _ = revision
         if let fixture = fixtures[mystery] { return fixture.data }

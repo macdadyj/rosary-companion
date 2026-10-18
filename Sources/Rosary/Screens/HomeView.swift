@@ -10,6 +10,10 @@ struct HomeView: View {
 
     @State private var setup: SessionSetup?
     @State private var choosingIntentions = false
+    @State private var query = ""
+    @State private var category: PrayerCategory?
+    @State private var novenaIntention = ""
+    @State private var prayers: [LibraryPrayer] = []
 
     var body: some View {
         ScrollView {
@@ -34,7 +38,13 @@ struct HomeView: View {
                     .background(Theme.background)
             }
         }
-        .onAppear { refresh() }
+        .onAppear {
+            refresh()
+            prayers = PrayerLibrary.catalog(
+                book: PrayerBook(usesHolyGhost: model.settings.usesHolyGhost),
+                content: content
+            )
+        }
         .onChange(of: model.sessions.count) { refresh(afterSession: true) }
         .onChange(of: model.settings.family) { old, new in
             if old.isEnabled != new.isEnabled { setup?.family = new.isEnabled && !new.members.isEmpty }
@@ -50,13 +60,15 @@ struct HomeView: View {
     private func content(_ setup: Binding<SessionSetup>) -> some View {
         VStack(alignment: .leading, spacing: 22) {
             todayHeader(setup.wrappedValue)
-            artHeader(setup.wrappedValue)
-            streakCard
             modeSection(setup)
             lengthSection(setup)
             familySection(setup)
             intentionsSection(setup.wrappedValue)
             moreLinks
+            catalogue
+            streakCard
+            novenaCard
+            artHeader(setup.wrappedValue)
         }
     }
 
@@ -67,12 +79,27 @@ struct HomeView: View {
             Text(model.now().formatted(.dateTime.weekday(.wide).month(.wide).day()))
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.secondaryInk)
+            HStack(alignment: .firstTextBaseline) {
+                Text("Pray the Rosary")
+                    .font(.prayer(.largeTitle, weight: .semibold))
+                    .foregroundStyle(Theme.ink)
+                Spacer(minLength: 8)
+                FavoriteStar(id: PrayerCatalogue.rosaryID, model: model)
+            }
             Text(model.todaysSet.title)
-                .font(.prayer(.largeTitle, weight: .semibold))
-                .foregroundStyle(Theme.ink)
+                .font(.prayer(.title2, weight: .semibold))
+                .foregroundStyle(Theme.gold)
             Text(scheduleReason)
+                .font(.footnote)
+                .foregroundStyle(Theme.secondaryInk)
+            Text(resumeLine)
                 .font(.subheadline)
                 .foregroundStyle(Theme.secondaryInk)
+            Text(feastLine)
+                .font(.subheadline)
+                .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+                .uiTag(UITag.homeFeast)
             NavigationLink {
                 ReadingsView(model: model)
             } label: {
@@ -110,43 +137,38 @@ struct HomeView: View {
     private func modeSection(_ setup: Binding<SessionSetup>) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             sectionTitle("How would you like to pray?")
-            ForEach(PrayerMode.allCases) { mode in
-                let selected = setup.wrappedValue.mode == mode
-                Button {
-                    setup.wrappedValue.mode = mode
-                } label: {
-                    HStack(alignment: .top, spacing: 14) {
-                        Image(systemName: mode.systemImage)
-                            .font(.title2)
-                            .foregroundStyle(Theme.gold)
-                            .frame(width: 32)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(mode.title)
-                                .font(.prayer(.title3, weight: .semibold))
-                                .foregroundStyle(Theme.ink)
-                            Text(mode.summary)
-                                .font(.subheadline)
-                                .foregroundStyle(Theme.secondaryInk)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        Spacer(minLength: 0)
-                        Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                            .font(.title2)
-                            .foregroundStyle(selected ? Theme.gold : Theme.beadEmpty)
+            HStack(spacing: 8) {
+                ForEach(PrayerMode.allCases) { mode in
+                    let selected = setup.wrappedValue.mode == mode
+                    Button {
+                        setup.wrappedValue.mode = mode
+                    } label: {
+                        Text(mode.shortTitle)
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity, minHeight: 36)
+                            .foregroundStyle(selected ? Theme.background : Theme.ink)
+                            .background(selected ? Theme.gold : Theme.raisedSurface, in: Capsule())
                     }
-                    .multilineTextAlignment(.leading)
-                    .padding(16)
-                    .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .strokeBorder(selected ? Theme.gold : Theme.gold.opacity(0.15), lineWidth: selected ? 2 : 1)
-                    )
+                    .buttonStyle(.plain)
+                    .uiTag(homeTag(mode))
+                    .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
                 }
-                .buttonStyle(.plain)
-                .uiTag(mode == .guided ? UITag.modeGuided : UITag.modeTracking)
-                .accessibilityElement(children: .combine)
-                .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
             }
+            Text(setup.wrappedValue.mode.title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Theme.ink)
+            Text(setup.wrappedValue.mode.summary)
+                .font(.footnote)
+                .foregroundStyle(Theme.secondaryInk)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func homeTag(_ mode: PrayerMode) -> String {
+        switch mode {
+        case .guided: UITag.modeGuided
+        case .tracking: UITag.modeTracking
+        case .guidedRosary: UITag.modeRosary
         }
     }
 
@@ -284,7 +306,7 @@ struct HomeView: View {
             SacredArtView(
                 data: art.imageData(for: mystery.id, content: content, on: model.today),
                 credit: art.creditLine(for: mystery.id, content: content, on: model.today),
-                height: 260,
+                height: 180,
                 isLoading: art.isLoading(mystery.id),
                 token: art.imageToken(for: mystery.id, content: content, on: model.today)
             )
@@ -314,6 +336,190 @@ struct HomeView: View {
         }
         .font(.headline)
         .foregroundStyle(Theme.ink)
+    }
+
+    // MARK: - Catalogue
+
+    private var catalogue: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            sectionTitle("Prayers")
+            HStack(spacing: 8) {
+                TextField("Search prayers", text: $query)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.body)
+                    .uiTag(UITag.homeSearch)
+                    .autocorrectionDisabled()
+                if searching {
+                    Button("Clear") { query = "" }
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Theme.gold)
+                        .uiTag(UITag.homeSearchClear)
+                }
+            }
+            if searching {
+                ForEach(matches) { prayer in
+                    prayerRow(prayer)
+                }
+            } else {
+                categoryChips
+                favoritesSection
+                recentSection
+                if let category {
+                    ForEach(prayers.filter { $0.category == category }) { prayer in
+                        prayerRow(prayer)
+                    }
+                }
+            }
+        }
+    }
+
+    private var searching: Bool {
+        !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private var matches: [LibraryPrayer] {
+        PrayerLibrary.matching(query, in: prayers)
+    }
+
+    private var categoryChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(PrayerCategory.allCases) { item in
+                    let selected = category == item
+                    Button(item.title) { category = selected ? nil : item }
+                        .font(.subheadline.weight(selected ? .semibold : .regular))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(selected ? Theme.gold : Theme.raisedSurface, in: Capsule())
+                        .foregroundStyle(selected ? Theme.background : Theme.ink)
+                        .uiTag("home.category.\(item.rawValue)")
+                }
+            }
+        }
+    }
+
+    private var favoritesSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionTitle("Favorites")
+            if model.settings.favoritePrayerIDs.isEmpty {
+                Text("Star a prayer to keep it here.")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.secondaryInk)
+            } else {
+                ForEach(model.settings.favoritePrayerIDs, id: \.self) { id in
+                    if let prayer = prayers.first(where: { $0.id == id }) {
+                        prayerRow(prayer)
+                    } else {
+                        labelledFavourite(id)
+                    }
+                }
+            }
+        }
+        .uiTag(UITag.homeFavorites)
+    }
+
+    private var recentSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionTitle("Recently prayed")
+            if model.settings.recentPrayerIDs.isEmpty {
+                Text("Prayers you open will be listed here.")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.secondaryInk)
+            } else {
+                ForEach(model.settings.recentPrayerIDs, id: \.self) { id in
+                    if let prayer = prayers.first(where: { $0.id == id }) {
+                        prayerRow(prayer)
+                    } else {
+                        labelledFavourite(id)
+                    }
+                }
+            }
+        }
+        .uiTag(UITag.homeRecent)
+    }
+
+    private func prayerRow(_ prayer: LibraryPrayer) -> some View {
+        HStack(spacing: 4) {
+            NavigationLink {
+                PrayerPageView(prayer: prayer, model: model, content: content)
+            } label: {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(prayer.title)
+                        .font(.prayer(.title3, weight: .semibold))
+                        .foregroundStyle(Theme.ink)
+                    Text(prayer.category.title)
+                        .font(.caption)
+                        .foregroundStyle(Theme.secondaryInk)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            .uiTag("library.prayer.\(prayer.id)")
+            FavoriteStar(id: prayer.id, model: model)
+        }
+        .card()
+    }
+
+    private func labelledFavourite(_ id: String) -> some View {
+        HStack {
+            Text(PrayerCatalogue.title(for: id, prayers: prayers))
+                .font(.prayer(.title3, weight: .semibold))
+                .foregroundStyle(Theme.ink)
+            Spacer(minLength: 0)
+            FavoriteStar(id: id, model: model)
+        }
+        .card()
+    }
+
+    private var novenaCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let novena = model.settings.novena, let day = novena.dayNumber(on: model.today) {
+                Text("Novena · day \(day) of \(novena.length)")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Theme.ink)
+                if !novena.intention.isEmpty {
+                    Text(novena.intention)
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.secondaryInk)
+                }
+                Button("End novena") { model.clearNovena() }
+                    .font(.headline)
+                    .foregroundStyle(Theme.gold)
+            } else {
+                Text(model.settings.novena == nil ? "Novena" : "The novena is complete")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Theme.ink)
+                TextField("Intention", text: $novenaIntention)
+                    .textFieldStyle(.roundedBorder)
+                Button("Begin a novena") {
+                    model.beginNovena(intention: novenaIntention, on: model.today)
+                    novenaIntention = ""
+                }
+                .font(.headline)
+                .foregroundStyle(Theme.gold)
+            }
+        }
+        .card()
+        .uiTag(UITag.homeNovena)
+    }
+
+    private var resumeLine: String {
+        let set = model.todaysSet
+        let decade = model.suggestedDecade(for: set)
+        let mystery = set.mysteries[decade - 1]
+        let resumed = model.sessions.contains { $0.mysterySet == set && !$0.decadesCompleted.isEmpty }
+        let place = "Decade \(decade) · \(mystery.title)"
+        return resumed ? "Resume · \(place)" : place
+    }
+
+    private var feastLine: String {
+        let day = model.today
+        let east = content?.feasts(on: day, rite: .ruthenian).map(\.name).filter { !$0.isEmpty } ?? []
+        let west = content?.feasts(on: day, rite: .western).map(\.name).filter { !$0.isEmpty } ?? []
+        let liturgical = LiturgicalCalendar.day(day)
+        let eastText = east.isEmpty ? "feria" : east.joined(separator: ", ")
+        let westText = west.isEmpty ? liturgical.title : west.joined(separator: ", ")
+        return "Ruthenian \(eastText) · Roman \(westText)"
     }
 
     // MARK: - Helpers

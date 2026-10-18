@@ -171,6 +171,12 @@ public final class AppModel {
 
         var timing = EngineTiming()
         timing.announcementHold = max(1, settings.meditationPause)
+        timing.guidedResponsePause = max(1, settings.guidedResponsePause)
+        let scripts = DecadeReading.scripts(
+            content: try? PrayerContent.bundled(),
+            saints: try? SaintsLibrary.bundled(),
+            day: today
+        )
         let configuration = SessionConfiguration(
             scope: setup.scope,
             mysterySet: setup.mysterySet,
@@ -180,7 +186,10 @@ public final class AppModel {
             decadeLeaders: lineup.mapValues(\.name),
             nextSessionLeader: nextLeader?.name,
             announceNextLeader: settings.family.announceNextLeader,
-            timing: timing
+            timing: timing,
+            readsMeditations: settings.readsMeditationsAloud,
+            meditationScripture: scripts.scripture,
+            meditationText: scripts.meditation
         )
         return PreparedSession(
             id: UUID(), setup: setup, configuration: configuration,
@@ -298,6 +307,41 @@ public final class AppModel {
 
     public func sessionCount(for intentionID: UUID) -> Int {
         sessions.filter { $0.intentionIDs.contains(intentionID) }.count
+    }
+
+    // MARK: Catalogue
+
+    public func isFavorite(_ id: String) -> Bool {
+        settings.favoritePrayerIDs.contains(id)
+    }
+
+    public func toggleFavorite(_ id: String) {
+        update { settings in
+            if let index = settings.favoritePrayerIDs.firstIndex(of: id) {
+                settings.favoritePrayerIDs.remove(at: index)
+            } else {
+                settings.favoritePrayerIDs.append(id)
+            }
+        }
+    }
+
+    public func rememberPrayer(_ id: String) {
+        update { settings in
+            settings.recentPrayerIDs.removeAll { $0 == id }
+            settings.recentPrayerIDs.insert(id, at: 0)
+            if settings.recentPrayerIDs.count > 12 {
+                settings.recentPrayerIDs = Array(settings.recentPrayerIDs.prefix(12))
+            }
+        }
+    }
+
+    public func beginNovena(intention: String, on date: CivilDate) {
+        let trimmed = intention.trimmingCharacters(in: .whitespacesAndNewlines)
+        update { $0.novena = Novena(intention: trimmed, start: date) }
+    }
+
+    public func clearNovena() {
+        update { $0.novena = nil }
     }
 
     // MARK: Export

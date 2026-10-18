@@ -89,13 +89,14 @@ struct PrayerTextView: View {
     private var leaderLabel: String {
         switch snapshot.mode {
         case .guided: "Rosary leads"
+        case .guidedRosary: "Rosary reads"
         case .tracking: snapshot.leader ?? "Leader"
         }
     }
 
     private var responseLabel: String {
         switch snapshot.mode {
-        case .guided: snapshot.leader == nil ? "You answer" : "All answer"
+        case .guided, .guidedRosary: snapshot.leader == nil ? "You answer" : "All answer"
         case .tracking: "All"
         }
     }

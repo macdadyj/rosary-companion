@@ -134,10 +134,11 @@ struct ScriptureReaderView: View {
     }
 }
 
-/// The painting, full screen, with pinch-to-zoom, pan, and the credit line.
+/// The painting, full screen, with pinch-to-zoom, pan, and the next and previous works.
 struct SacredArtViewer: View {
-    let data: Data?
-    let credit: String
+    let gallery: ArtGallery
+    let image: (ArtPlate) -> Data?
+    let onStep: (Int) -> Void
     let onClose: () -> Void
 
     @State private var scale: CGFloat = 1
@@ -146,6 +147,8 @@ struct SacredArtViewer: View {
     @State private var lastOffset: CGSize = .zero
     @State private var pinching = false
     @State private var ignoreDragUntil = Date.distantPast
+
+    private var plateID: String { gallery.plate?.id ?? "" }
 
     var body: some View {
         ZStack {
@@ -160,25 +163,68 @@ struct SacredArtViewer: View {
                 .simultaneousGesture(pan)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .overlay(alignment: .topLeading) {
-            closeButton
-                .padding(.horizontal, 12)
-                .padding(.top, 4)
-        }
-        .overlay(alignment: .bottom) {
-            Text(credit.isEmpty ? "Mystery artwork" : credit)
-                .font(.footnote)
-                .foregroundStyle(.white)
-                .multilineTextAlignment(.center)
-                .lineLimit(4)
-                .padding(14)
-                .frame(maxWidth: .infinity)
-                .background(.black.opacity(0.62))
-                .accessibilityIdentifier(UITag.sessionArtCredit)
-        }
+        .overlay(alignment: .top) { topChrome }
+        .overlay(alignment: .leading) { stepButton(delta: -1, label: "Previous painting", systemImage: "chevron.left", tag: UITag.sessionArtPrevious) }
+        .overlay(alignment: .trailing) { stepButton(delta: 1, label: "Next painting", systemImage: "chevron.right", tag: UITag.sessionArtNext) }
+        .overlay(alignment: .bottom) { caption }
+        .onChange(of: plateID) { _, _ in resetZoom() }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(UITag.sessionArtViewer)
-        .accessibilityHint("Swipe down to close")
+        .accessibilityHint("Swipe left or right for another painting. Swipe down to close.")
+    }
+
+    private var topChrome: some View {
+        HStack {
+            closeButton
+            Spacer(minLength: 0)
+            Text(gallery.positionLabel)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(.black.opacity(0.45), in: Capsule())
+                .accessibilityIdentifier(UITag.sessionArtPage)
+            Spacer(minLength: 0)
+            Color.clear.frame(width: 48, height: 48).accessibilityHidden(true)
+        }
+        .padding(.horizontal, 12)
+        .padding(.top, 4)
+    }
+
+    private func stepButton(delta: Int, label: String, systemImage: String, tag: String) -> some View {
+        Button {
+            onStep(delta)
+        } label: {
+            Image(systemName: systemImage)
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 48, height: 48)
+                .background(.black.opacity(0.45), in: Circle())
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, 8)
+        .accessibilityLabel(label)
+        .accessibilityIdentifier(tag)
+    }
+
+    private var caption: some View {
+        let text = gallery.plate?.caption ?? ""
+        return Text(text.isEmpty ? "Mystery artwork" : text)
+            .font(.footnote)
+            .foregroundStyle(.white)
+            .multilineTextAlignment(.center)
+            .lineLimit(4)
+            .padding(14)
+            .frame(maxWidth: .infinity)
+            .background(.black.opacity(0.62))
+            .accessibilityIdentifier(UITag.sessionArtCredit)
+    }
+
+    private func resetZoom() {
+        scale = 1
+        lastScale = 1
+        offset = .zero
+        lastOffset = .zero
     }
 
     private var closeButton: some View {
@@ -197,7 +243,7 @@ struct SacredArtViewer: View {
     @ViewBuilder
     private var painting: some View {
         GeometryReader { geo in
-            let uiImage = data.flatMap { UIImage(data: $0) }
+            let uiImage = gallery.plate.flatMap { image($0) }.flatMap { UIImage(data: $0) }
             let fitted = ImageFraming.fittedSize(
                 imageWidth: Double(uiImage?.size.width ?? 0),
                 imageHeight: Double(uiImage?.size.height ?? 0),
@@ -251,6 +297,10 @@ struct SacredArtViewer: View {
                 guard !pinching, Date() > ignoreDragUntil else { return }
                 if scale > 1.05 {
                     lastOffset = offset
+                    return
+                }
+                if abs(value.translation.width) > 70, abs(value.translation.width) > abs(value.translation.height) {
+                    onStep(value.translation.width < 0 ? 1 : -1)
                     return
                 }
                 if value.translation.height > 120, value.translation.height > abs(value.translation.width) {

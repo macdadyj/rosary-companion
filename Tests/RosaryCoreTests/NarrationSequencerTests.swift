@@ -21,6 +21,10 @@ final class FakeNarrationOutput: NarrationOutput {
 
     func stop() { stops += 1 }
 
+    func pause() {}
+
+    func resume() {}
+
     /// Finishes the most recent item, as the speech synthesizer or audio player would.
     func finish(played: Bool = true) {
         calls.last?.completion(played)

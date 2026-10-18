@@ -42,6 +42,10 @@ final class FakeNarrator: SpeechNarrating {
         pending?()
     }
 
+    func pause() {}
+
+    func resume() {}
+
     func finish() {
         let pending = completion
         completion = nil

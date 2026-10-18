@@ -15,6 +15,7 @@ final class SpeechOutput: NSObject, NarrationOutput {
     private var completion: (@MainActor (Bool) -> Void)?
     private var pauseAfter: TimeInterval = 0
     private var pauseTask: Task<Void, Never>?
+    private var held = false
 
     init(voice: AVSpeechSynthesisVoice?) {
         self.voice = voice
@@ -50,6 +51,7 @@ final class SpeechOutput: NSObject, NarrationOutput {
 
     /// Silences everything at once. The pending completion is dropped, as `NarrationOutput` allows.
     func stop() {
+        held = false
         completion = nil
         pauseTask?.cancel()
         pauseTask = nil
@@ -59,6 +61,36 @@ final class SpeechOutput: NSObject, NarrationOutput {
         }
         player?.stop()
         player = nil
+    }
+
+    /// Holds the current phrase. The completion stays pending so the sequencer can continue later.
+    func pause() {
+        held = true
+        if synthesizer.isSpeaking {
+            synthesizer.pauseSpeaking(at: .word)
+            return
+        }
+        if player?.isPlaying == true {
+            player?.pause()
+            return
+        }
+        pauseTask?.cancel()
+        pauseTask = nil
+    }
+
+    func resume() {
+        guard held else { return }
+        held = false
+        if synthesizer.isPaused || synthesizer.isSpeaking {
+            synthesizer.continueSpeaking()
+            return
+        }
+        if let player, !player.isPlaying {
+            player.play()
+            return
+        }
+        pauseAfter = 0
+        finish(played: true)
     }
 
     private func finish(played: Bool) {

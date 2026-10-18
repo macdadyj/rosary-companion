@@ -158,6 +158,64 @@ final class RosaryUITests: XCTestCase {
         XCTAssertEqual(prayer.label, before, "Changing the painting moved the prayer")
     }
 
+    /// Home is the catalogue: search, a star, and the read-aloud controls on the prayer screen.
+    func testCatalogueFavoritesAndReadAloud() {
+        shot("home")
+        let search = reveal(UITag.homeSearch)
+        XCTAssertTrue(search.waitForExistence(timeout: 4), "Missing \(UITag.homeSearch)")
+        search.tap()
+        search.typeText("Memorare")
+        let star = app.buttons[UITag.libraryFavorite("memorare")].firstMatch
+        XCTAssertTrue(star.waitForExistence(timeout: 4), "Missing favorite star")
+        star.tap()
+        tap(UITag.homeSearchClear)
+        let favorites = reveal(UITag.homeFavorites)
+        XCTAssertTrue(favorites.waitForExistence(timeout: 4))
+        let memorare = app.staticTexts["The Memorare"].firstMatch
+        XCTAssertTrue(memorare.waitForExistence(timeout: 4), "The starred prayer is missing from Favorites")
+        shot("favorites")
+
+        app.segmentedControls.buttons["One decade"].tap()
+        let begin = reveal(UITag.beginRosary)
+        XCTAssertTrue(begin.waitForExistence(timeout: 2))
+        begin.tap()
+        let read = app.descendants(matching: .any)[UITag.sessionReadMeditation]
+        XCTAssertTrue(read.waitForExistence(timeout: 10), "Missing \(UITag.sessionReadMeditation)")
+        let rate = app.descendants(matching: .any)[UITag.sessionRate]
+        XCTAssertTrue(rate.waitForExistence(timeout: 4), "Missing \(UITag.sessionRate)")
+        shot("read-aloud")
+    }
+
+    /// Next, previous, and a sideways swipe move through the sacred art without leaving the viewer.
+    func testArtViewerPagesWithButtonsAndSwipe() {
+        beginOneDecade()
+        tapInside(UITag.sessionArt, y: 0.4)
+        let page = app.descendants(matching: .any)[UITag.sessionArtPage]
+        XCTAssertTrue(page.waitForExistence(timeout: 4), "Missing \(UITag.sessionArtPage)")
+        let before = page.label
+        XCTAssertTrue(before.contains(" of "), "Page indicator was \"\(before)\"")
+        let credit = app.descendants(matching: .any)[UITag.sessionArtCredit]
+        XCTAssertTrue(credit.waitForExistence(timeout: 2))
+        let firstCredit = credit.label
+        XCTAssertFalse(firstCredit.isEmpty)
+        tap(UITag.sessionArtNext)
+        XCTAssertNotEqual(page.label, before)
+        XCTAssertTrue(page.label.contains(" of "))
+        XCTAssertNotEqual(credit.label, firstCredit)
+        let viewer = app.descendants(matching: .any)[UITag.sessionArtViewer]
+        let afterNext = page.label
+        viewer.swipeLeft()
+        let changed = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "label != %@", afterNext),
+            object: page
+        )
+        XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 3), .completed, "Swipe left left the page on \"\(page.label)\"")
+        shot("art-viewer")
+        tap(UITag.sessionArtPrevious)
+        tap(UITag.sessionArtClose)
+        waitUntilGone(UITag.sessionArtViewer)
+    }
+
     /// A one-decade prayer can still move to another mystery, and lands on its Our Father.
     func testMysteryJumpLandsOnTheOurFather() {
         app.segmentedControls.buttons["One decade"].tap()
@@ -411,6 +469,13 @@ final class RosaryUITests: XCTestCase {
             return
         }
         app.navigationBars.buttons.firstMatch.tap()
+    }
+
+    private func shot(_ name: String) {
+        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 
     private func toggle(_ identifier: String) {

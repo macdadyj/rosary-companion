@@ -27,6 +27,7 @@ public final class SessionController {
     @ObservationIgnored private let clock: @MainActor () -> TimeInterval
     @ObservationIgnored private var ticker: Task<Void, Never>?
     @ObservationIgnored private var activeNarration: Int?
+    @ObservationIgnored private var lastListenEpoch: Int?
 
     @ObservationIgnored public var onDecadeCompleted: (@MainActor (Int) -> Void)?
     @ObservationIgnored public var onFinished: (@MainActor () -> Void)?
@@ -79,7 +80,24 @@ public final class SessionController {
     public func resume() { send(.resume) }
     public func dismissBanner() { send(.dismissBanner) }
     public func jumpToDecade(_ decade: Int) { send(.jumpToDecade(decade)) }
+    public func setReadsMeditations(_ enabled: Bool) { send(.setReadsMeditations(enabled)) }
     public func end() { send(.end) }
+
+    /// Drops the microphone while speech keeps playing, for a locked screen.
+    public func suspendListening() {
+        listener?.stop()
+    }
+
+    /// Starts the microphone again after the screen unlocks, on the epoch the engine is still accepting.
+    public func resumeListeningIfNeeded() {
+        guard let epoch = lastListenEpoch else { return }
+        switch snapshot.phase {
+        case .awaitingResponse, .following:
+            listener?.listen(epoch: epoch)
+        case .notStarted, .speaking, .holding, .paused, .finished:
+            break
+        }
+    }
     public func tick() { send(.tick) }
 
     public func send(_ event: SessionEvent) {
@@ -118,7 +136,12 @@ public final class SessionController {
             case .stopSpeaking:
                 activeNarration = nil
                 narrator.stop()
+            case .pauseSpeaking:
+                narrator.pause()
+            case .resumeSpeaking:
+                narrator.resume()
             case .listen(let epoch):
+                lastListenEpoch = epoch
                 listener?.listen(epoch: epoch)
             case .stopListening:
                 listener?.stop()

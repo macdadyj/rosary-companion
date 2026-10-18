@@ -46,26 +46,29 @@ struct DevotionsView: View {
                     countedPrayers
                 }
                 ForEach(shown) { prayer in
-                    NavigationLink {
-                        PrayerPageView(prayer: prayer, model: model, content: content)
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(prayer.title)
-                                    .font(.prayer(.title3, weight: .semibold))
-                                    .foregroundStyle(Theme.ink)
-                                Text(prayer.category.title)
-                                    .font(.caption)
+                    HStack(spacing: 4) {
+                        NavigationLink {
+                            PrayerPageView(prayer: prayer, model: model, content: content)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text(prayer.title)
+                                        .font(.prayer(.title3, weight: .semibold))
+                                        .foregroundStyle(Theme.ink)
+                                    Text(prayer.category.title)
+                                        .font(.caption)
+                                        .foregroundStyle(Theme.secondaryInk)
+                                }
+                                Spacer(minLength: 0)
+                                Image(systemName: "chevron.right")
                                     .foregroundStyle(Theme.secondaryInk)
                             }
-                            Spacer(minLength: 0)
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(Theme.secondaryInk)
                         }
-                        .card()
+                        .buttonStyle(.plain)
+                        .uiTag("library.prayer.\(prayer.id)")
+                        FavoriteStar(id: prayer.id, model: model)
                     }
-                    .buttonStyle(.plain)
-                    .uiTag("library.prayer.\(prayer.id)")
+                    .card()
                 }
             }
             .padding(20)

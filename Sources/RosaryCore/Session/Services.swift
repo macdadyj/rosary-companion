@@ -30,6 +30,8 @@ public protocol SpeechNarrating: AnyObject {
     /// `completion` runs once, when the narration finishes or is stopped.
     func speak(_ narration: Narration, preDelay: TimeInterval, completion: @escaping @MainActor () -> Void)
     func stop()
+    func pause()
+    func resume()
 }
 
 @MainActor
