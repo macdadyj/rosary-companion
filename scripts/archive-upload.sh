@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Archive with manual distribution signing and upload to TestFlight.
 # The App Store Connect API key creates a new iOS Distribution certificate
-# and App Store profiles. Existing certificates are never touched. On exit, success
-# or failure, it deletes the profiles it created and revokes only the distribution
-# certificate it created in this run, so certificates never pile up.
+# and App Store profiles. On exit, success or failure, it deletes the profiles
+# it created and revokes the distribution certificate it created in this run.
+# If Apple refuses another certificate, it revokes one earlier certificate
+# named Rosary Distribution and tries once more. Certificates with any other
+# name are left in place.
 # Does not print secret values. Deletes the API key, keychain, and profiles on exit.
 set -euo pipefail
 
