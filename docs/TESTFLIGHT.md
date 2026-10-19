@@ -49,7 +49,7 @@ On `macdadyj/rosary-companion`, open **Settings → Secrets and variables → Ac
 | `DIST_CERT_P12` | The shared iOS Distribution certificate, base64 of the `.p12` |
 | `DIST_CERT_PASSWORD` | Password for that `.p12` |
 
-The upload imports that certificate into a temporary keychain and signs manually. It does not create or revoke distribution certificates. App Store profiles for the three bundle ids are fetched or created for certificate `VJ5MXTN7UT`. The internal TestFlight group has access to all builds, so the workflow does not manually add a build to that group. It checks membership with the group's build list.
+The upload imports that certificate into a temporary keychain and signs manually. It does not create or revoke distribution certificates. App Store profiles for the three bundle ids are fetched or created for certificate `VJ5MXTN7UT`. The internal TestFlight group has access to all builds, so the workflow does not manually add a build to that group. It checks membership with the group's build list. After the transporter accepts the upload, the release step keeps polling the builds API for the full wait (30 minutes). App Store Connect often lists the new build several minutes after "Upload succeeded."
 
 ### Billing
 

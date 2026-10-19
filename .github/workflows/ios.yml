@@ -210,7 +210,8 @@ jobs:
       group: testflight-${{ github.repository }}
       cancel-in-progress: false
     runs-on: macos-26
-    timeout-minutes: 90
+    # Archive, then up to 30 minutes for the build record and 30 more for VALID.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
 
