@@ -18,9 +18,11 @@ struct PrayerPageView: View {
                     FavoriteStar(id: prayer.id, model: model)
                 }
                 Text(prayer.body)
-                    .font(.prayer(.title3))
+                    .font(.prayer(model.settings.textSize.prayerStyle))
+                    .lineSpacing(8)
                     .foregroundStyle(Theme.ink)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
                     .uiTag(UITag.libraryBody)
                 if plan != nil {
                     NavigationLink {
@@ -29,13 +31,17 @@ struct PrayerPageView: View {
                         Text("Pray bead by bead")
                     }
                     .buttonStyle(PrimaryButtonStyle())
+                    .accessibilityHint("Opens this chaplet one bead at a time")
                 }
                 Text(prayer.source)
-                    .font(.caption)
+                    .font(.footnote)
                     .foregroundStyle(Theme.secondaryInk)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityLabel("Source. \(prayer.source)")
                 Text(prayer.licenseNote)
-                    .font(.caption2)
+                    .font(.footnote)
                     .foregroundStyle(Theme.secondaryInk)
+                    .accessibilityLabel("License. \(prayer.licenseNote)")
             }
             .padding(20)
         }

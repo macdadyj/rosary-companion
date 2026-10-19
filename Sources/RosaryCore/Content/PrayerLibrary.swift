@@ -20,6 +20,18 @@ public enum PrayerCategory: String, CaseIterable, Hashable, Sendable, Identifiab
         case .byzantine: "Byzantine"
         }
     }
+
+    /// Short name for a chip. The full title stays the accessibility label.
+    public var chipTitle: String {
+        switch self {
+        case .ourLady: "Our Lady"
+        case .protection: "Protection"
+        case .litanies: "Litanies"
+        case .chaplets: "Chaplets"
+        case .daily: "Daily"
+        case .byzantine: "Byzantine"
+        }
+    }
 }
 
 public struct LibraryPrayer: Identifiable, Hashable, Sendable {

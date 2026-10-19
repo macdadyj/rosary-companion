@@ -267,6 +267,7 @@ final class RosaryUITests: XCTestCase {
         let body = app.descendants(matching: .any)[UITag.libraryBody]
         XCTAssertTrue(body.waitForExistence(timeout: 5))
         XCTAssertTrue(body.label.contains("Remember, O most gracious"), body.label)
+        shot("prayer-text")
         goBack("Devotions")
     }
 

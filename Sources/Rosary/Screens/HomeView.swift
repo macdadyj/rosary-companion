@@ -348,27 +348,34 @@ struct HomeView: View {
                     .textFieldStyle(.roundedBorder)
                     .font(.body)
                     .uiTag(UITag.homeSearch)
+                    .accessibilityLabel("Search prayers")
                     .autocorrectionDisabled()
                 if searching {
                     Button("Clear") { query = "" }
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Theme.gold)
                         .uiTag(UITag.homeSearchClear)
+                        .accessibilityLabel("Clear search")
                 }
             }
             if searching {
-                ForEach(matches) { prayer in
-                    prayerRow(prayer)
-                }
-            } else {
-                categoryChips
-                favoritesSection
-                recentSection
-                if let category {
-                    ForEach(prayers.filter { $0.category == category }) { prayer in
+                if matches.isEmpty {
+                    Text("No prayer matches that search.")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.secondaryInk)
+                } else {
+                    sectionTitle(matches.count == 1 ? "1 prayer" : "\(matches.count) prayers")
+                    ForEach(matches) { prayer in
                         prayerRow(prayer)
                     }
                 }
+            } else {
+                categoryChips
+                if let category {
+                    categoryList(category)
+                }
+                favoritesSection
+                recentSection
             }
         }
     }
@@ -386,14 +393,35 @@ struct HomeView: View {
             HStack(spacing: 8) {
                 ForEach(PrayerCategory.allCases) { item in
                     let selected = category == item
-                    Button(item.title) { category = selected ? nil : item }
-                        .font(.subheadline.weight(selected ? .semibold : .regular))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(selected ? Theme.gold : Theme.raisedSurface, in: Capsule())
-                        .foregroundStyle(selected ? Theme.background : Theme.ink)
-                        .uiTag("home.category.\(item.rawValue)")
+                    Button {
+                        category = selected ? nil : item
+                    } label: {
+                        Text(item.chipTitle)
+                            .font(.subheadline.weight(selected ? .semibold : .regular))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(selected ? Theme.gold : Theme.raisedSurface, in: Capsule())
+                            .foregroundStyle(selected ? Theme.background : Theme.ink)
+                    }
+                    .buttonStyle(.plain)
+                    .uiTag("home.category.\(item.rawValue)")
+                    .accessibilityLabel(item.title)
+                    .accessibilityHint(selected ? "Showing these prayers" : "Show these prayers")
+                    .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
                 }
+            }
+        }
+    }
+
+    private func categoryList(_ category: PrayerCategory) -> some View {
+        let listed = prayers.filter { $0.category == category }
+        return VStack(alignment: .leading, spacing: 8) {
+            sectionTitle(category.title)
+            Text(listed.count == 1 ? "1 prayer" : "\(listed.count) prayers")
+                .font(.subheadline)
+                .foregroundStyle(Theme.secondaryInk)
+            ForEach(listed) { prayer in
+                prayerRow(prayer)
             }
         }
     }
@@ -454,7 +482,8 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.plain)
-            .uiTag("library.prayer.\(prayer.id)")
+            .uiTag("home.prayer.\(prayer.id)")
+            .accessibilityLabel("\(prayer.title), \(prayer.category.title)")
             FavoriteStar(id: prayer.id, model: model, tag: "home.favorite.\(prayer.id)")
         }
         .card()
@@ -527,7 +556,7 @@ struct HomeView: View {
     private func sectionTitle(_ text: String) -> some View {
         Text(text)
             .font(.headline)
-            .foregroundStyle(Theme.secondaryInk)
+            .foregroundStyle(Theme.ink)
             .accessibilityAddTraits(.isHeader)
     }
 

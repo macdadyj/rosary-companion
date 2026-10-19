@@ -9,9 +9,10 @@ enum Theme {
     static let surface = adaptive(light: (0.99, 0.96, 0.91), dark: (0.14, 0.08, 0.05))
     static let raisedSurface = adaptive(light: (0.93, 0.86, 0.74), dark: (0.22, 0.13, 0.08))
     static let ink = adaptive(light: (0.16, 0.09, 0.05), dark: (0.98, 0.93, 0.84))
-    static let secondaryInk = adaptive(light: (0.38, 0.26, 0.16), dark: (0.82, 0.72, 0.58))
+    /// Dark enough on parchment for footnotes and captions.
+    static let secondaryInk = adaptive(light: (0.28, 0.17, 0.10), dark: (0.86, 0.76, 0.62))
     /// Icon gold. Dark enough on parchment and bright enough on candlelit brown for contrast.
-    static let gold = adaptive(light: (0.48, 0.32, 0.06), dark: (0.95, 0.78, 0.42))
+    static let gold = adaptive(light: (0.40, 0.26, 0.04), dark: (0.95, 0.78, 0.42))
     static let lapis = adaptive(light: (0.10, 0.22, 0.38), dark: (0.45, 0.62, 0.78))
     static let burgundy = adaptive(light: (0.45, 0.12, 0.14), dark: (0.72, 0.28, 0.24))
     static let beadEmpty = adaptive(light: (0.80, 0.76, 0.70), dark: (0.25, 0.28, 0.36))

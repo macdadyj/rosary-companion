@@ -69,6 +69,14 @@ struct PrayerLibraryTests {
         #expect(PrayerLibrary.matching("Memorare", in: prayers).contains { $0.id == "memorare" })
     }
 
+    @Test func categoryChipsStayShort() {
+        let chips = PrayerCategory.allCases.map(\.chipTitle)
+        #expect(Set(chips).count == PrayerCategory.allCases.count)
+        #expect(chips.allSatisfy { $0.count <= 12 })
+        #expect(PrayerCategory.protection.chipTitle == "Protection")
+        #expect(PrayerCategory.protection.title == "Saint Michael and protection")
+    }
+
     @Test func saintMichaelChapletPrintsEverySalutation() {
         let plan = DevotionCatalog.stMichaelChaplet(book: PrayerBook())
         let text = plan.fullText
