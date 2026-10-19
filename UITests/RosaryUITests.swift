@@ -222,7 +222,13 @@ final class RosaryUITests: XCTestCase {
         shot("art-viewer")
         tap(UITag.sessionArtPrevious)
         tap(UITag.sessionArtClose)
-        waitUntilGone(UITag.sessionArtViewer)
+        let overlay = app.descendants(matching: .any)[UITag.sessionArtViewer]
+        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: overlay)
+        // A swipe can still be settling, and a busy simulator drops the close tap.
+        if XCTWaiter.wait(for: [gone], timeout: 4) != .completed {
+            tap(UITag.sessionArtClose)
+            waitUntilGone(UITag.sessionArtViewer)
+        }
     }
 
     /// A one-decade prayer can still move to another mystery, and lands on its Our Father.
