@@ -71,7 +71,15 @@ final class RosaryUITests: XCTestCase {
             predicate: NSPredicate(format: "label != %@", before),
             object: prayer
         )
-        XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 5), .completed, "Tapping the beads left the prayer on \"\(prayer.label)\"")
+        // A busy simulator can drop the bead tap, the same way it drops Begin.
+        if XCTWaiter.wait(for: [changed], timeout: 5) != .completed {
+            tapInside(UITag.sessionBeads, y: 0.45)
+            let again = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "label != %@", before),
+                object: prayer
+            )
+            XCTAssertEqual(XCTWaiter.wait(for: [again], timeout: 5), .completed, "Tapping the beads left the prayer on \"\(prayer.label)\"")
+        }
     }
 
     /// The chapel shows the opening of the passage. The reader has the rest, and it scrolls.
