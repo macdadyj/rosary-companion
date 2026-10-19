@@ -96,6 +96,21 @@ struct PrayerLibraryTests {
         let tantum = try #require(prayers.first { $0.id == "tantum-ergo" })
         #expect(tantum.body.contains("Genitori, Genitoque"))
         #expect(tantum.body.contains("Panem de coelo praestitisti eis"))
+        let confiteor = try #require(prayers.first { $0.id == "confiteor" })
+        #expect(confiteor.body.contains("through my most grievous fault"))
+        #expect(confiteor.body.contains("remission of all my sins"))
+        let mother = try #require(prayers.first { $0.id == "my-lady-and-my-mother" })
+        #expect(mother.body == "My Lady, and my Mother, remember I am thine; protect and defend me as thy property and possession.")
+        let joseph = try #require(prayers.first { $0.id == "saint-joseph-model" })
+        #expect(joseph.body.hasSuffix("pray for us."))
+        let family = try #require(prayers.first { $0.id == "god-bless-papa" })
+        #expect(family.body.contains("God bless Papa and Mamma."))
+        #expect(family.body.hasSuffix("make me a good child."))
+        let commendation = try #require(prayers.first { $0.id == "jesus-mary-joseph" })
+        #expect(commendation.body.contains("I give you my heart and my soul."))
+        #expect(commendation.body.contains("assist me in my last agony."))
+        #expect(commendation.body.contains("breathe forth my soul in peace with you."))
+        #expect(commendation.body.hasSuffix("rest in peace. Amen."))
     }
 
     @Test func saintMichaelChapletPrintsEverySalutation() {

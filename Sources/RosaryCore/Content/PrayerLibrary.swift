@@ -395,6 +395,41 @@ public enum PrayerLibrary {
             source: "Baltimore Catechism No. 1, 1885."
         ),
         LibraryPrayer(
+            id: "confiteor",
+            title: "The Confiteor",
+            category: .daily,
+            body: LayPrayers.confiteor,
+            source: "Baltimore Catechism No. 1, 1885."
+        ),
+        LibraryPrayer(
+            id: "my-lady-and-my-mother",
+            title: "To the Blessed Virgin",
+            category: .daily,
+            body: LayPrayers.myLadyAndMyMother,
+            source: "Baltimore Catechism No. 1, 1885. Printed there as To the Blessed Virgin."
+        ),
+        LibraryPrayer(
+            id: "saint-joseph-model",
+            title: "To Saint Joseph",
+            category: .daily,
+            body: LayPrayers.saintJosephModel,
+            source: "Baltimore Catechism No. 1, 1885. Printed there as To Saint Joseph."
+        ),
+        LibraryPrayer(
+            id: "god-bless-papa",
+            title: "God Bless Papa and Mamma",
+            category: .daily,
+            body: LayPrayers.godBlessPapa,
+            source: "Baltimore Catechism No. 1, 1885."
+        ),
+        LibraryPrayer(
+            id: "jesus-mary-joseph",
+            title: "Jesus, Mary, and Joseph",
+            category: .daily,
+            body: LayPrayers.jesusMaryJoseph,
+            source: "Baltimore Catechism No. 1, 1885. The evening commendation."
+        ),
+        LibraryPrayer(
             id: "o-salutaris",
             title: "O Salutaris",
             category: .daily,
@@ -793,6 +828,34 @@ public enum LayPrayers {
 
     public static let eternalRest = """
     Eternal rest give unto them, O Lord. And let perpetual light shine upon them. May they rest in peace. Amen.
+    """
+
+    public static let confiteor = """
+    I confess to Almighty God, to blessed Mary, ever Virgin, to blessed Michael the Archangel, to blessed John the Baptist, to the holy Apostles Peter and Paul, and to all the Saints, that I have sinned exceedingly in thought, word and deed, through my fault, through my fault, through my most grievous fault. Therefore, I beseech blessed Mary, ever Virgin, blessed Michael the Archangel, blessed John the Baptist, the holy Apostles Peter and Paul, and all the Saints, to pray to the Lord our God for me.
+
+    May the Almighty God have mercy on me, and forgive me my sins, and bring me to everlasting life. Amen.
+
+    May the Almighty and merciful Lord grant me pardon, absolution, and remission of all my sins. Amen.
+    """
+
+    public static let myLadyAndMyMother = """
+    My Lady, and my Mother, remember I am thine; protect and defend me as thy property and possession.
+    """
+
+    public static let saintJosephModel = """
+    Saint Joseph, model and patron of those who love the Sacred Heart of Jesus, pray for us.
+    """
+
+    public static let godBlessPapa = """
+    God bless Papa and Mamma. God bless Brothers and Sisters, and all my friends. God bless me, and make me a good child.
+    """
+
+    public static let jesusMaryJoseph = """
+    Jesus, Mary, Joseph, I give you my heart and my soul.
+    Jesus, Mary, Joseph, assist me in my last agony.
+    Jesus, Mary, Joseph, may I breathe forth my soul in peace with you.
+    O my God, bless my father, mother, and all my relatives and friends.
+    May the souls of the faithful departed, through the mercy of God, rest in peace. Amen.
     """
 
     public static let oSalutaris = """
