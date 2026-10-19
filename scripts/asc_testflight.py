@@ -437,15 +437,23 @@ def ensure_group_membership(token, groups, build_id, changes):
 def release(version, wait_seconds, require_ready):
     token = signing.jwt_from_env()
     app_id = find_app(token)
+    # The transporter can report "Upload succeeded" minutes before the builds
+    # API lists the new version. Use the same wait as processing, not a short cap.
     found = None
-    deadline = time.time() + min(180, wait_seconds)
-    while found is None and time.time() < deadline:
+    deadline = time.time() + wait_seconds
+    announced = False
+    while found is None:
         found = find_build(token, app_id, version)
-        if found is None:
-            time.sleep(15)
-    if found is None:
-        sys.stderr.write(f"Build {version} is not in App Store Connect yet.\n")
-        raise SystemExit(1)
+        if found is not None:
+            break
+        if not announced:
+            show(f"Build {version} is not in App Store Connect yet.")
+            announced = True
+        if time.time() >= deadline:
+            sys.stderr.write(f"Build {version} is not in App Store Connect yet.\n")
+            raise SystemExit(1)
+        time.sleep(20)
+        token = signing.jwt_from_env()
     build, detail = found
     build_id = build["id"]
     attributes = build.get("attributes") or {}
@@ -688,9 +696,113 @@ def self_test_membership_and_rejection():
             raise SystemExit("self-test missing membership line: " + line)
 
 
+def self_test_waits_for_build_record():
+    """A build missing from the builds API is polled until the wait expires."""
+    state = {"lookups": 0, "posts": 0}
+
+    def api(token, method, path, payload=None):
+        if path.startswith("/v1/apps?"):
+            return 200, json.dumps({
+                "data": [{"type": "apps", "id": "APP", "attributes": {"bundleId": BUNDLE_ID}}]
+            })
+        if path.startswith("/v1/builds?"):
+            state["lookups"] += 1
+            if state["lookups"] < 3:
+                return 200, json.dumps({"data": []})
+            return 200, json.dumps({
+                "data": [{
+                    "type": "builds",
+                    "id": "BUILD150",
+                    "attributes": {
+                        "version": "150",
+                        "processingState": "VALID",
+                        "usesNonExemptEncryption": False,
+                        "uploadedDate": "2026-10-19T16:29:00Z",
+                        "expired": False,
+                    },
+                }],
+                "included": [{
+                    "type": "buildBetaDetails",
+                    "attributes": {"internalBuildState": "IN_BETA_TESTING"},
+                }],
+            })
+        if path == "/v1/apps/APP/betaGroups?limit=50":
+            return 200, json.dumps({
+                "data": [{
+                    "type": "betaGroups",
+                    "id": "GROUP",
+                    "attributes": {
+                        "name": "Internal",
+                        "isInternalGroup": True,
+                        "hasAccessToAllBuilds": True,
+                    },
+                }]
+            })
+        if path.startswith("/v1/betaGroups/GROUP/builds"):
+            return 200, json.dumps({
+                "data": [{"type": "builds", "id": "BUILD150", "attributes": {"version": "150"}}]
+            })
+        if path.startswith("/v1/betaGroups/GROUP/betaTesters"):
+            return 200, json.dumps({"data": [{"id": "T", "attributes": {"state": "ACTIVE"}}]})
+        if path.startswith("/v1/apps/APP/buildUploads") or path.startswith("/v1/buildUploads"):
+            return 200, json.dumps({"data": []})
+        if method == "POST":
+            state["posts"] += 1
+            return 500, "{}"
+        return 404, "{}"
+
+    clock = {"now": 1_000_000.0}
+    real_time = time.time
+    real_sleep = time.sleep
+    real_api = signing.api
+    real_jwt = signing.jwt_from_env
+    time.time = lambda: clock["now"]
+    time.sleep = lambda seconds: clock.__setitem__("now", clock["now"] + seconds)
+    signing.api = api
+    signing.jwt_from_env = lambda: "token"
+    held_out = sys.stdout
+    held_err = sys.stderr
+    sys.stdout = captured = __import__("io").StringIO()
+    sys.stderr = errors = __import__("io").StringIO()
+    try:
+        release("150", wait_seconds=120, require_ready=True)
+        text = captured.getvalue()
+        captured.seek(0)
+        captured.truncate(0)
+        state["lookups"] = 0
+        try:
+            release("151", wait_seconds=50, require_ready=True)
+        except SystemExit as exc:
+            if exc.code != 1:
+                raise
+        else:
+            raise SystemExit("self-test expected a missing build to fail")
+        missing = errors.getvalue()
+    finally:
+        sys.stdout = held_out
+        sys.stderr = held_err
+        time.time = real_time
+        time.sleep = real_sleep
+        signing.api = real_api
+        signing.jwt_from_env = real_jwt
+    if state["posts"] != 0:
+        raise SystemExit("self-test posted while waiting for a build record")
+    if "Build 150 is not in App Store Connect yet." not in text:
+        raise SystemExit("self-test did not report the delayed build record")
+    if "final processingState=VALID" not in text:
+        raise SystemExit("self-test did not finish after the build record appeared")
+    if "skipped manual add to internal group Internal; hasAccessToAllBuilds=true" not in text:
+        raise SystemExit("self-test manually added a delayed build")
+    if "Build 151 is not in App Store Connect yet." not in missing:
+        raise SystemExit("self-test did not fail when the build record never appeared")
+    if state["lookups"] < 2:
+        raise SystemExit("self-test gave up on the first missing build lookup")
+
+
 def self_test():
     exercise_upload_matching()
     self_test_membership_and_rejection()
+    self_test_waits_for_build_record()
     state = {
         "encryption": None,
         "processing": "PROCESSING",
