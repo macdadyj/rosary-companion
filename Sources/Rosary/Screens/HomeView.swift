@@ -151,6 +151,8 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                     .uiTag(homeTag(mode))
+                    .accessibilityLabel(mode.shortTitle)
+                    .accessibilityHint(mode.summary)
                     .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
                 }
             }
