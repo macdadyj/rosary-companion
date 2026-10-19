@@ -3,8 +3,9 @@
 
 Sets usesNonExemptEncryption to false when App Store Connect has no answer,
 adds the build to each internal beta group, and waits until processing is
-VALID and the internal state is ready for testers. Does not print API keys,
-tokens, team ids, or tester addresses.
+VALID and the internal state is IN_BETA_TESTING. A 422 that says the internal
+group cannot be added yet is retried until the wait expires. Does not print
+API keys, tokens, team ids, or tester addresses.
 """
 
 import importlib.util
@@ -17,7 +18,6 @@ import urllib.parse
 from pathlib import Path
 
 BUNDLE_ID = "com.lojo.Rosary"
-READY_INTERNAL = ("IN_BETA_TESTING", "READY_FOR_BETA_TESTING")
 HERE = Path(__file__).resolve().parent
 
 
@@ -161,7 +161,17 @@ def group_contains_build(token, group_id, build_id):
     return False
 
 
+def refused_internal_group(status, body):
+    return status == 422 and "Cannot add internal group" in body
+
+
 def assign_build(token, group_id, build_id):
+    """Add the build to the group.
+
+    Returns "added", "already", or "later". "later" means App Store Connect
+    still refuses an internal group on this build, which happens for a few
+    minutes after processingState becomes VALID.
+    """
     payload = {"data": [{"type": "builds", "id": build_id}]}
     status, body = signing.api(
         token, "POST", f"/v1/betaGroups/{group_id}/relationships/builds", payload
@@ -170,8 +180,18 @@ def assign_build(token, group_id, build_id):
         return "added"
     if status == 409:
         return "already"
-    parsed(status, body, "assign build")
-    return "added"
+    if not refused_internal_group(status, body):
+        parsed(status, body, "assign build")
+        return "added"
+    inverse = {"data": [{"type": "betaGroups", "id": group_id}]}
+    status, body = signing.api(
+        token, "POST", f"/v1/builds/{build_id}/relationships/betaGroups", inverse
+    )
+    if status in (204, 200):
+        return "added"
+    if status == 409:
+        return "already"
+    return "later"
 
 
 def tester_count(token, group_id):
@@ -235,17 +255,59 @@ def set_encryption_false(token, build_id):
     parsed(status, body, "export compliance")
 
 
-def report_build_uploads(token, build_id):
-    """Print whether the upload record names ITMS-90626."""
-    status, body = signing.api(token, "GET", f"/v1/builds/{build_id}/buildUploads")
-    if status != 200:
-        show(f"buildUploads=unreadable status={status}")
+def upload_names_itms(body, version):
+    """True when this build's upload record names ITMS-90626.
+
+    A page of recent uploads can mention the code on an older build. That
+    does not fail the build being released.
+    """
+    if "ITMS-90626" not in body:
+        return False
+    try:
+        data = json.loads(body)
+    except json.JSONDecodeError:
+        return True
+    items = data.get("data")
+    if not isinstance(items, list) or not items:
+        return True
+    versioned = []
+    for item in items:
+        attributes = item.get("attributes") or {}
+        bundle_version = attributes.get("cfBundleVersion")
+        if bundle_version is None:
+            continue
+        versioned.append((str(bundle_version), item))
+    if not versioned:
+        return True
+    for bundle_version, item in versioned:
+        if bundle_version == str(version) and "ITMS-90626" in json.dumps(item):
+            return True
+    return False
+
+
+def report_build_uploads(token, app_id, version):
+    """Print whether a recent upload record names ITMS-90626.
+
+    GET /v1/builds/{id}/buildUploads is not a relationship App Store Connect
+    exposes (it answers 404). The app's upload list is the readable record.
+    """
+    paths = (
+        f"/v1/apps/{app_id}/buildUploads?limit=20",
+        "/v1/buildUploads?limit=20",
+    )
+    last_status = None
+    for path in paths:
+        status, body = signing.api(token, "GET", path)
+        last_status = status
+        if status != 200:
+            continue
+        if upload_names_itms(body, version):
+            show("buildUploads ITMS-90626=present")
+            sys.stderr.write("ITMS-90626 reported on the build upload.\n")
+            raise SystemExit(1)
+        show("buildUploads ITMS-90626=absent")
         return
-    if "ITMS-90626" in body:
-        show("buildUploads ITMS-90626=present")
-        sys.stderr.write("ITMS-90626 reported on the build upload.\n")
-        raise SystemExit(1)
-    show("buildUploads ITMS-90626=absent")
+    show(f"buildUploads=unreadable status={last_status}")
 
 
 def report_found(version, attributes, detail, group_names):
@@ -289,6 +351,10 @@ def membership_before_change(token, groups, build_id):
 
 
 def ensure_group_membership(token, groups, build_id, changes):
+    """Assign every internal group. False while any group still refuses."""
+    if not groups:
+        return False
+    ready = True
     for group in groups:
         name = (group.get("attributes") or {}).get("name") or "internal"
         contained = group_contains_build(token, group["id"], build_id)
@@ -299,6 +365,10 @@ def ensure_group_membership(token, groups, build_id, changes):
                 show(line)
             continue
         result = assign_build(token, group["id"], build_id)
+        if result == "later":
+            show(f"internal group {name} is not ready for this build yet")
+            ready = False
+            continue
         if result == "already":
             line = f"build already in internal group {name}"
         else:
@@ -306,6 +376,7 @@ def ensure_group_membership(token, groups, build_id, changes):
         if line not in changes:
             changes.append(line)
             show(line)
+    return ready
 
 
 def release(version, wait_seconds, require_ready):
@@ -327,7 +398,7 @@ def release(version, wait_seconds, require_ready):
         detail = refresh_detail(token, build_id)
     groups, created = ensure_internal_group(token, app_id)
     report_found(version, attributes, detail, membership_before_change(token, groups, build_id))
-    report_build_uploads(token, build_id)
+    report_build_uploads(token, app_id, version)
     if created:
         show("created internal group Internal")
 
@@ -348,7 +419,7 @@ def release(version, wait_seconds, require_ready):
                 changes.append("set usesNonExemptEncryption=false")
                 show("set usesNonExemptEncryption=false")
         groups, _created = ensure_internal_group(token, app_id)
-        ensure_group_membership(token, groups, build_id, changes)
+        ready = ensure_group_membership(token, groups, build_id, changes)
         for group in groups:
             name = (group.get("attributes") or {}).get("name") or "internal"
             linked = link_internal_testers(token, group["id"])
@@ -359,7 +430,7 @@ def release(version, wait_seconds, require_ready):
                     show(line)
         processing = attributes.get("processingState")
         internal = detail.get("internalBuildState")
-        if processing == "VALID" and internal in READY_INTERNAL:
+        if processing == "VALID" and internal == "IN_BETA_TESTING" and ready:
             show("final processingState=" + value_text(processing))
             show("final internalBuildState=" + value_text(internal))
             if not changes:
@@ -410,7 +481,25 @@ def prepare_key():
     return handle.name
 
 
+def exercise_upload_matching():
+    if upload_names_itms('{"data": []}', "136"):
+        raise SystemExit("empty uploads looked like ITMS-90626")
+    if not upload_names_itms("prefix ITMS-90626 suffix", "136"):
+        raise SystemExit("plain ITMS-90626 text was ignored")
+    other = json.dumps({
+        "data": [{"attributes": {"cfBundleVersion": "100"}, "detail": "ITMS-90626"}]
+    })
+    if upload_names_itms(other, "136"):
+        raise SystemExit("an older upload's ITMS-90626 failed this build")
+    same = json.dumps({
+        "data": [{"attributes": {"cfBundleVersion": "136"}, "detail": "ITMS-90626"}]
+    })
+    if not upload_names_itms(same, "136"):
+        raise SystemExit("this build's ITMS-90626 was ignored")
+
+
 def self_test():
+    exercise_upload_matching()
     state = {
         "encryption": None,
         "processing": "PROCESSING",
@@ -483,9 +572,27 @@ def self_test():
             state["internal"] = "READY_FOR_BETA_TESTING"
             return 200, json.dumps({"data": {"type": "builds", "id": "BUILD"}})
         if path == "/v1/betaGroups/GROUP/relationships/builds" and method == "POST":
+            if state.get("assign_refusals", 0) > 0:
+                state["assign_refusals"] -= 1
+                return 422, json.dumps({
+                    "errors": [{
+                        "status": "422",
+                        "code": "ENTITY_UNPROCESSABLE",
+                        "title": "Builds cannot be assigned to this internal group.",
+                        "detail": "Cannot add internal group to a build.",
+                    }]
+                })
             state["assigned"].add("GROUP")
             state["internal"] = "IN_BETA_TESTING"
             return 204, ""
+        if path == "/v1/builds/BUILD/relationships/betaGroups" and method == "POST":
+            state["inverse_posts"] = state.get("inverse_posts", 0) + 1
+            return 422, json.dumps({
+                "errors": [{
+                    "status": "422",
+                    "detail": "Cannot add internal group to a build.",
+                }]
+            })
         if path.startswith("/v1/betaGroups/GROUP/betaTesters"):
             testers = [{"id": "T", "attributes": {"state": "ACTIVE"}}] if state["testers"] else []
             return 200, json.dumps({"data": testers})
@@ -501,7 +608,9 @@ def self_test():
         if path == "/v1/betaTesters" and method == "POST":
             state["testers"].add("USER")
             return 201, json.dumps({"data": {"type": "betaTesters", "id": "T"}})
-        if path == "/v1/builds/BUILD/buildUploads":
+        if path.startswith("/v1/apps/APP/buildUploads"):
+            return 200, json.dumps({"data": []})
+        if path.startswith("/v1/buildUploads"):
             return 200, json.dumps({"data": []})
         if path == "/v1/builds/BUILD/buildBetaDetail":
             return 200, json.dumps({
@@ -539,8 +648,28 @@ def self_test():
         state["ticks"] = 0
         state["hide_group_builds"] = True
         state["used_forbidden_read"] = False
+        state["assign_refusals"] = 0
         release("164", wait_seconds=60, require_ready=True)
         hidden = captured.getvalue()
+        captured.seek(0)
+        captured.truncate(0)
+        state["encryption"] = None
+        state["processing"] = "PROCESSING"
+        state["internal"] = "MISSING_EXPORT_COMPLIANCE"
+        state["groups"] = [{
+            "type": "betaGroups",
+            "id": "GROUP",
+            "attributes": {"name": "Internal", "isInternalGroup": True},
+        }]
+        state["assigned"] = set()
+        state["testers"] = {"USER"}
+        state["ticks"] = 0
+        state["hide_group_builds"] = False
+        state["used_forbidden_read"] = False
+        state["assign_refusals"] = 2
+        state["inverse_posts"] = 0
+        release("164", wait_seconds=60, require_ready=True)
+        retried = captured.getvalue()
     finally:
         sys.stdout = held
         signing.api = real_api
@@ -580,6 +709,17 @@ def self_test():
             raise SystemExit("self-test missing after unreadable groups: " + line)
     if "owner@example.com" in hidden:
         raise SystemExit("self-test printed a tester address")
+    for line in (
+        "internal group Internal is not ready for this build yet",
+        "added build to internal group Internal",
+        "final processingState=VALID",
+        "final internalBuildState=IN_BETA_TESTING",
+        "buildUploads ITMS-90626=absent",
+    ):
+        if line not in retried:
+            raise SystemExit("self-test missing after a refused group: " + line)
+    if state.get("inverse_posts", 0) < 1 or "GROUP" not in state["assigned"]:
+        raise SystemExit("self-test did not retry group assignment")
     show("asc testflight: ok")
 
 
