@@ -92,13 +92,21 @@ struct DevotionsView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(PrayerCategory.allCases) { item in
-                    Button(item.title) { category = item }
-                        .font(.subheadline.weight(category == item ? .semibold : .regular))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(category == item ? Theme.gold : Theme.raisedSurface, in: Capsule())
-                        .foregroundStyle(category == item ? Theme.background : Theme.ink)
-                        .uiTag(item == .ourLady ? UITag.libraryOurLady : "library.category.\(item.rawValue)")
+                    let selected = category == item
+                    Button {
+                        category = item
+                    } label: {
+                        Text(item.chipTitle)
+                            .font(.subheadline.weight(selected ? .semibold : .regular))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(selected ? Theme.gold : Theme.raisedSurface, in: Capsule())
+                            .foregroundStyle(selected ? Theme.background : Theme.ink)
+                    }
+                    .buttonStyle(.plain)
+                    .uiTag(item == .ourLady ? UITag.libraryOurLady : "library.category.\(item.rawValue)")
+                    .accessibilityLabel(item.title)
+                    .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
                 }
             }
         }
