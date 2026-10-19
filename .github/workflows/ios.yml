@@ -188,6 +188,20 @@ jobs:
             run_tests
           fi
 
+  # Read-only. Confirms an existing build is on the internal group and does not upload.
+  testflight-membership:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Confirm build 136 is in the internal group
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: python3 scripts/asc_testflight.py membership --build 136
+
   # Upload waits for the unit tests and for both UI suites. It does not run on pull requests.
   testflight:
     needs: [unit, phone-ui, watch-ui]
@@ -196,7 +210,9 @@ jobs:
       group: testflight-${{ github.repository }}
       cancel-in-progress: false
     runs-on: macos-26
-    timeout-minutes: 60
+    timeout-minutes: 90
+    env:
+      SIGNING_KEYCHAIN: ${{ runner.temp }}/rosary-signing.keychain-db
     steps:
       - uses: actions/checkout@v4
 
@@ -237,4 +253,10 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
           DEVELOPMENT_TEAM: ${{ secrets.DEVELOPMENT_TEAM }}
+          DIST_CERT_P12: ${{ secrets.DIST_CERT_P12 }}
+          DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
         run: scripts/archive-upload.sh
+
+      - name: Delete temporary signing keychain
+        if: always()
+        run: scripts/archive-upload.sh --cleanup-keychain

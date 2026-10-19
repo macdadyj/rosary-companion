@@ -38,7 +38,7 @@ Use these exact ids. The free-account `XTL-` prefix cannot be registered for App
 
 ### GitHub secrets
 
-On `macdadyj/rosary-companion`, open **Settings → Secrets and variables → Actions** and add the same four secrets as Watch Remote. This agent cannot copy secret values.
+On `macdadyj/rosary-companion`, open **Settings → Secrets and variables → Actions** and add these secrets. This agent cannot copy secret values.
 
 | Secret | What it is |
 | --- | --- |
@@ -46,6 +46,10 @@ On `macdadyj/rosary-companion`, open **Settings → Secrets and variables → Ac
 | `ASC_ISSUER_ID` | Issuer id |
 | `ASC_KEY_P8` | The `.p8` file, as PEM or base64 |
 | `DEVELOPMENT_TEAM` | `N9H4648NB9`, with no `XTL-` prefix |
+| `DIST_CERT_P12` | The shared iOS Distribution certificate, base64 of the `.p12` |
+| `DIST_CERT_PASSWORD` | Password for that `.p12` |
+
+The upload imports that certificate into a temporary keychain and signs manually. It does not create or revoke distribution certificates. App Store profiles for the three bundle ids are fetched or created for certificate `VJ5MXTN7UT`. The internal TestFlight group has access to all builds, so the workflow does not manually add a build to that group. It checks membership with the group's build list.
 
 ### Billing
 
@@ -57,6 +61,7 @@ Open GitHub **Settings → Billing and plans** and raise the Actions spending li
 2. `scripts/archive-upload.sh --self-test` (key decoding and build-number math, no secrets printed).
 3. Phone UI tests that open every tab and tap the prayer, devotion, intention, saint, and settings controls.
 4. Watch UI tests that tap Bead, Back, and Reset.
-5. On a push to `main` only, after those jobs are green: archive `com.lojo.Rosary` with the widget and the watch app embedded, and upload it.
+5. A read-only check that build 136 is listed on the internal TestFlight group.
+6. On a push to `main` only, after the test jobs are green: archive `com.lojo.Rosary` with the widget and the watch app embedded, and upload it. The temporary keychain is deleted afterward.
 
 Pull requests run the tests and do not upload.
