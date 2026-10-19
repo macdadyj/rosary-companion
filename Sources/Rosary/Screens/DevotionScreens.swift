@@ -93,19 +93,25 @@ struct DevotionsView: View {
             HStack(spacing: 8) {
                 ForEach(PrayerCategory.allCases) { item in
                     let selected = category == item
+                    let count = prayers.filter { $0.category == item }.count
                     Button {
                         category = item
                     } label: {
-                        Text(item.chipTitle)
-                            .font(.subheadline.weight(selected ? .semibold : .regular))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(selected ? Theme.gold : Theme.raisedSurface, in: Capsule())
-                            .foregroundStyle(selected ? Theme.background : Theme.ink)
+                        HStack(spacing: 6) {
+                            Text(item.chipTitle)
+                            Text("\(count)")
+                                .font(.caption.weight(.semibold))
+                        }
+                        .font(.subheadline.weight(selected ? .semibold : .regular))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(selected ? Theme.gold : Theme.raisedSurface, in: Capsule())
+                        .foregroundStyle(selected ? Theme.background : Theme.ink)
                     }
                     .buttonStyle(.plain)
                     .uiTag(item == .ourLady ? UITag.libraryOurLady : "library.category.\(item.rawValue)")
-                    .accessibilityLabel(item.title)
+                    .accessibilityLabel("\(item.title), \(count == 1 ? "1 prayer" : "\(count) prayers")")
+                    .accessibilityHint(selected ? "Showing these prayers" : "Show these prayers")
                     .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
                 }
             }
