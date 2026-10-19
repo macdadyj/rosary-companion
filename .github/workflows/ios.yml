@@ -169,16 +169,24 @@ jobs:
           print(chosen)
           PY
           )"
-          xcodebuild test \
-            -project Rosary.xcodeproj \
-            -scheme RosaryWatch \
-            -destination "platform=watchOS Simulator,id=${UDID}" \
-            -clonedSourcePackagesDirPath build/SourcePackages \
-            -derivedDataPath build/WatchDerivedData \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="-" \
-            DEVELOPMENT_TEAM=""
+          run_tests() {
+            xcodebuild test \
+              -project Rosary.xcodeproj \
+              -scheme RosaryWatch \
+              -destination "platform=watchOS Simulator,id=${UDID}" \
+              -clonedSourcePackagesDirPath build/SourcePackages \
+              -derivedDataPath build/WatchDerivedData \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGN_IDENTITY="-" \
+              DEVELOPMENT_TEAM=""
+          }
+          if ! run_tests; then
+            echo "Watch UI tests did not finish. Shutting down the simulator and trying once more."
+            xcrun simctl shutdown "${UDID}" || true
+            sleep 5
+            run_tests
+          fi
 
   # Upload waits for the unit tests and for both UI suites. It does not run on pull requests.
   testflight:
