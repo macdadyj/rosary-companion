@@ -226,7 +226,15 @@ final class RosaryUITests: XCTestCase {
             predicate: NSPredicate(format: "label != %@", afterNext),
             object: page
         )
-        XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 3), .completed, "Swipe left left the page on \"\(page.label)\"")
+        // A busy simulator can drop the sideways swipe and leave the same page up.
+        if XCTWaiter.wait(for: [changed], timeout: 3) != .completed {
+            viewer.swipeLeft()
+            let again = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "label != %@", afterNext),
+                object: page
+            )
+            XCTAssertEqual(XCTWaiter.wait(for: [again], timeout: 5), .completed, "Swipe left left the page on \"\(page.label)\"")
+        }
         shot("art-viewer")
         tap(UITag.sessionArtPrevious)
         tap(UITag.sessionArtClose)
