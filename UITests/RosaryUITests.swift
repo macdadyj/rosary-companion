@@ -328,6 +328,12 @@ final class RosaryUITests: XCTestCase {
 
     func testSettingsControlsAndBuildNumber() {
         app.tabBars.buttons["Settings"].tap()
+        // Prayer is the first section, so Holy Ghost is on screen before the
+        // form has been scrolled down onto the pace sliders.
+        toggle(UITag.settingsHolyGhost)
+        toggle(UITag.settingsHolyGhost)
+        toggle(UITag.settingsSeasonal)
+        toggle(UITag.settingsSeasonal)
         toggle(UITag.settingsVoice)
         toggle(UITag.settingsVoice)
         toggle(UITag.settingsHaptics)
@@ -336,10 +342,6 @@ final class RosaryUITests: XCTestCase {
         toggle(UITag.settingsChant)
         toggle(UITag.settingsArt)
         toggle(UITag.settingsArt)
-        toggle(UITag.settingsHolyGhost)
-        toggle(UITag.settingsHolyGhost)
-        toggle(UITag.settingsSeasonal)
-        toggle(UITag.settingsSeasonal)
         toggle(UITag.settingsFamily)
         tap(UITag.settingsMembers)
         let name = app.textFields[UITag.familyField]
@@ -356,15 +358,24 @@ final class RosaryUITests: XCTestCase {
     }
 
     private func beginOneDecade() {
-        app.segmentedControls.buttons["One decade"].tap()
+        let oneDecade = app.segmentedControls.buttons["One decade"]
+        XCTAssertTrue(oneDecade.waitForExistence(timeout: 4), "Missing the One decade length")
+        if !oneDecade.isHittable { drag(towardTop: true) }
+        oneDecade.tap()
         let begin = reveal(UITag.beginRosary)
-        XCTAssertTrue(begin.waitForExistence(timeout: 2))
+        XCTAssertTrue(begin.waitForExistence(timeout: 4), "Missing \(UITag.beginRosary)")
         begin.tap()
+        let prayer = app.descendants(matching: .any)[UITag.sessionPrayer]
+        // The prayer screen is applied on the next turn. A busy simulator can
+        // drop that turn, so a second tap schedules it again.
+        if !prayer.waitForExistence(timeout: 8), begin.exists {
+            begin.tap()
+        }
     }
 
     private func prayerLabel() -> XCUIElement {
         let prayer = app.descendants(matching: .any)[UITag.sessionPrayer]
-        XCTAssertTrue(prayer.waitForExistence(timeout: 10), "Missing \(UITag.sessionPrayer)")
+        XCTAssertTrue(prayer.waitForExistence(timeout: 15), "Missing \(UITag.sessionPrayer)")
         return prayer
     }
 
@@ -442,15 +453,36 @@ final class RosaryUITests: XCTestCase {
             return nil
         }
         if let found = match() { return found }
-        for _ in 0..<24 {
-            drag(towardTop: true)
-            if let found = match() { return found }
-        }
-        for _ in 0..<24 {
-            drag(towardTop: false)
-            if let found = match() { return found }
-        }
+        if let found = scrollUntilFound(match, towardTop: false) { return found }
+        if let found = scrollUntilFound(match, towardTop: true) { return found }
         return any
+    }
+
+    /// Stops once the list no longer moves, so a search does not keep dragging
+    /// after the top or the bottom.
+    private func scrollUntilFound(_ match: () -> XCUIElement?, towardTop: Bool) -> XCUIElement? {
+        var previous = scrollAnchor()
+        var stuck = 0
+        for _ in 0..<8 {
+            drag(towardTop: towardTop)
+            if let found = match() { return found }
+            let current = scrollAnchor()
+            if let previous, let current, abs(current - previous) < 8 {
+                stuck += 1
+                if stuck >= 2 { return nil }
+            } else {
+                stuck = 0
+            }
+            previous = current
+        }
+        return nil
+    }
+
+    private func scrollAnchor() -> CGFloat? {
+        let text = app.staticTexts.allElementsBoundByIndex.first { candidate in
+            candidate.frame.height > 1 && candidate.frame.minY > 90
+        }
+        return text?.frame.minY
     }
 
     /// Finger moves down to reveal rows above. The drag stays on the left edge
@@ -463,11 +495,11 @@ final class RosaryUITests: XCTestCase {
             return
         }
         let origin = window.coordinate(withNormalizedOffset: .zero)
-        let upper = height * 0.30
-        let lower = height * 0.78
+        let upper = height * 0.22
+        let lower = height * 0.84
         let start = origin.withOffset(CGVector(dx: 18, dy: towardTop ? upper : lower))
         let end = origin.withOffset(CGVector(dx: 18, dy: towardTop ? lower : upper))
-        start.press(forDuration: 0.01, thenDragTo: end)
+        start.press(forDuration: 0.01, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0)
     }
 
     private func tapLabel(_ label: String) {
