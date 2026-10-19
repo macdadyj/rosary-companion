@@ -235,6 +235,19 @@ def set_encryption_false(token, build_id):
     parsed(status, body, "export compliance")
 
 
+def report_build_uploads(token, build_id):
+    """Print whether the upload record names ITMS-90626."""
+    status, body = signing.api(token, "GET", f"/v1/builds/{build_id}/buildUploads")
+    if status != 200:
+        show(f"buildUploads=unreadable status={status}")
+        return
+    if "ITMS-90626" in body:
+        show("buildUploads ITMS-90626=present")
+        sys.stderr.write("ITMS-90626 reported on the build upload.\n")
+        raise SystemExit(1)
+    show("buildUploads ITMS-90626=absent")
+
+
 def report_found(version, attributes, detail, group_names):
     show(f"found build {version}")
     show("processingState=" + value_text(attributes.get("processingState")))
@@ -314,6 +327,7 @@ def release(version, wait_seconds, require_ready):
         detail = refresh_detail(token, build_id)
     groups, created = ensure_internal_group(token, app_id)
     report_found(version, attributes, detail, membership_before_change(token, groups, build_id))
+    report_build_uploads(token, build_id)
     if created:
         show("created internal group Internal")
 
@@ -487,6 +501,8 @@ def self_test():
         if path == "/v1/betaTesters" and method == "POST":
             state["testers"].add("USER")
             return 201, json.dumps({"data": {"type": "betaTesters", "id": "T"}})
+        if path == "/v1/builds/BUILD/buildUploads":
+            return 200, json.dumps({"data": []})
         if path == "/v1/builds/BUILD/buildBetaDetail":
             return 200, json.dumps({
                 "data": {
@@ -543,6 +559,7 @@ def self_test():
         "linked 1 internal testers to Internal",
         "final processingState=VALID",
         "final internalBuildState=IN_BETA_TESTING",
+        "buildUploads ITMS-90626=absent",
     )
     for line in required:
         if line not in text:

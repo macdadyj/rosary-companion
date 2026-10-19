@@ -77,6 +77,27 @@ struct PrayerLibraryTests {
         #expect(PrayerCategory.protection.title == "Saint Michael and protection")
     }
 
+    @Test func addedPrayersAreComplete() throws {
+        let content = try PrayerContent.bundled()
+        let prayers = PrayerLibrary.catalog(book: PrayerBook(), content: content)
+        let ids = prayers.map(\.id)
+        #expect(Set(ids).count == ids.count)
+        let faith = try #require(prayers.first { $0.id == "act-of-faith" })
+        #expect(faith.body.contains("who canst neither deceive nor be deceived"))
+        #expect(!faith.body.contains("Amen"))
+        let depths = try #require(prayers.first { $0.id == "de-profundis" })
+        #expect(depths.body.contains("Out of the depths I have cried to thee, O Lord"))
+        #expect(depths.body.contains("8 And he shall redeem Israel from all his iniquities."))
+        let benedictus = try #require(prayers.first { $0.id == "benedictus" })
+        #expect(benedictus.body.contains("68 Blessed be the Lord God of Israel"))
+        #expect(benedictus.body.contains("79 To enlighten them that sit in darkness"))
+        let creed = try #require(prayers.first { $0.id == "apostlesCreed" })
+        #expect(creed.body.contains("life everlasting"))
+        let tantum = try #require(prayers.first { $0.id == "tantum-ergo" })
+        #expect(tantum.body.contains("Genitori, Genitoque"))
+        #expect(tantum.body.contains("Panem de coelo praestitisti eis"))
+    }
+
     @Test func saintMichaelChapletPrintsEverySalutation() {
         let plan = DevotionCatalog.stMichaelChaplet(book: PrayerBook())
         let text = plan.fullText

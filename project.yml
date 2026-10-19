@@ -29,6 +29,7 @@ targets:
     sources:
       - path: Sources/Rosary
       - path: Config/Assets.xcassets
+      - path: Config/PrivacyInfo.xcprivacy
     dependencies:
       - package: RosaryCore
         product: RosaryCore
@@ -53,6 +54,7 @@ targets:
     platform: iOS
     sources:
       - path: Sources/RosaryWidget
+      - path: Config/PrivacyInfo.xcprivacy
     dependencies:
       - package: RosaryCore
         product: RosaryCore
@@ -71,6 +73,7 @@ targets:
     sources:
       - path: Sources/RosaryWatch
       - path: Config/WatchAssets.xcassets
+      - path: Config/PrivacyInfo.xcprivacy
     dependencies:
       - package: RosaryCore
         product: RosaryCore
