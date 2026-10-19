@@ -211,8 +211,6 @@ jobs:
       cancel-in-progress: false
     runs-on: macos-26
     timeout-minutes: 90
-    env:
-      SIGNING_KEYCHAIN: ${{ runner.temp }}/rosary-signing.keychain-db
     steps:
       - uses: actions/checkout@v4
 
