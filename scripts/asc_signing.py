@@ -2,9 +2,11 @@
 """Create an iOS Distribution certificate and App Store profiles.
 
 Uses the App Store Connect REST API (ES256 JWT, audience appstoreconnect-v1).
-Does not print private keys, API tokens, or certificate passwords. The only
-certificate it ever revokes is the one it created itself in the same run (the
-id recorded in the run's signing manifest), and only in the cleanup step.
+Does not print private keys, API tokens, or certificate passwords. Cleanup
+revokes only the certificate id recorded in this run's signing manifest.
+When Apple refuses another distribution certificate, the script also revokes
+one earlier certificate whose name is Rosary Distribution, the name on this
+script's own certificate requests. Every other certificate is left in place.
 """
 
 import base64
@@ -24,6 +26,8 @@ from pathlib import Path
 API_ROOT = "https://api.appstoreconnect.apple.com"
 PROFILE_TYPE = "IOS_APP_STORE"
 CERTIFICATE_TYPE = "IOS_DISTRIBUTION"
+# Must match the CSR common name in archive-upload.sh.
+OWN_CERTIFICATE_NAME = "Rosary Distribution"
 TARGETS = (
     ("com.lojo.Rosary", "Rosary App Store"),
     ("com.lojo.Rosary.widget", "RosaryWidget App Store"),
@@ -246,21 +250,76 @@ def delete_profile(token, profile_id):
     stop_api(status, body, "profile delete")
 
 
+def list_distribution_certificates(token):
+    query = urllib.parse.urlencode({
+        "filter[certificateType]": CERTIFICATE_TYPE,
+        "limit": "20",
+    })
+    status, body = api(token, "GET", "/v1/certificates?" + query)
+    parsed = parse_data(status, body, "certificate list")
+    return parsed.get("data") or []
+
+
+def certificate_label(item):
+    attributes = item.get("attributes") or {}
+    name = attributes.get("name") or "none"
+    display = attributes.get("displayName") or "none"
+    expires = attributes.get("expirationDate") or "none"
+    return f"name={name} displayName={display} expiration={expires}"
+
+
+def is_script_certificate(item):
+    attributes = item.get("attributes") or {}
+    for key in ("name", "displayName"):
+        value = attributes.get(key) or ""
+        if value == OWN_CERTIFICATE_NAME or value.endswith(": " + OWN_CERTIFICATE_NAME):
+            return True
+    return False
+
+
+def free_distribution_slot(token):
+    """Revoke one earlier Rosary Distribution certificate so a new one can be issued."""
+    items = list_distribution_certificates(token)
+    if not items:
+        print("distribution certificates=none", flush=True)
+    for item in items:
+        print("distribution certificate " + certificate_label(item), flush=True)
+    own = [item for item in items if is_script_certificate(item) and item.get("id")]
+    own.sort(key=lambda item: (item.get("attributes") or {}).get("expirationDate") or "")
+    if not own:
+        print(
+            "No Rosary Distribution certificate to revoke. Left every other certificate in place.",
+            flush=True,
+        )
+        return False
+    certificate_id = own[0]["id"]
+    print("Revoking an earlier Rosary Distribution certificate so this run can sign.", flush=True)
+    status, body = api(token, "DELETE", "/v1/certificates/" + urllib.parse.quote(certificate_id))
+    if status in (204, 404):
+        print("Revoked an earlier Rosary Distribution certificate.", flush=True)
+        return True
+    stop_api(status, body, "certificate revoke")
+    return False
+
+
+def certificate_payload(csr_text):
+    return {
+        "data": {
+            "type": "certificates",
+            "attributes": {
+                "certificateType": CERTIFICATE_TYPE,
+                "csrContent": csr_text,
+            },
+        }
+    }
+
+
 def create_certificate(token, csr_text):
-    status, body = api(
-        token,
-        "POST",
-        "/v1/certificates",
-        {
-            "data": {
-                "type": "certificates",
-                "attributes": {
-                    "certificateType": CERTIFICATE_TYPE,
-                    "csrContent": csr_text,
-                },
-            }
-        },
-    )
+    payload = certificate_payload(csr_text)
+    status, body = api(token, "POST", "/v1/certificates", payload)
+    if status == 409 and certificate_limit(body):
+        if free_distribution_slot(token):
+            status, body = api(token, "POST", "/v1/certificates", payload)
     parsed = parse_data(status, body, "certificate")
     attributes = parsed["data"].get("attributes", {})
     content = attributes.get("certificateContent")
@@ -520,6 +579,7 @@ def self_test():
     export_roundtrip()
     forbidden_roundtrip()
     cleanup_roundtrip()
+    certificate_limit_retry_roundtrip()
     print("asc signing ok")
 
 
@@ -741,6 +801,100 @@ def cleanup_roundtrip():
         finally:
             globals()["api"], globals()["jwt_from_env"] = real_api, real_jwt
             os.environ.pop("SIGNING_MANIFEST", None)
+
+
+def certificate_limit_retry_roundtrip():
+    calls = []
+    real_api = globals()["api"]
+
+    def fake_api(token, method, path, payload=None):
+        calls.append((method, path))
+        posts = [item for item in calls if item == ("POST", "/v1/certificates")]
+        if method == "POST" and len(posts) == 1:
+            return 409, json.dumps({
+                "errors": [{
+                    "detail": (
+                        "You already have a current iOS Distribution certificate "
+                        "or a pending certificate request."
+                    ),
+                }]
+            })
+        if method == "GET" and path.startswith("/v1/certificates?"):
+            return 200, json.dumps({
+                "data": [
+                    {
+                        "id": "OTHER",
+                        "attributes": {
+                            "name": "Apple Distribution",
+                            "displayName": "Apple Distribution: Someone",
+                            "expirationDate": "2027-01-01T00:00:00Z",
+                        },
+                    },
+                    {
+                        "id": "OURS",
+                        "attributes": {
+                            "name": "Rosary Distribution",
+                            "displayName": "Rosary Distribution",
+                            "expirationDate": "2026-11-01T00:00:00Z",
+                        },
+                    },
+                ]
+            })
+        if method == "DELETE" and path == "/v1/certificates/OURS":
+            return 204, ""
+        if method == "POST":
+            return 201, json.dumps({
+                "data": {
+                    "id": "NEW",
+                    "attributes": {
+                        "certificateContent": base64.b64encode(b"der").decode(),
+                    },
+                }
+            })
+        return 500, "{}"
+
+    globals()["api"] = fake_api
+    try:
+        certificate_id, der = create_certificate("token", "csr")
+    finally:
+        globals()["api"] = real_api
+    if certificate_id != "NEW" or der != b"der":
+        raise SystemExit("certificate retry did not issue a new certificate")
+    if ("DELETE", "/v1/certificates/OTHER") in calls:
+        raise SystemExit("certificate retry revoked a certificate it did not create")
+    if ("DELETE", "/v1/certificates/OURS") not in calls:
+        raise SystemExit("certificate retry left the earlier Rosary Distribution certificate")
+
+    calls.clear()
+
+    def foreign_only(token, method, path, payload=None):
+        calls.append((method, path))
+        if method == "POST":
+            return 409, "You already have a current iOS Distribution certificate."
+        if method == "GET":
+            return 200, json.dumps({
+                "data": [{
+                    "id": "OTHER",
+                    "attributes": {"name": "Apple Distribution", "displayName": "Kept"},
+                }]
+            })
+        return 204, ""
+
+    globals()["api"] = foreign_only
+    held = sys.stderr
+    sys.stderr = io.StringIO()
+    try:
+        try:
+            create_certificate("token", "csr")
+        except SystemExit:
+            pass
+        else:
+            raise SystemExit("a foreign certificate was not left in place")
+    finally:
+        sys.stderr = held
+        globals()["api"] = real_api
+    if any(method == "DELETE" for method, _path in calls):
+        raise SystemExit("certificate retry revoked a certificate with another name")
 
 
 def main():
