@@ -77,6 +77,9 @@ public enum PrayerLibrary {
     public static func catalog(book: PrayerBook = PrayerBook(), content: PrayerContent? = nil) -> [LibraryPrayer] {
         var prayers = ourLady(book: book) + protection + litanies + daily + byzantine
         prayers.append(contentsOf: chaplets(book: book, content: content))
+        prayers.append(contentsOf: rosaryPrayers(book: book))
+        prayers.append(contentsOf: catechism)
+        prayers.append(contentsOf: scriptureCanticles)
         if let hours = content?.hours {
             prayers.append(LibraryPrayer(
                 id: "angelus",
@@ -324,6 +327,110 @@ public enum PrayerLibrary {
             category: .byzantine,
             body: LayPrayers.theotokosKontakion,
             source: "Traditional English of the kontakion. The full Akathist, all twenty-four stanzas, is a separate hymn and is not printed here."
+        ),
+    ]
+
+    private static func rosaryPrayers(book: PrayerBook) -> [LibraryPrayer] {
+        let ids: [PrayerID] = [.signOfTheCross, .apostlesCreed, .ourFather, .hailMary, .gloryBe]
+        return ids.map { id in
+            let text = book.text(for: id)
+            return LibraryPrayer(
+                id: id.rawValue,
+                title: text.title,
+                category: .daily,
+                body: text.full,
+                source: "Traditional English, the same text used while praying the Rosary."
+            )
+        }
+    }
+
+    private static let catechism: [LibraryPrayer] = [
+        LibraryPrayer(
+            id: "act-of-faith",
+            title: "Act of Faith",
+            category: .daily,
+            body: LayPrayers.actOfFaith,
+            source: "Baltimore Catechism No. 1, 1885."
+        ),
+        LibraryPrayer(
+            id: "act-of-hope",
+            title: "Act of Hope",
+            category: .daily,
+            body: LayPrayers.actOfHope,
+            source: "Baltimore Catechism No. 1, 1885."
+        ),
+        LibraryPrayer(
+            id: "act-of-love",
+            title: "Act of Love",
+            category: .daily,
+            body: LayPrayers.actOfLove,
+            source: "Baltimore Catechism No. 1, 1885. Printed there as An Act of Love."
+        ),
+        LibraryPrayer(
+            id: "guardian-angel",
+            title: "Prayer to the Guardian Angel",
+            category: .daily,
+            body: LayPrayers.guardianAngel,
+            source: "Baltimore Catechism No. 1, 1885."
+        ),
+        LibraryPrayer(
+            id: "grace-before-meals",
+            title: "Grace before Meals",
+            category: .daily,
+            body: LayPrayers.graceBeforeMeals,
+            source: "Baltimore Catechism No. 1, 1885."
+        ),
+        LibraryPrayer(
+            id: "grace-after-meals",
+            title: "Grace after Meals",
+            category: .daily,
+            body: LayPrayers.graceAfterMeals,
+            source: "Baltimore Catechism No. 1, 1885."
+        ),
+        LibraryPrayer(
+            id: "eternal-rest",
+            title: "Eternal Rest",
+            category: .daily,
+            body: LayPrayers.eternalRest,
+            source: "Baltimore Catechism No. 1, 1885."
+        ),
+        LibraryPrayer(
+            id: "o-salutaris",
+            title: "O Salutaris",
+            category: .daily,
+            body: LayPrayers.oSalutaris,
+            source: "Baltimore Catechism No. 1, 1885. The two stanzas of O Salutaris Hostia."
+        ),
+        LibraryPrayer(
+            id: "tantum-ergo",
+            title: "Tantum Ergo",
+            category: .daily,
+            body: LayPrayers.tantumErgo,
+            source: "Baltimore Catechism No. 1, 1885. The two stanzas of Tantum Ergo, with the versicle."
+        ),
+    ]
+
+    private static let scriptureCanticles: [LibraryPrayer] = [
+        LibraryPrayer(
+            id: "benedictus",
+            title: "The Benedictus",
+            category: .daily,
+            body: LayPrayers.benedictus,
+            source: "Douay-Rheims, Challoner revision, Luke 1:68–79."
+        ),
+        LibraryPrayer(
+            id: "nunc-dimittis",
+            title: "The Nunc Dimittis",
+            category: .daily,
+            body: LayPrayers.nuncDimittis,
+            source: "Douay-Rheims, Challoner revision, Luke 2:29–32."
+        ),
+        LibraryPrayer(
+            id: "de-profundis",
+            title: "De Profundis",
+            category: .daily,
+            body: LayPrayers.deProfundis,
+            source: "Douay-Rheims, Challoner revision, Psalm 129."
         ),
     ]
 }
@@ -655,5 +762,100 @@ public enum LayPrayers {
 
     public static let theotokosKontakion = """
     To thee, the champion leader, we thy servants dedicate a feast of victory and of thanksgiving, as ones rescued from sufferings, O Theotokos. But as thou art one with might which is invincible, from all dangers that can be do thou deliver us, that we may cry to thee: Rejoice, O Bride unwedded.
+    """
+
+    public static let actOfFaith = """
+    O my God! I firmly believe that Thou art one God in three Divine Persons, Father, Son, and Holy Ghost; I believe that Thy Divine Son became man, and died for our sins, and that he will come to judge the living and the dead. I believe these and all the truths which the Holy Catholic Church teaches, because Thou hast revealed them, who canst neither deceive nor be deceived.
+    """
+
+    public static let actOfHope = """
+    O my God! relying on Thy infinite goodness and promises, I hope to obtain pardon of my sins, the help of Thy grace, and life everlasting, through the merits of Jesus Christ, my Lord and Redeemer.
+    """
+
+    public static let actOfLove = """
+    O my God! I love Thee above all things, with my whole heart and soul, because Thou art all-good and worthy of all love. I love my neighbor as myself for the love of Thee. I forgive all who have injured me, and ask pardon of all whom I have injured.
+    """
+
+    public static let guardianAngel = """
+    Angel of God, my guardian dear,
+    To whom His love commits me here,
+    Ever this day be at my side,
+    To light and guard, to rule and guide. Amen.
+    """
+
+    public static let graceBeforeMeals = """
+    Bless us, O Lord! and these Thy gifts, which we are about to receive from Thy bounty, through Christ our Lord. Amen.
+    """
+
+    public static let graceAfterMeals = """
+    We give Thee thanks for all Thy benefits, O Almighty God, who livest and reignest forever, and may the souls of the faithful departed through the mercy of God, rest in peace. Amen.
+    """
+
+    public static let eternalRest = """
+    Eternal rest give unto them, O Lord. And let perpetual light shine upon them. May they rest in peace. Amen.
+    """
+
+    public static let oSalutaris = """
+    O Salutaris Hostia!
+    Quae coeli pandis ostium:
+    Bella premunt hostilia,
+    Da robur, fer auxilium.
+
+    Uni trinoque Domino
+    Sit sempiterna gloria,
+    Qui vitam sine termino
+    Nobis donet in Patria. Amen.
+    """
+
+    public static let tantumErgo = """
+    Tantum ergo Sacramentum
+    Veneremur cernui;
+    Et antiquum documentum
+    Novo cedat ritui;
+    Praestet fides supplementum
+    Sensuum defectui.
+
+    Genitori, Genitoque
+    Laus et jubilatio,
+    Salus, honor, virtus quoque
+    Sit et benedictio;
+    Procedenti ab utroque
+    Compar sit laudatio. Amen.
+
+    V. Panem de coelo praestitisti eis,
+    R. Omne delectamentum in se habentem.
+    """
+
+    public static let benedictus = """
+    68 Blessed be the Lord God of Israel: because he hath visited and wrought the redemption of his people.
+    69 And hath raised up an horn of salvation to us, in the house of David his servant.
+    70 As he spoke by the mouth of his holy prophets, who are from the beginning.
+    71 Salvation from our enemies and from the hand of all that hate us.
+    72 To perform mercy to our fathers and to remember his holy testament.
+    73 The oath, which he swore to Abraham our father, that he would grant to us.
+    74 That being delivered from the hand of our enemies, we may serve him without fear:
+    75 In holiness and justice before him, all our days.
+    76 And thou, child, shalt be called the prophet of the Highest: for thou shalt, go before the face of the Lord to prepare his ways:
+    77 To give knowledge of salvation to his people, unto the remission of their sins.
+    78 Through the bowels of the mercy of our God, in which the Orient from on high hath visited us:
+    79 To enlighten them that sit in darkness and in the shadow of death: to direct our feet into the way of peace.
+    """
+
+    public static let nuncDimittis = """
+    29 Now thou dost dismiss thy servant, O Lord, according to thy word in peace:
+    30 Because my eyes have seen thy salvation,
+    31 Which thou hast prepared before the face of all peoples:
+    32 A light to the revelation of the Gentiles and the glory of thy people Israel.
+    """
+
+    public static let deProfundis = """
+    1 A gradual canticle. Out of the depths I have cried to thee, O Lord:
+    2 Lord, hear my voice. Let thy ears be attentive to the voice of my supplication.
+    3 If thou, O Lord, wilt mark iniquities: Lord, who shall stand it.
+    4 For with thee there is merciful forgiveness: and by reason of thy law, I have waited for thee, O Lord. My soul hath relied on his word:
+    5 my soul hath hoped in the Lord.
+    6 From the morning watch even until night, let Israel hope in the Lord.
+    7 Because with the Lord there is mercy: and with him plentiful redemption.
+    8 And he shall redeem Israel from all his iniquities.
     """
 }
